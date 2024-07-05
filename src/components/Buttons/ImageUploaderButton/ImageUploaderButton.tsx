@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
 
-import { saveImage, loadImageBase64 } from "../../shared/utils/backgroundUtils";
+import {
+  saveImage,
+  loadImageBase64,
+} from "../../../shared/utils/backgroundUtils";
 
 interface ImageUploaderProps {
   setImageSrc: (src: string | null) => void;
 }
 
-export const ImageUploader = ({ setImageSrc }: ImageUploaderProps) => {
+export const ImageUploaderButton = ({ setImageSrc }: ImageUploaderProps) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   useEffect(() => {
@@ -34,16 +37,16 @@ export const ImageUploader = ({ setImageSrc }: ImageUploaderProps) => {
   };
 
   return (
-    <div className="text-center">
+    <div className="relative h-[22px] min-w-24 cursor-pointer rounded border border-[#EBDCB2] bg-[#d92800] px-6 text-center text-[10px] leading-5 duration-300 hover:bg-[#EBDCB2] hover:text-[#d92800]">
       <input
         type="file"
         onChange={handleFileChange}
-        style={{ display: "none" }}
+        className="hidden"
         id="fileInput"
       />
       <label
         htmlFor="fileInput"
-        className="h-[14px] cursor-pointer rounded border border-[#EBDCB2] bg-[#d92800] px-6 text-[10px] leading-tight duration-300 hover:bg-[#EBDCB2] hover:text-[#d92800]"
+        className="absolute inset-0 flex cursor-pointer items-center justify-center"
       >
         Select
       </label>
