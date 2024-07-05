@@ -1,7 +1,12 @@
 import { invoke } from "@tauri-apps/api/tauri";
 import { useState, useEffect } from "react";
 
-import { ImageUploader } from "../ImageUploader/ImageUploader";
+import { BackgroundImageButton } from "../Buttons/BackgroundImageButton/BackgroundImageButton";
+import { DefaultSettingButton } from "../Buttons/DefaultSettingButton/DefaultSettingButton";
+import { ImageUploaderButton } from "../Buttons/ImageUploaderButton/ImageUploaderButton";
+import { ResetStoreButton } from "../Buttons/ResetStoreButton/ResetStoreButton";
+import { SettingLabel } from "../Labels/SettingLabel/SettingLabel";
+import { SettingLegend } from "../Legends/SettingLegend/SettingLegend";
 interface SystemInfo {
   cpu: string;
   mem: string;
@@ -41,10 +46,6 @@ export const Setting = ({
 
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
-  };
-
-  const toggleBackgroundImage = () => {
-    setIsBackgroundImage(!isBackgroundImage);
   };
 
   useEffect(() => {
@@ -93,24 +94,24 @@ export const Setting = ({
       </fieldset>
 
       <fieldset className="mt-1 w-full rounded border border-[#EBDCB2] px-1 pb-1">
-        <legend className="px-1 text-xs">App Preference</legend>
-        <div className="flex items-center justify-between px-1">
-          <div className="cursor-default select-none text-[10px]">
-            Dark Mode
-          </div>
+        <SettingLegend text="App Preference" />
+        <div className="mb-1 flex items-center justify-between px-1">
+          <SettingLabel text="Dark Mode" />
           <div className="flex items-center">
             <button
-              className={`relative h-[14px] w-7 cursor-pointer rounded border border-[#EBDCB2] 
-                ${isDarkMode ? "bg-[#d95e00]" : ""}`}
+              className={`relative h-[22px] min-w-24 cursor-pointer rounded border border-[#EBDCB2] 
+                ${isDarkMode ? "bg-[#d92800]" : ""}`}
               onClick={toggleDarkMode}
             >
               <div
-                className={`absolute left-[1px] top-[1px] h-[10px] w-[10px] transform rounded-sm transition-transform duration-300 ${
+                className={`absolute left-[1px] top-[1px] h-[18px] w-12 transform rounded-sm text-[8px] leading-[18px] text-[#d92800] transition-transform duration-100 ${
                   isDarkMode
-                    ? "translate-x-[14px] bg-[#EBDCB2]"
+                    ? "translate-x-[44px] bg-[#EBDCB2]"
                     : "bg-[#EBDCB2]"
                 }`}
-              ></div>
+              >
+                {isDarkMode ? "ON" : "OFF"}
+              </div>
             </button>
           </div>
         </div>
@@ -119,56 +120,37 @@ export const Setting = ({
             Background Image
           </div>
           <div className="flex items-center">
-            <button
-              className={`relative h-[14px] w-7 cursor-pointer rounded border border-[#EBDCB2] 
-                ${isBackgroundImage ? "bg-[#d95e00]" : ""}`}
-              onClick={toggleBackgroundImage}
-            >
-              <div
-                className={`absolute left-[1px] top-[1px] h-[10px] w-[10px] transform rounded-sm transition-transform duration-300 ${
-                  isBackgroundImage
-                    ? "translate-x-[14px] bg-[#EBDCB2]"
-                    : "bg-[#EBDCB2]"
-                }`}
-              ></div>
-            </button>
-          </div>
-        </div>
-      </fieldset>
-
-      <fieldset className="my-1 w-full rounded border border-[#EBDCB2] px-1 pb-1">
-        <legend className="px-1 text-xs">Reset</legend>
-        <div className="flex items-center justify-between px-1">
-          <div className="cursor-pointer select-none text-[10px]">
-            Reset Store
-          </div>
-          <div>
-            <button className="h-[14px] w-20 cursor-pointer rounded border border-[#EBDCB2] bg-[#d92800] px-1 text-[10px] leading-tight duration-300 hover:bg-[#EBDCB2] hover:text-[#d92800]">
-              Reset
-            </button>
-          </div>
-        </div>
-        <div className="flex items-center justify-between px-1">
-          <div className="cursor-pointer select-none text-[10px]">
-            Default Setting
-          </div>
-          <div>
-            <button className="h-[14px] w-20 cursor-pointer rounded border border-[#EBDCB2] bg-[#d92800] px-1 text-[10px] leading-tight duration-300 hover:bg-[#EBDCB2] hover:text-[#d92800]">
-              Default
-            </button>
+            <BackgroundImageButton
+              isBackgroundImage={isBackgroundImage}
+              setIsBackgroundImage={setIsBackgroundImage}
+            />
           </div>
         </div>
       </fieldset>
 
       <fieldset className="my-1 w-full rounded border border-[#EBDCB2] px-1 pb-1">
         <legend className="px-1 text-xs">Background Image</legend>
-        <div>
-          <div className="flex items-center justify-between px-1">
-            <div className="cursor-default select-none text-[10px]">
-              Upload Image
-            </div>
-            <ImageUploader setImageSrc={setImageSrc} />
+        <div className="flex items-center justify-between px-1">
+          <div className="cursor-default select-none text-[10px]">
+            Upload Image
           </div>
+          <ImageUploaderButton setImageSrc={setImageSrc} />
+        </div>
+      </fieldset>
+
+      <fieldset className="w-full rounded border border-[#EBDCB2] px-1 pb-1">
+        <legend className="px-1 text-xs">Reset</legend>
+        <div className="mb-1 flex items-center justify-between px-1">
+          <div className="cursor-pointer select-none text-[10px]">
+            Reset Store
+          </div>
+          <ResetStoreButton />
+        </div>
+        <div className="flex items-center justify-between px-1">
+          <div className="cursor-pointer select-none text-[10px]">
+            Default Setting
+          </div>
+          <DefaultSettingButton />
         </div>
       </fieldset>
     </div>
