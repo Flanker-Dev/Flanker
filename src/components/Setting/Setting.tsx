@@ -55,16 +55,16 @@ export const Setting = ({
     <div
       id="Setting"
       data-tauri-drag-region
-      className="flex h-fit w-full cursor-default select-none flex-col items-center truncate px-0.5 text-[10px]"
+      className="flex h-[calc(100vh-44px)] w-full cursor-default select-none flex-col items-center truncate rounded border border-[#EBDCB2] p-1 text-[10px]"
     >
-      <div className="flex w-full items-center">
+      {/* <div className="flex w-full items-center">
         <img src="src/assets/setting.svg" alt="setting" className="h-4 w-4" />
         <div className="ml-0.5 cursor-default select-none truncate text-base text-[#EBDCB2]">
           Setting
         </div>
-      </div>
+      </div> */}
 
-      <fieldset className="mt-1 w-full rounded border border-[#EBDCB2] px-1 pb-1">
+      <fieldset className="w-full rounded border border-[#EBDCB2] px-1 pb-1">
         <legend className="px-1 text-xs">System Info</legend>
         <div className="flex flex-col px-1">
           {systemInfo &&

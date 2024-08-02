@@ -24,6 +24,8 @@ export const CurrentPage = ({ currentPage }: { currentPage: string }) => {
             </a>
           </div>
         ))}
+        https://www.youtube.com/
+        <iframe src="https://www.youtube.com/" title="YouTube" />
       </div>
     </div>
   );

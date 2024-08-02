@@ -11,6 +11,7 @@ html {
   margin: 0;
   height: 100%;
   background: #111111;
+  font-family: Oswald, sans-serif;
 }
 body {
   color: #ebdcb2;
@@ -75,11 +76,11 @@ body {
   align-items: center;
 }
 #SideMenu > div > div:nth-child(3) > div {
-  width: 6px !important;
+  width: 3px !important;
   border-radius: 100px;
   background-color: #d95e00;
-  margin-right: 3.5px;
-  border: 2px solid #262626;
+  margin-right: 6px;
+  /* border: 2px solid #262626; */
 }
 
 .gradient-background {
@@ -120,4 +121,10 @@ body {
 /* tooltip */
 .react-tooltip-arrow {
   display: none;
+}
+
+/* ------------------------- fullscreen style ------------------------- */
+.fullscreen {
+  background-color: black;
+  color: red;
 }
