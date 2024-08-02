@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "tauri": "tauri",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "tailwind-config-viewer": "tailwind-config-viewer -o"
   },
   "dependencies": {
     "@tauri-apps/api": "^1",
@@ -37,6 +38,7 @@
     "postcss": "^8.4.38",
     "prettier": "^3.3.1",
     "prettier-plugin-tailwindcss": "^0.5.14",
+    "tailwind-config-viewer": "^2.0.4",
     "tailwindcss": "^3.4.3",
     "typescript": "^5.4.5",
     "vite": "^5.2.13"
