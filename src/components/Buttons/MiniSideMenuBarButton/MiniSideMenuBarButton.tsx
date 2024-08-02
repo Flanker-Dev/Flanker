@@ -1,17 +1,17 @@
 type MiniSideMenuBarButtonProps = {
-  setFullContentBodyView: (value: boolean) => void;
-  fullContentBodyView: boolean;
+  setSideMenuView: (value: boolean) => void;
+  sideMenuView: boolean;
 };
 
 export const MiniSideMenuBarButton = ({
-  setFullContentBodyView,
-  fullContentBodyView,
+  setSideMenuView,
+  sideMenuView,
 }: MiniSideMenuBarButtonProps) => {
   return (
     <button
-      className="fixed bottom-[50%] left-[1px] top-[50%] z-[9999] h-[25px] w-2 translate-y-[-50%] rounded-full border-2 border-neutral-800 bg-[#d95e00] hover:bg-[#c68031]"
+      className="fixed bottom-[50%] left-[2px] top-[50%] z-[9999] h-[25px] w-[7px] translate-y-[-50%] rounded-full border border-[#EBDCB2] bg-[#d95e00] hover:bg-[#c68031]"
       onClick={() => {
-        setFullContentBodyView(!fullContentBodyView);
+        setSideMenuView(!sideMenuView);
       }}
     ></button>
   );

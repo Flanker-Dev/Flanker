@@ -1,13 +1,17 @@
+// import { listen } from "@tauri-apps/api/event";
 import { Resizable } from "re-resizable";
 import { useEffect, useState } from "react";
 
 import { MiniSideMenuBarButton } from "./components/Buttons/MiniSideMenuBarButton/MiniSideMenuBarButton";
 import { MiniTitleBarButton } from "./components/Buttons/MiniTitleBarButton/MiniTitleBarButton";
+import { SideMenuBarButton } from "./components/Buttons/SideMenuBarButton/SideMenuBarButton";
+import { TitleBarButton } from "./components/Buttons/TitleBarButton/TitleBarButton";
 import { CurrentPage } from "./components/CurrentPage/CurrentPage";
 import { Header } from "./components/Header/Header";
 import { PrivacyMode } from "./components/PrivacyMode/PrivacyMode";
 import { Setting } from "./components/Setting/Setting";
 import { SideMenuLists } from "./components/SideMenuLists/SideMenuLists";
+import { Tight } from "./components/Tight/Tight";
 import useResizeObserver from "./shared/hooks/useResizeObserver";
 import { useStore } from "./shared/store/store";
 import { loadImageBase64 } from "./shared/utils/backgroundUtils";
@@ -16,8 +20,7 @@ function App() {
   // store
   const {
     sideMenuView,
-    // setSideMenuView,
-    sideMenuWidth,
+    setSideMenuView,
     setSideMenuWidth,
     titlebarView,
     setTitlebarView,
@@ -25,10 +28,7 @@ function App() {
     setAlwaysOnTopView,
     isPrivacyMode,
     setIsPrivacyMode,
-    fullContentBodyView,
-    setFullContentBodyView,
     currentPage,
-    // setCurrentPage,
     isOpenSetting,
     setIsOpenSetting,
   } = useStore();
@@ -78,16 +78,12 @@ function App() {
         <img
           src={imageSrc}
           alt="UploadedImage"
-          className="absolute inset-0 -top-[1px] left-[1px] z-10 h-[calc(100vh-4px)] w-[calc(100%-2px)] rounded-[6px] object-cover"
+          className="fixed inset-0 -top-[1px] left-[1px] z-10 h-[calc(100vh-0px)] w-[calc(100%-2px)] rounded-[6px] object-cover"
         />
       )}
-      <div data-tauri-drag-region className="relative z-30">
+      <div data-tauri-drag-region className="relative z-30 p-1">
         {!titlebarView && (
           <Header
-            sideMenuView={fullContentBodyView}
-            setSideMenuView={setFullContentBodyView}
-            titlebarView={titlebarView}
-            setTitlebarView={setTitlebarView}
             alwaysOnTopView={alwaysOnTopView}
             setAlwaysOnTopView={setAlwaysOnTopView}
             isPrivacyMode={isPrivacyMode}
@@ -97,20 +93,20 @@ function App() {
           />
         )}
         {titlebarView && (
-          <div className="z-[9999] mt-0">
-            <MiniTitleBarButton
-              setTitlebarView={setTitlebarView}
-              titlebarView={titlebarView}
-            />
-          </div>
+          <MiniTitleBarButton
+            setTitlebarView={setTitlebarView}
+            titlebarView={titlebarView}
+          />
         )}
         {!isPrivacyMode && (
           <MiniSideMenuBarButton
-            setFullContentBodyView={setFullContentBodyView}
-            fullContentBodyView={fullContentBodyView}
+            setSideMenuView={setSideMenuView}
+            sideMenuView={sideMenuView}
           />
         )}
-        <div className="flex items-center justify-center p-1">
+        <div
+          className={`flex items-start justify-center ${titlebarView ? "" : "mt-1"}`}
+        >
           {/* ------------ SideMenuBar ------------ */}
           {sideMenuView && (
             <div id="SideMenu" className="scrollbar" data-tauri-drag-region>
@@ -119,7 +115,7 @@ function App() {
                   width: window.innerWidth - 6,
                   height: "100%",
                 }}
-                minWidth="10px"
+                minWidth="110px"
                 maxWidth="182px"
                 enable={{
                   top: false,
@@ -135,22 +131,44 @@ function App() {
                 <div
                   id="SideMenuLists"
                   data-tauri-drag-region
-                  className={`z-40 mr-[3px] select-none overflow-y-auto rounded-md p-1 text-xs backdrop-blur-[3px] 
-                    ${titlebarView ? "h-[calc(100vh-10px)]" : "h-[calc(100vh-36px)]"}
-                    ${fullContentBodyView ? "" : "bg-transparent"}
+                  className={`z-40 mr-[5px] select-none rounded-md text-xs backdrop-blur-[3px]
+                    ${titlebarView ? "h-[calc(100vh-10px)]" : "h-[calc(100vh-32px)]"}
                   `}
                 >
-                  {sideMenuWidth < 44 ? (
-                    <div className="truncate">test</div>
-                  ) : (
-                    <div
-                      className={`
-                      ${fullContentBodyView ? "block" : "hidden"}
-                    `}
-                    >
-                      <SideMenuLists />
+                  <div className="flex w-full justify-end">
+                    <div className="flex w-fit justify-end rounded rounded-b-none border border-b-0 border-[#EBDCB2]">
+                      <div className="flex w-full justify-end">
+                        {!isPrivacyMode ? (
+                          <SideMenuBarButton
+                            sideMenuView={sideMenuView}
+                            setSideMenuView={setSideMenuView}
+                          />
+                        ) : (
+                          <div className="flex h-5 w-5 cursor-not-allowed items-center justify-center rounded-sm">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 -960 960 960"
+                              width="16"
+                              height="16"
+                              fill="#505050"
+                            >
+                              <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm120-80v-560H200v560h120Zm80 0h360v-560H400v560Zm-80 0H200h120Z" />
+                            </svg>
+                          </div>
+                        )}
+                        <TitleBarButton
+                          titlebarView={titlebarView}
+                          setTitlebarView={setTitlebarView}
+                        />
+                      </div>
                     </div>
-                  )}
+                  </div>
+                  <div
+                    className={`${titlebarView ? "h-[calc(100vh-32px)]" : "h-[calc(100vh-60px)]"}
+                    `}
+                  >
+                    <SideMenuLists />
+                  </div>
                 </div>
               </Resizable>
             </div>
@@ -159,10 +177,9 @@ function App() {
           <div
             id="ContentBody"
             data-tauri-drag-region
-            className={`scrollbar flex flex-1 overflow-y-scroll rounded-md p-1 text-xs backdrop-blur-[3px] 
-            ${titlebarView ? "h-[calc(100vh-10px)]" : "h-[calc(100vh-36px)]"} 
-            ${fullContentBodyView ? "w-[calc(100%-40px)]" : "fixed w-[calc(100%-12px)]"} 
-            ${isPrivacyMode ? "gradient-background fixed left-[50%] right-[50%] ml-0 w-[calc(100vw-10px)] -translate-x-1/2" : "w-[calc(100vw-10px)]"} 
+            className={`scrollbar flex w-[calc(100vw-9px)] flex-1 overflow-y-scroll rounded border border-[#EBDCB2] p-1 text-xs backdrop-blur-[3px]
+            ${titlebarView ? "h-[calc(100vh-11px)]" : "h-[calc(100vh-39px)]"} 
+            ${isPrivacyMode ? "gradient-background fixed left-[50%] right-[50%] ml-0 -translate-x-1/2" : ""} 
             ${isPrivacyMode && titlebarView ? "h-[calc(100vh-10px)]" : ""}
           `}
           >
@@ -173,18 +190,7 @@ function App() {
             {!isContentBodyWidthLessThan200 &&
               isOpenSetting &&
               !isPrivacyMode && <Setting setImageSrc={setImageSrc} />}
-            {isContentBodyWidthLessThan200 && (
-              <div
-                // ど真ん中に表示
-                className="flex h-full w-full select-none items-center justify-center text-center text-[10px] italic"
-              >
-                Tight, Tight, Tight,
-                <br />
-                Yeah!
-                <br />
-                ¯\_(ツ)_/¯
-              </div>
-            )}
+            {isContentBodyWidthLessThan200 && <Tight />}
           </div>
         </div>
       </div>
