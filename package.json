@@ -17,6 +17,7 @@
     "re-resizable": "^6.9.16",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-fast-marquee": "^1.6.5",
     "react-tooltip": "^5.26.4",
     "tauri-plugin-positioner-api": "^0.2.7",
     "tauri-plugin-system-info-api": "^2.0.0-beta.1",

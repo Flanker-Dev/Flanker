@@ -1,4 +1,5 @@
 // import { listen } from "@tauri-apps/api/event";
+import { invoke } from "@tauri-apps/api/tauri";
 import { Resizable } from "re-resizable";
 import { useEffect, useState } from "react";
 
@@ -31,6 +32,10 @@ function App() {
     currentPage,
     isOpenSetting,
     setIsOpenSetting,
+    spotityTrackInfo,
+    setSpotityTrackInfo,
+    bgColor,
+    setBgColor,
   } = useStore();
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const savedImagePath = useStore((state) => state.savedImagePath);
@@ -70,17 +75,34 @@ function App() {
     }
   }, []);
 
+  const fetchSpotifyTrackInfo = async () => {
+    try {
+      const trackInfo: string = await invoke("get_spotify_track_info");
+      setSpotityTrackInfo(trackInfo);
+    } catch (error) {
+      console.error("Error fetching spotify track info:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchSpotifyTrackInfo();
+
+    const intervalId = setInterval(fetchSpotifyTrackInfo, 15000); // 15秒ごとにspotifyの情報を取得
+
+    return () => clearInterval(intervalId);
+  }, []);
+
   // debug
   // getLocalStorageSize();
   return (
     <div className="relative">
-      {imageSrc && (
+      {imageSrc && bgColor === "" ? (
         <img
           src={imageSrc}
           alt="UploadedImage"
           className="fixed inset-0 -top-[1px] left-[1px] z-10 h-[calc(100vh-0px)] w-[calc(100%-2px)] rounded-[6px] object-cover"
         />
-      )}
+      ) : null}
       <div data-tauri-drag-region className="relative z-30 p-1">
         {!titlebarView && (
           <Header
@@ -90,6 +112,8 @@ function App() {
             setIsPrivacyMode={setIsPrivacyMode}
             isOpenSetting={isOpenSetting}
             setIsOpenSetting={setIsOpenSetting}
+            spotityTrackInfo={spotityTrackInfo}
+            setSpotityTrackInfo={setSpotityTrackInfo}
           />
         )}
         {titlebarView && (
@@ -189,7 +213,13 @@ function App() {
             {isPrivacyMode && <PrivacyMode />}
             {!isContentBodyWidthLessThan200 &&
               isOpenSetting &&
-              !isPrivacyMode && <Setting setImageSrc={setImageSrc} />}
+              !isPrivacyMode && (
+                <Setting
+                  setImageSrc={setImageSrc}
+                  bgColor={bgColor}
+                  setBgColor={setBgColor}
+                />
+              )}
             {isContentBodyWidthLessThan200 && <Tight />}
           </div>
         </div>

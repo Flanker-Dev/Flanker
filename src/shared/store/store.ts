@@ -23,6 +23,12 @@ interface StoreState {
   setIsOpenSetting: (value: boolean) => void;
   savedImagePath: string | null;
   setSavedImagePath: (value: string | null) => void;
+  spotityTrackInfo: string;
+  setSpotityTrackInfo: (value: string) => void;
+  isBackgroundImage: boolean;
+  setIsBackgroundImage: (value: boolean) => void;
+  bgColor: string;
+  setBgColor: (value: string) => void;
 }
 
 // Q. Why the currying?
@@ -71,6 +77,18 @@ export const useStore = create<StoreState>()(
       savedImagePath: null,
       setSavedImagePath: (value: string | null) =>
         set({ savedImagePath: value }),
+
+      // spotify track info
+      spotityTrackInfo: "",
+      setSpotityTrackInfo: (value: string) => set({ spotityTrackInfo: value }),
+
+      // backgroundImage
+      isBackgroundImage: false,
+      setIsBackgroundImage: (value: boolean) =>
+        set({ isBackgroundImage: value }),
+
+      bgColor: "#EBDCB2",
+      setBgColor: (value: string) => set({ bgColor: value }),
     }),
     {
       name: "layout-settings", // localStorage key

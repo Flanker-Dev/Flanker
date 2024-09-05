@@ -2,9 +2,11 @@
 
 mod system_info;
 mod window_events;
+mod spotify_info;
 
 use system_info::get_system_info;
 use window_events::setup_window_event_listeners;
+use spotify_info::get_spotify_track_info;
 use tauri::Manager;
 
 fn main() {
@@ -14,7 +16,7 @@ fn main() {
             setup_window_event_listeners(window);
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![get_system_info])
+        .invoke_handler(tauri::generate_handler![get_system_info, get_spotify_track_info])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

@@ -4,7 +4,7 @@ export const ReloadButton = () => {
       onClick={() => {
         window.location.reload();
       }}
-      className="flex h-5 w-5 cursor-pointer items-center justify-center rounded-sm hover:bg-neutral-800"
+      className="flex h-5 w-6 cursor-pointer items-center justify-center rounded-sm hover:bg-neutral-800"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
