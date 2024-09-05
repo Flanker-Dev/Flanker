@@ -1,3 +1,5 @@
+import Marquee from "react-fast-marquee";
+
 import { alwaysOnTop } from "../../shared/utils/alwaysOnTop";
 import { ReloadButton } from "../Buttons/ReloadButton/ReloadButton";
 import { SettingButton } from "../Buttons/SettingButton/SettingButton";
@@ -12,6 +14,8 @@ type HeaderProps = {
   setIsPrivacyMode: (value: boolean) => void;
   isOpenSetting: boolean;
   setIsOpenSetting: (value: boolean) => void;
+  spotityTrackInfo: string;
+  setSpotityTrackInfo: (value: string) => void;
 };
 
 export const Header = ({
@@ -21,6 +25,7 @@ export const Header = ({
   setIsPrivacyMode,
   isOpenSetting,
   setIsOpenSetting,
+  spotityTrackInfo,
 }: HeaderProps) => {
   return (
     <header
@@ -28,13 +33,19 @@ export const Header = ({
       data-tauri-drag-region
       className="z-50 flex h-6 items-end justify-end"
     >
-      <div className="flex items-center justify-between rounded border border-[#EBDCB2]">
+      <div className="flex items-center justify-between space-x-1 rounded border border-[#EBDCB2] px-1">
+        {/* spotify */}
+        <div className="flex h-4 w-48 cursor-default select-none items-center justify-center rounded bg-black text-sm text-amber-500">
+          <Marquee gradient={false} speed={40} delay={2}>
+            &nbsp;&nbsp; {"♪"} &nbsp; {spotityTrackInfo} &nbsp;&nbsp;
+          </Marquee>
+        </div>
         {/* privacy mode */}
         <button
           onClick={() => {
             setIsPrivacyMode(!isPrivacyMode);
           }}
-          className="flex h-5 w-5 cursor-pointer items-center justify-center rounded-sm hover:bg-neutral-800"
+          className="flex h-5 w-6 cursor-pointer items-center justify-center rounded-sm hover:bg-neutral-800"
         >
           {isPrivacyMode ? (
             <svg
@@ -68,7 +79,7 @@ export const Header = ({
         {/* always on top button */}
         <button
           onClick={() => alwaysOnTop(alwaysOnTopView, setAlwaysOnTopView)}
-          className="flex h-5 w-5 cursor-pointer items-center justify-center rounded-sm rounded-tr-md hover:bg-neutral-800"
+          className="flex h-5 w-6 cursor-pointer items-center justify-center rounded hover:bg-neutral-800"
         >
           {alwaysOnTopView ? (
             <svg

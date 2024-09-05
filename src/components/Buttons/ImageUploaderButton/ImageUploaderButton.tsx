@@ -6,10 +6,14 @@ import {
 } from "../../../shared/utils/backgroundUtils";
 
 interface ImageUploaderProps {
+  setBgColor: (color: string) => void;
   setImageSrc: (src: string | null) => void;
 }
 
-export const ImageUploaderButton = ({ setImageSrc }: ImageUploaderProps) => {
+export const ImageUploaderButton = ({
+  setBgColor,
+  setImageSrc,
+}: ImageUploaderProps) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   useEffect(() => {
@@ -19,6 +23,9 @@ export const ImageUploaderButton = ({ setImageSrc }: ImageUploaderProps) => {
           await saveImage(selectedFile);
           const base64 = await loadImageBase64(selectedFile.name);
           if (base64) {
+            // 背景色を消す
+            setBgColor("");
+            document.body.style.backgroundColor = "";
             setImageSrc(base64);
           }
         } catch (error) {
