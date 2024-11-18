@@ -13,12 +13,12 @@
     "macOSPrivateApi": true,
     "allowlist": {
       "all": false,
+      "http": {
+        "all": true
+      },
       "fs": {
         "all": true,
-        "scope": [
-          "$HOME/.config/flanker/images",
-          "$HOME/.config/flanker/images/*"
-        ]
+        "scope": ["$HOME/.config/flanker/**"]
       },
       "path": {
         "all": true
@@ -46,6 +46,13 @@
         "all": true,
         "writeText": true,
         "readText": true
+      },
+      "protocol": {
+        "asset": true,
+        "assetScope": [
+          "$HOME/.config/flanker/images",
+          "$HOME/.config/flanker/images/*"
+        ]
       }
     },
     "windows": [
@@ -55,22 +62,22 @@
         "title": "Flanker",
         "width": 800,
         "height": 600,
-        "minWidth": 200,
+        "minWidth": 768,
         "minHeight": 100,
         "hiddenTitle": true,
         "titleBarStyle": "Overlay",
         "resizable": true,
         "fullscreen": true,
-        "fileDropEnabled": true
+        "fileDropEnabled": false
       }
     ],
     "security": {
-      "csp": null
+      "csp": "default-src 'self'; img-src * asset: https://asset.localhost blob: date:; script-src 'self'; style-src 'self'; object-src 'none';"
     },
     "bundle": {
       "active": true,
       "targets": "all",
-      "identifier": "com.tauri.dev",
+      "identifier": "com.flanker.app",
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",
