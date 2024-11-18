@@ -1,6 +1,6 @@
 # Flanker
 
-<img src="https://github.com/Coordinate-Cat/Flanker/blob/main/src/assets/Flanker_Full_Logo.svg" alt="Flanker Logo" width="200"/>
+<img src="https://github.com/Coordinate-Cat/Flanker/blob/develop/src/assets/Flanker_full_logo.svg" alt="Flanker Logo" width="200"/>
 
 |                                   Appearance 1                                   |                                   Appearance 2                                   |
 | :------------------------------------------------------------------------------: | :------------------------------------------------------------------------------: |
