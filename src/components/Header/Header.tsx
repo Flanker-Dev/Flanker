@@ -33,7 +33,7 @@ export const Header = ({
       data-tauri-drag-region
       className="z-50 flex h-6 items-end justify-end"
     >
-      <div className="flex items-center justify-between space-x-1 rounded border border-[#EBDCB2] px-1">
+      <div className="flex items-center justify-between space-x-1 rounded border border-white px-1">
         {/* spotify */}
         <div className="flex h-4 w-48 cursor-default select-none items-center justify-center rounded bg-black text-sm text-amber-500">
           <Marquee gradient={false} speed={40} delay={2}>

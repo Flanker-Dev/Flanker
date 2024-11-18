@@ -64,16 +64,16 @@ export const Setting = ({
     <div
       id="Setting"
       data-tauri-drag-region
-      className="flex h-fit w-full cursor-default select-none flex-col items-center truncate rounded p-1 text-[10px]"
+      className="flex h-fit w-full cursor-default select-none flex-col items-center truncate rounded text-[10px]"
     >
       {/* <div className="flex w-full items-center">
         <img src="src/assets/setting.svg" alt="setting" className="h-4 w-4" />
-        <div className="ml-0.5 cursor-default select-none truncate text-base text-[#EBDCB2]">
+        <div className="ml-0.5 cursor-default select-none truncate text-base text-white">
           Setting
         </div>
       </div> */}
 
-      <fieldset className="w-full rounded border border-[#EBDCB2] px-1 pb-1">
+      <fieldset className="w-full rounded border border-white px-1 pb-1">
         <legend className="px-1 text-xs">System Info</legend>
         <div className="flex flex-col px-1">
           {systemInfo &&
@@ -83,7 +83,7 @@ export const Setting = ({
                   {key.replace(/_/g, " ")}
                 </div>
                 <div className="w-full flex-1 items-center justify-center py-2">
-                  <div className="h-[1px] w-full border-b border-dashed border-[#EBDCB2]"></div>
+                  <div className="h-[1px] w-full border-b border-dashed border-white"></div>
                 </div>
                 <div className="ml-1 w-[72px] text-[10px]">
                   {/* cpu_info, display_info */}
@@ -102,21 +102,19 @@ export const Setting = ({
         </div>
       </fieldset>
 
-      <fieldset className="mt-1 w-full rounded border border-[#EBDCB2] px-1 pb-1">
+      <fieldset className="mt-1 w-full rounded border border-white px-1 pb-1">
         <SettingLegend text="App Preference" />
         <div className="mb-1 flex items-center justify-between px-1">
           <SettingLabel text="Dark Mode" />
           <div className="flex items-center">
             <button
-              className={`relative h-[22px] min-w-24 cursor-pointer rounded border border-[#EBDCB2] 
+              className={`relative h-[22px] min-w-24 cursor-pointer rounded border border-white 
                 ${isDarkMode ? "bg-[#d92800]" : ""}`}
               onClick={toggleDarkMode}
             >
               <div
                 className={`absolute left-[1px] top-[1px] h-[18px] w-12 transform rounded-sm text-[8px] leading-[18px] text-[#d92800] transition-transform duration-100 ${
-                  isDarkMode
-                    ? "translate-x-[44px] bg-[#EBDCB2]"
-                    : "bg-[#EBDCB2]"
+                  isDarkMode ? "translate-x-[44px] bg-white" : "bg-white"
                 }`}
               >
                 {isDarkMode ? "ON" : "OFF"}
@@ -127,7 +125,7 @@ export const Setting = ({
       </fieldset>
 
       {/* Background ColorかBackground Imageのどちらかを選択できるボタン */}
-      <fieldset className="mt-1 w-full rounded border border-[#EBDCB2] px-1 pb-1">
+      <fieldset className="mt-1 w-full rounded border border-white px-1 pb-1">
         <SettingLegend text="Background" />
         <div className="flex items-center justify-between px-1">
           <div className="cursor-default select-none text-[10px]">
@@ -138,8 +136,8 @@ export const Setting = ({
             {/* Colorを押したらImageを非表示にしてColorを選択できるようにする */}
             {/* Imageを選択したらColorを非表示にしてImageを選択できるようにする */}
             <button
-              className={`relative h-[22px] w-full cursor-pointer rounded border border-[#EBDCB2] 
-                ${isBackgroundImage ? "bg-zinc-700" : "bg-[#d92800] text-[#EBDCB2]"}
+              className={`relative h-[22px] w-full cursor-pointer rounded border border-white 
+                ${isBackgroundImage ? "bg-zinc-700" : "bg-[#d92800] text-white"}
                 `}
               onClick={() => setIsBackgroundImage(false)}
             >
@@ -150,8 +148,8 @@ export const Setting = ({
               </div>
             </button>
             <button
-              className={`relative h-[22px] w-full cursor-pointer rounded border border-[#EBDCB2] 
-                ${isBackgroundImage ? "bg-[#d92800] text-[#EBDCB2]" : "bg-zinc-700"}
+              className={`relative h-[22px] w-full cursor-pointer rounded border border-white 
+                ${isBackgroundImage ? "bg-[#d92800] text-white" : "bg-zinc-700"}
               `}
               onClick={() => setIsBackgroundImage(true)}
             >
@@ -166,21 +164,21 @@ export const Setting = ({
       </fieldset>
 
       {/* Background Color */}
-      <fieldset className="mt-1 w-full rounded border border-[#EBDCB2] px-1 pb-1">
+      <fieldset className="mt-1 w-full rounded border border-white px-1 pb-1">
         <SettingLegend text="Background Color" />
         <div className="flex items-center justify-between px-1">
           <div className="cursor-default select-none text-[10px]">
             Background Color
           </div>
           {isBackgroundImage ? (
-            <div className="flex h-[22px] min-w-24 cursor-default items-center rounded border border-[#EBDCB2] bg-zinc-700">
+            <div className="flex h-[22px] min-w-24 cursor-default items-center rounded border border-white bg-zinc-700">
               <div className="h-4 w-full cursor-not-allowed text-center">
                 Disabled
               </div>
             </div>
           ) : (
             // Color Picker
-            <div className="flex h-[22px] min-w-24 cursor-pointer rounded border border-[#EBDCB2]">
+            <div className="flex h-[22px] min-w-24 cursor-pointer rounded border border-white">
               <div className="relative">
                 <input
                   type="color"
@@ -191,7 +189,7 @@ export const Setting = ({
                   }
                   className="cursor-pointer"
                 />
-                <div className="absolute flex h-[20px] w-4 cursor-default items-center justify-center rounded-l-sm bg-[#EBDCB2]">
+                <div className="absolute flex h-[20px] w-4 cursor-default items-center justify-center rounded-l-sm bg-white">
                   <svg
                     fill="#000000"
                     height="12px"
