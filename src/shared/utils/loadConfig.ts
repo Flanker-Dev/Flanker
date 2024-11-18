@@ -1,16 +1,16 @@
 import { readTextFile, exists, BaseDirectory } from "@tauri-apps/api/fs";
 import { homeDir } from "@tauri-apps/api/path";
 
-import { Config } from "../types/types";
+import { FileConfig } from "@/shared/types/types";
 
-export const loadConfig = async (): Promise<Config | null> => {
+export const loadConfig = async (): Promise<FileConfig | null> => {
   const homePath = await homeDir();
-  const configFilePath = `${homePath}.config/Flanker/config.json`;
+  const configFilePath = `${homePath}.config/flanker/flankerConfig.json`;
 
   if (await exists(configFilePath, { dir: BaseDirectory.Home })) {
     const config = JSON.parse(
       await readTextFile(configFilePath, { dir: BaseDirectory.Home })
-    ) as Config;
+    ) as FileConfig;
     return config;
   } else {
     console.error(`コンフィグファイルが見つかりません: ${configFilePath}`);
