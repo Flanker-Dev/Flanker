@@ -1,5 +1,11 @@
 # Flanker
 
+<img src="./src/assets/Flanker_Full_Logo.svg" alt="Flanker Logo" width="200"/>
+
+|                                   Appearance 1                                   |                                   Appearance 2                                   |
+| :------------------------------------------------------------------------------: | :------------------------------------------------------------------------------: |
+| <img src="./src/assets/appearance1.png" alt="Flanker Appearance 1" width="400"/> | <img src="./src/assets/appearance2.png" alt="Flanker Appearance 2" width="400"/> |
+
 ![Alt](https://repobeats.axiom.co/api/embed/42a25ba8b65843eba3c9852c3be27de59967a4a0.svg "Repobeats analytics image")
 
 ## develop
@@ -25,11 +31,38 @@ main - production branch
     ⎿ feature/<issue_number> - feature branches
     ⎿ refactor/<issue_number> - refactor branche
     ⎿ document/<issue_number> - documentation branche
+    ⎿ ignore-issues - branch to ignore issues
 ```
 
 ### types
 
-now writing...
+```
+export type Config = {
+  sideMenuView: boolean;
+  contentBodyView: boolean;
+  titlebarView: boolean;
+  alwaysOnTopView: boolean;
+  isPrivacyMode: boolean;
+  fullContentBodyView: boolean;
+};
+
+export type FileConfig = {
+  bookmark: [
+    {
+      title: string;
+      bookmarkInfo: [
+        {
+          title: string;
+          url: string;
+          description: string;
+          tags: string[];
+        },
+      ];
+    },
+  ];
+};
+
+```
 
 ## License
 

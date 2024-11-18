@@ -6,12 +6,12 @@ import {
 } from "../../../shared/utils/backgroundUtils";
 
 interface ImageUploaderProps {
-  setBgColor: (color: string) => void;
+  setBgColor?: (color: string) => void;
   setImageSrc: (src: string | null) => void;
 }
 
 export const ImageUploaderButton = ({
-  setBgColor,
+  // setBgColor,
   setImageSrc,
 }: ImageUploaderProps) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -24,7 +24,7 @@ export const ImageUploaderButton = ({
           const base64 = await loadImageBase64(selectedFile.name);
           if (base64) {
             // 背景色を消す
-            setBgColor("");
+            // setBgColor("");
             document.body.style.backgroundColor = "";
             setImageSrc(base64);
           }
@@ -44,7 +44,7 @@ export const ImageUploaderButton = ({
   };
 
   return (
-    <div className="relative h-[22px] min-w-24 cursor-pointer rounded border border-[#EBDCB2] bg-[#d92800] px-6 text-center text-[10px] leading-5 duration-300 hover:bg-[#EBDCB2] hover:text-[#d92800]">
+    <div className="relative h-[22px] min-w-24 cursor-pointer rounded border border-white bg-[#d92800] px-6 text-center text-[10px] leading-5 duration-300 hover:bg-white hover:text-[#d92800]">
       <input
         type="file"
         onChange={handleFileChange}

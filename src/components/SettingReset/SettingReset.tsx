@@ -3,7 +3,7 @@ import { ResetStoreButton } from "../Buttons/ResetStoreButton/ResetStoreButton";
 
 export const SettingReset = () => {
   return (
-    <fieldset className="w-full rounded border border-[#EBDCB2] px-1 pb-1">
+    <fieldset className="w-full rounded border border-white px-1 pb-1">
       <legend className="px-1 text-xs">Reset</legend>
       <div className="mb-1 flex items-center justify-between px-1">
         <div className="cursor-pointer select-none text-[10px]">
