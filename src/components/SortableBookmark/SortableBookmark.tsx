@@ -36,9 +36,9 @@ export const SortableBookmark = ({
     <div
       ref={setNodeRef}
       style={{ transform: transformStyle, transition: transitionStyle }}
-      className={`bookmark-item rounded-lg border border-white p-2 shadow-md backdrop-blur-[3px] ${
+      className={`bookmark-item rounded-lg border p-2 shadow-md backdrop-blur-[3px] ${
         isDragging
-          ? "is-dragging pointer-events-none z-10 border-amber-500 dark:bg-gray-700"
+          ? "is-dragging pointer-events-none z-10 border border-amber-500 dark:bg-gray-700"
           : "pointer-events-auto z-0 opacity-100"
       }`}
       {...attributes}

@@ -14,6 +14,7 @@ export const fileConfig: FileConfig = {
         name: "",
         bookmarkInfo: [
           {
+            id: "",
             title: "",
             url: "",
             description: "",

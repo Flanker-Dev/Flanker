@@ -1,7 +1,7 @@
 // const/Category.tsからCategoryを取得し、サイドメニューのリストを作成する
 // import { Tooltip } from "react-tooltip";
 
-import { Category } from "../../shared/const/Category";
+import { Category } from "../../constants/Category";
 import { useStore } from "../../shared/store/store";
 
 // type Place = "right";

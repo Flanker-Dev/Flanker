@@ -14,12 +14,12 @@ import { Separator } from "./components/ui/separator";
 import { SidebarProvider } from "./components/ui/sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
 import { cn } from "./lib/utils";
-import { getFavicon } from "./shared/const/Favicon";
-import { FileContent } from "./shared/types/types";
-import { isBookmarkInfoNotEmpty } from "./shared/utils/isBookmarkInfoNotEmpty";
+import { FileContent } from "./types/types";
+import { isBookmarkInfoNotEmpty } from "./utils/isBookmarkInfoNotEmpty";
 // import { loadFileContent } from "./shared/utils/loadFileContent";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Toaster } from "@/components/ui/toaster";
+import { getFavicon } from "@/constants/Favicon";
 
 function App() {
   const [imageUrl, setImageUrl] = useState(""); // 画像URL用の状態

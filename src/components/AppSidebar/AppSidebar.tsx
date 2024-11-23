@@ -15,9 +15,9 @@ import {
   // SidebarMenuButton,
   // SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { handleCreateNewFile } from "@/shared/utils/createNewFile";
-import { handleError } from "@/shared/utils/errorToast";
-import { listFilesInDirectory } from "@/shared/utils/listFilesInDirectory";
+import { handleCreateNewFile } from "@/utils/createNewFile";
+import { handleError } from "@/utils/errorToast";
+import { listFilesInDirectory } from "@/utils/listFilesInDirectory";
 
 // Menu items.
 // const items = [

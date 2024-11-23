@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 
-import { FileConfig } from "@/shared/types/types";
+import { FileConfig } from "@/types/types";
 
 export const handleAddBookmarkInfo = (
   config: FileConfig | null,

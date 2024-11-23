@@ -1,4 +1,4 @@
-import { handleError } from "@/shared/utils/errorToast";
+import { handleError } from "@/utils/errorToast";
 
 export const handleNewFileNameChange = (
   e: React.ChangeEvent<HTMLInputElement>,

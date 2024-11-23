@@ -15,18 +15,39 @@ npm run lint
 
 ## Branches
 
+```plaintext
+main (production)
+  ⎿ develop (current default branch)
+    ⎿ feature/<issue_number> (feature branch)
+    ⎿ refactor/<issue_number> (refactor branch)
+    ⎿ document/<issue_number> (document branch)
+    ⎿ ignore-issues (ignore issues)
 ```
-main - production branch
-  ⎿ develop - development branch
-    ⎿ feature/<issue_number> - feature branches
-    ⎿ refactor/<issue_number> - refactor branche
-    ⎿ document/<issue_number> - documentation branche
-    ⎿ ignore-issues - branch to ignore issues
+
+## Directory Structure
+
+We will adopt the philosophy of colocation patterns as much as possible to determine the directory structure of the tauri application.
+
+```plaintext
+src/
+  ⎿ assets/ (Images, Docs Images, Logo, etc.)
+  ⎿ components/
+    ⎿ <component_name>/
+      ⎿ <component_name>.tsx
+      ⎿ <function_name>.ts (This file contains functions used only in components.)
+    ⎿ ui/ (shadcn components)
+  ⎿ constants/ (Constants.)
+  ⎿ data/ (Test data.)
+  ⎿ utils/ (Common or utility functions.)
+  ⎿ hooks/ (Custom hooks.)
+  ⎿ store/ (State management.)
+  ⎿ types/ (Typescript types.)
+  ⎿ shared/ (⚠️ Scheduled to be discontinued.)
 ```
 
 ## Types
 
-```
+```typescript
 export type Config = {
   sideMenuView: boolean;
   contentBodyView: boolean;
@@ -51,7 +72,6 @@ export type FileConfig = {
     },
   ];
 };
-
 ```
 
 ## Contributions

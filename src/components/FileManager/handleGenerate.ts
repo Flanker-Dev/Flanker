@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 
-import { FileConfig } from "@/shared/types/types";
-import { handleSave } from "@/shared/utils/saveConfig";
+import { FileConfig } from "@/types/types";
+import { handleSave } from "@/utils/saveConfig";
 
 export const handleGenerate = async (
   config: FileConfig | null,

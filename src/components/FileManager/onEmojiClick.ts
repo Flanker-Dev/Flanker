@@ -1,4 +1,4 @@
-import { FileConfig } from "@/shared/types/types";
+import { FileConfig } from "@/types/types";
 
 export const onEmojiClick = (
   emojiObject: { emoji: string },

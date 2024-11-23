@@ -6,7 +6,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getFavicon } from "@/shared/const/Favicon";
+import { getFavicon } from "@/constants/Favicon";
 interface Bookmark {
   title: string;
   description: string;

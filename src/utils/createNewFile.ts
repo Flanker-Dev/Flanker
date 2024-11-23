@@ -2,7 +2,7 @@ import { createDir, exists } from "@tauri-apps/api/fs";
 import { homeDir } from "@tauri-apps/api/path";
 
 import { saveConfig } from "./saveConfig";
-import { fileConfig } from "../const/NewFile";
+import { fileConfig } from "@/constants/NewFile";
 
 export const handleCreateNewFile = async (
   newFile: string, // ja:新規ファイル名, en:New file name

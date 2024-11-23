@@ -25,8 +25,8 @@ import { handleAddBookmarkInfo } from "@/components/FileManager/handleAddBookmar
 import { handleChange } from "@/components/FileManager/handleChange";
 import { handleGenerate } from "@/components/FileManager/handleGenerate";
 import { handleSwitchChange } from "@/components/FileManager/handleSwitchChange";
-import { FileConfig } from "@/shared/types/types";
-import { loadConfig } from "@/shared/utils/loadConfig";
+import { FileConfig } from "@/types/types";
+import { loadConfig } from "@/utils/loadConfig";
 
 interface FileManagerProps {
   newFile: string;
