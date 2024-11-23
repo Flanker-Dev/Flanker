@@ -1,25 +1,9 @@
-import { getFavicon } from "@/shared/const/Favicon";
+import Favicon from "../Favicon/Favicon";
 
 interface Bookmark {
   title: string;
   url: string;
 }
-
-const Favicon = ({ url, title }: { url: string; title: string }) => {
-  return (
-    <>
-      {url !== "" && (
-        <a href={url} target="_blank" rel="noreferrer">
-          <img
-            src={`${getFavicon}${url.replace(/https?:\/\//, "")}`}
-            alt={title}
-            className="h-6 w-6"
-          />
-        </a>
-      )}
-    </>
-  );
-};
 
 export const BigCard = ({
   selectedFileContent,

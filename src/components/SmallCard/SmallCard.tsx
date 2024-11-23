@@ -1,11 +1,27 @@
-import { ClipboardCopyIcon } from "@radix-ui/react-icons";
-// import Marquee from "react-fast-marquee";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragStartEvent,
+  UniqueIdentifier,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  rectSortingStrategy,
+} from "@dnd-kit/sortable";
+import { useState } from "react";
 
-import { Button } from "../ui/button";
+import Favicon from "../Favicon/Favicon";
+import { SortableBookmark } from "../SortableBookmark/SortableBookmark";
 import { toast } from "@/hooks/use-toast";
-import { getFavicon } from "@/shared/const/Favicon";
 
 interface Bookmark {
+  id: string;
   title: string;
   description: string;
   url: string;
@@ -21,8 +37,59 @@ export const SmallCard = ({
   };
   open: boolean;
 }) => {
+  const [bookmarks, setBookmarks] = useState(
+    selectedFileContent.bookmark.bookmarkList
+  );
+  const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 4,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(event.active.id);
+    document.body.style.cursor = "grabbing";
+  };
+
+  const handleDragEnd = (event: {
+    active: { id: UniqueIdentifier };
+    over: { id: UniqueIdentifier } | null;
+  }) => {
+    if (!activeId) {
+      return;
+    }
+    const { active, over } = event;
+    setActiveId(null);
+    document.body.style.cursor = "";
+
+    if (active.id !== over?.id) {
+      setBookmarks((items) => {
+        const oldIndex = items.findIndex(
+          (item) => item.bookmarkInfo[0].id === active.id
+        );
+        const newIndex = items.findIndex(
+          (item) => over && item.bookmarkInfo[0].id === over.id
+        );
+
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  };
+
+  const handleDragCancel = () => {
+    setActiveId(null);
+    document.body.style.cursor = "";
+  };
+
   const handleCopyUrl = (url: string) => {
-    navigator.clipboard.writeText(`https://${url}`);
+    navigator.clipboard.writeText(url);
     toast({
       description: "Copied!",
     });
@@ -31,58 +98,44 @@ export const SmallCard = ({
   const hasBookmarks = (content: typeof selectedFileContent) =>
     content && content.bookmark.bookmarkList;
 
-  const renderBookmark = (
-    bookmark: Bookmark,
-    groupIndex: number,
-    bookmarkIndex: number
-  ) => (
-    <div
-      key={`${groupIndex}-${bookmarkIndex}`}
-      className="mt-0.5 rounded border p-2"
-    >
-      <div className="flex items-center justify-between">
-        <a
-          href={bookmark.url}
-          className="flex items-center"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {bookmark.url !== "" && (
-            <img
-              src={`${getFavicon}${bookmark.url.replace(/https?:\/\//, "")}`}
-              alt={bookmark.title}
-              className="mr-1 h-6 w-6"
-            />
-          )}
-          <p className="truncate capitalize">{bookmark.title}</p>
-        </a>
-        <Button
-          variant={"clipboard"}
-          size={"clipboard"}
-          onClick={() => handleCopyUrl(bookmark.url)}
-        >
-          <ClipboardCopyIcon />
-        </Button>
-      </div>
-      {/* <p className="truncate">{bookmark.description}</p> */}
-    </div>
-  );
-
   return (
-    <ul
-      className={`grid gap-1 lg:grid-cols-3 ${open ? "sm:grid-cols-1" : "sm:grid-cols-1"}`}
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      onDragCancel={handleDragCancel}
     >
-      {hasBookmarks(selectedFileContent) ? (
-        selectedFileContent.bookmark.bookmarkList.map((group, groupIndex) =>
-          group.bookmarkInfo
-            ? group.bookmarkInfo.map((bookmark, bookmarkIndex) =>
-                renderBookmark(bookmark, groupIndex, bookmarkIndex)
-              )
-            : null
-        )
-      ) : (
-        <p>No bookmarks available</p>
-      )}
-    </ul>
+      <SortableContext
+        items={bookmarks.map((item) => item.bookmarkInfo[0].id)}
+        strategy={rectSortingStrategy}
+      >
+        <ul
+          className={`grid gap-1 lg:grid-cols-3 ${open ? "sm:grid-cols-1" : "sm:grid-cols-1"}`}
+        >
+          {hasBookmarks(selectedFileContent) ? (
+            bookmarks.map((group) =>
+              group.bookmarkInfo
+                ? group.bookmarkInfo.map((bookmark) => (
+                    <SortableBookmark
+                      key={bookmark.id}
+                      id={bookmark.id}
+                      title={bookmark.title}
+                      url={bookmark.url}
+                      description={bookmark.description}
+                      handleCopyUrl={handleCopyUrl}
+                      FaviconComponent={
+                        <Favicon url={bookmark.url} title={bookmark.title} />
+                      }
+                    />
+                  ))
+                : null
+            )
+          ) : (
+            <p>No bookmarks available</p>
+          )}
+        </ul>
+      </SortableContext>
+    </DndContext>
   );
 };
