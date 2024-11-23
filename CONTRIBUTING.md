@@ -37,12 +37,10 @@ src/
       ⎿ <function_name>.ts (This file contains functions used only in components.)
     ⎿ ui/ (shadcn components)
   ⎿ constants/ (Constants.)
-  ⎿ data/ (Test data.)
   ⎿ utils/ (Common or utility functions.)
   ⎿ hooks/ (Custom hooks.)
   ⎿ store/ (State management.)
   ⎿ types/ (Typescript types.)
-  ⎿ shared/ (⚠️ Scheduled to be discontinued.)
 ```
 
 ## Types
