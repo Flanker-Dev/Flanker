@@ -131,7 +131,10 @@ export const SidebarFavs = ({ getFavicon }: SidebarFavsProps) => {
             <Popover>
               <SidebarFavsButton />
               <PopoverContent className="relative left-20 top-0 bg-black">
-                <div className="flex flex-col space-y-2 p-2">
+                <span className="text-sm font-bold capitalize text-white">
+                  Add a new favorite
+                </span>
+                <div className="flex flex-col space-y-2">
                   <Input
                     type="text"
                     placeholder="Key"

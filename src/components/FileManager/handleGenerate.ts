@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from "uuid";
+
 import { FileConfig } from "@/shared/types/types";
 import { handleSave } from "@/shared/utils/saveConfig";
 
@@ -23,6 +25,7 @@ export const handleGenerate = async (
           name: "",
           bookmarkInfo: [
             {
+              id: uuidv4(), // Add the id property here
               title: "",
               url: "",
               description: "",

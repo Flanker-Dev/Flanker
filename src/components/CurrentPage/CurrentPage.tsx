@@ -10,7 +10,7 @@ export const CurrentPage = ({ currentPage }: { currentPage: string }) => {
   return (
     <div data-tauri-drag-region>
       <div className="flex h-full flex-col items-start justify-start">
-        <p className="cursor-default select-none text-[10px]">{currentPage}</p>
+        <p className="cursor-default text-[10px]">{currentPage}</p>
         {Object.entries(urls).map(([key, url]) => (
           <div className="flex items-center" key={key}>
             <img src={`${getFavicon}${url}`} alt={key} key={key} />

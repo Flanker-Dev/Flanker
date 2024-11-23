@@ -64,11 +64,11 @@ export const Setting = ({
     <div
       id="Setting"
       data-tauri-drag-region
-      className="flex h-fit w-full cursor-default select-none flex-col items-center truncate rounded text-[10px]"
+      className="flex h-fit w-full cursor-default flex-col items-center truncate rounded text-[10px]"
     >
       {/* <div className="flex w-full items-center">
         <img src="src/assets/setting.svg" alt="setting" className="h-4 w-4" />
-        <div className="ml-0.5 cursor-default select-none truncate text-base text-white">
+        <div className="ml-0.5 cursor-default truncate text-base text-white">
           Setting
         </div>
       </div> */}
@@ -128,9 +128,7 @@ export const Setting = ({
       <fieldset className="mt-1 w-full rounded border border-white px-1 pb-1">
         <SettingLegend text="Background" />
         <div className="flex items-center justify-between px-1">
-          <div className="cursor-default select-none text-[10px]">
-            Background
-          </div>
+          <div className="cursor-default text-[10px]">Background</div>
           <div className="flex min-w-24 items-center space-x-1">
             {/* ボタンを二つ用意(Color or Image) */}
             {/* Colorを押したらImageを非表示にしてColorを選択できるようにする */}
@@ -167,9 +165,7 @@ export const Setting = ({
       <fieldset className="mt-1 w-full rounded border border-white px-1 pb-1">
         <SettingLegend text="Background Color" />
         <div className="flex items-center justify-between px-1">
-          <div className="cursor-default select-none text-[10px]">
-            Background Color
-          </div>
+          <div className="cursor-default text-[10px]">Background Color</div>
           {isBackgroundImage ? (
             <div className="flex h-[22px] min-w-24 cursor-default items-center rounded border border-white bg-zinc-700">
               <div className="h-4 w-full cursor-not-allowed text-center">

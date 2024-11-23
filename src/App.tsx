@@ -106,10 +106,13 @@ function App() {
               <Tabs
                 data-tauri-drag-region
                 defaultValue="isSmallCard"
-                className="select-none p-0"
+                className="p-0"
               >
                 {/* tab trigger */}
-                <TabsList className="w-full border-b p-1">
+                <TabsList
+                  className="w-[calc(100%+1px)] border-b p-1"
+                  data-tauri-drag-region
+                >
                   <TabsTrigger
                     value="isBigCard"
                     className="hover:bg-white hover:text-black"
@@ -164,10 +167,8 @@ function App() {
                         <div>
                           <SmallCard
                             selectedFileContent={selectedFileContent}
+                            open={open}
                           />
-                          <pre>
-                            {JSON.stringify(selectedFileContent, null, 2)}
-                          </pre>
                         </div>
                       ) : (
                         <NoFile

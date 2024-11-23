@@ -35,7 +35,7 @@ export const Header = ({
     >
       <div className="flex items-center justify-between space-x-1 rounded border border-white px-1">
         {/* spotify */}
-        <div className="flex h-4 w-48 cursor-default select-none items-center justify-center rounded bg-black text-sm text-amber-500">
+        <div className="flex h-4 w-48 cursor-default items-center justify-center rounded bg-black text-sm text-amber-500">
           <Marquee gradient={false} speed={40} delay={2}>
             &nbsp;&nbsp; {"♪"} &nbsp; {spotityTrackInfo} &nbsp;&nbsp;
           </Marquee>

@@ -7,7 +7,7 @@ export type Config = {
   fullContentBodyView: boolean;
 };
 
-// ja: ブックマークｊのカテゴリーのタイトルとブックマーク情報を持つ
+// ja: ブックマークのカテゴリーのタイトルとブックマーク情報を持つ
 // en: Holds the title of the bookmark category and the bookmark information.
 export type FileConfig = {
   bookmark: {
@@ -21,6 +21,7 @@ export type FileConfig = {
     bookmarkList: {
       name: string;
       bookmarkInfo: {
+        id: string; // ここにidプロパティを追加
         title: string;
         url: string;
         description: string;
@@ -31,6 +32,7 @@ export type FileConfig = {
 };
 
 export interface Bookmark {
+  id: string; // ここにidプロパティを追加
   title: string;
   description: string;
   url: string;

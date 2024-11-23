@@ -8,7 +8,7 @@ export const SidebarFavsButton = forwardRef<
   HTMLButtonElement,
   React.ButtonHTMLAttributes<HTMLButtonElement>
 >((props, ref) => (
-  <PopoverTrigger>
+  <PopoverTrigger asChild>
     <Button
       ref={ref}
       className="z-20 h-6 rounded-full bg-background p-1 text-black hover:text-white"

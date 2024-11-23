@@ -49,6 +49,7 @@ import { listFilesInDirectory } from "@/shared/utils/listFilesInDirectory";
 // ];
 
 interface Bookmark {
+  id: string;
   title: string;
   description: string;
   url: string;
@@ -160,14 +161,14 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
       </SidebarContent>
       <div className="m-2">
         {isDev ? (
-          <p className="cursor-default select-none font-bold italic text-zinc-500">
+          <p className="cursor-default font-bold italic text-zinc-500">
             Dev Mode
           </p>
         ) : null}
         <img
           src="src/assets/Flanker_full_logo.svg"
           alt="Flanker Logo"
-          className="w-24 cursor-default select-none"
+          className="w-24 cursor-default"
         />
       </div>
     </Sidebar>

@@ -1,13 +1,9 @@
 // FileManager.tsx
-import {
-  MinusIcon,
-  PlusIcon,
-  ReloadIcon,
-  TrashIcon,
-} from "@radix-ui/react-icons";
+import { PlusIcon, ReloadIcon, TrashIcon } from "@radix-ui/react-icons";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import Picker, { Theme } from "emoji-picker-react";
 import { useEffect, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 import { handleDeleteBookmarkInfo } from "./handleDeleteBookmarkInfo";
 import { handleNewFileNameChange } from "./handleNewFileNameChange";
@@ -25,17 +21,10 @@ import {
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Switch } from "../ui/switch";
-import { Textarea } from "../ui/textarea";
 import { handleAddBookmarkInfo } from "@/components/FileManager/handleAddBookmarkInfo";
 import { handleChange } from "@/components/FileManager/handleChange";
 import { handleGenerate } from "@/components/FileManager/handleGenerate";
 import { handleSwitchChange } from "@/components/FileManager/handleSwitchChange";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import { FileConfig } from "@/shared/types/types";
 import { loadConfig } from "@/shared/utils/loadConfig";
 
@@ -67,13 +56,44 @@ export const FileManager: React.FC<FileManagerProps> = ({
   const [chosenEmoji, setChosenEmoji] = useState<{ emoji: string } | null>(
     null
   );
+
+  const fetchConfig = async () => {
+    const configData = await loadConfig();
+    if (configData) {
+      configData.bookmark.bookmarkList[0].bookmarkInfo =
+        configData.bookmark.bookmarkList[0].bookmarkInfo.map((info) => ({
+          id: info.id || uuidv4(),
+          title: info.title,
+          url: info.url,
+          description: info.description,
+          tags: info.tags,
+        }));
+    }
+    setConfig(configData);
+  };
+
   useEffect(() => {
-    const fetchConfig = async () => {
-      const configData = await loadConfig();
-      setConfig(configData);
-    };
     fetchConfig();
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const emojiPicker = document.getElementById("emoji-picker");
+      const emojiButton = document.getElementById("emoji-button");
+      const target = event.target as Node;
+
+      if (isEmojiPickerOpen && emojiPicker && emojiButton) {
+        if (!emojiPicker.contains(target) && !emojiButton.contains(target)) {
+          setIsEmojiPickerOpen(false);
+        }
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isEmojiPickerOpen]);
 
   return (
     <ScrollArea className="h-full w-full rounded">
@@ -90,28 +110,28 @@ export const FileManager: React.FC<FileManagerProps> = ({
               </DialogDescription>
             </DialogHeader>
             <div className="mt-2 flex justify-between">
-              <div className="mr-4 flex-1 space-y-1">
+              <div className="flex-1 space-y-1">
                 <div className="flex items-center space-x-2">
                   <Label className="w-20 whitespace-nowrap">File Name</Label>
-                  <div className="relative">
+                  <div className="relative flex-1">
                     <Input
                       type="text"
-                      placeholder="New File Name..."
+                      placeholder="ex. my-bookmarks"
                       autoCorrect="off"
                       value={newFile}
                       onChange={(e) => handleNewFileNameChange(e, setNewFile)}
                       maxLength={100}
                       className={
                         newFile.length === 100
-                          ? "w-[300px] flex-1 border-red-500 pr-16 text-left duration-500"
-                          : "w-[300px] pr-16 text-left"
+                          ? "w-full flex-1 border-red-500 pr-16 text-left duration-500"
+                          : "w-full pr-16 text-left"
                       }
                     />
                     <span
                       className={`absolute ml-auto bg-black text-sm ${
                         newFile.length === 100
-                          ? "bottom-2 left-[240px] font-black text-red-500"
-                          : "bottom-2 left-[250px]"
+                          ? "bottom-2 right-1 font-black text-red-500"
+                          : "bottom-2 right-1"
                       }`}
                     >
                       {newFile.length}/100
@@ -133,7 +153,7 @@ export const FileManager: React.FC<FileManagerProps> = ({
                     className="flex-1"
                     value={config?.bookmark.bookmarkTitle || ""}
                     onChange={(e) => handleChange(e, config, setConfig)}
-                    placeholder="Title"
+                    placeholder="ex. YouTube channel list"
                   />
                 </div>
 
@@ -147,7 +167,7 @@ export const FileManager: React.FC<FileManagerProps> = ({
                     className="flex-1"
                     value={config?.bookmark.bookmarkDescription || ""}
                     onChange={(e) => handleChange(e, config, setConfig)}
-                    placeholder="Description"
+                    placeholder="ex. My favorite YouTube channels"
                   />
                 </div>
 
@@ -161,41 +181,27 @@ export const FileManager: React.FC<FileManagerProps> = ({
                     className="flex-1"
                     value={config?.bookmark.bookmarkTags.join(",") || ""}
                     onChange={(e) => handleChange(e, config, setConfig)}
-                    placeholder="Tags"
+                    placeholder="ex. youtube,channel,list"
                   />
                 </div>
 
                 {/* emoji */}
                 <div className="flex items-center">
                   <Label className="mr-1 w-20 whitespace-nowrap">Emoji</Label>
-                  <span className="ml-1 flex h-[36px] w-[36px] items-center justify-center rounded border">
-                    {chosenEmoji?.emoji || ""}
-                  </span>
-                  {isEmojiPickerOpen ? (
-                    <Button
-                      variant={"secondary"}
-                      className="ml-1 w-full flex-1"
-                      onClick={() => {
-                        setIsEmojiPickerOpen(!isEmojiPickerOpen);
-                      }}
-                    >
-                      <MinusIcon />
-                    </Button>
-                  ) : (
-                    <Button
-                      variant={"secondary"}
-                      className="ml-1 w-full flex-1"
-                      onClick={() => {
-                        setIsEmojiPickerOpen(!isEmojiPickerOpen);
-                      }}
-                    >
-                      <PlusIcon />
-                    </Button>
-                  )}
+                  <Button
+                    id="emoji-button"
+                    variant={"outline"}
+                    className="ml-1 h-[36px] w-[36px]"
+                    onClick={() => {
+                      setIsEmojiPickerOpen(!isEmojiPickerOpen);
+                    }}
+                  >
+                    {chosenEmoji?.emoji || "😃"}
+                  </Button>
                 </div>
 
                 {/* nsfw */}
-                <div className="flex h-8 items-center justify-between space-x-2">
+                <div className="flex h-8 items-center space-x-2">
                   <Label className="w-20 whitespace-nowrap">Nsfw</Label>
                   <Switch
                     name="nsfw"
@@ -224,13 +230,13 @@ export const FileManager: React.FC<FileManagerProps> = ({
                   />
                 </div>
 
-                {/* bookmarkInfo.title */}
                 {config?.bookmark.bookmarkList[0].bookmarkInfo.map(
                   (info, infoIndex) => (
                     <div key={infoIndex} className="flex border-t pt-2">
                       <div className="flex-1">
+                        {/* bookmarkInfo.title */}
                         <div className="flex items-center space-x-2 pb-1">
-                          <Label className="w-[104px] whitespace-nowrap">
+                          <Label className="min-w-[80px] whitespace-nowrap">
                             Title
                           </Label>
                           <Input
@@ -241,12 +247,12 @@ export const FileManager: React.FC<FileManagerProps> = ({
                             onChange={(e) =>
                               handleChange(e, config, setConfig, infoIndex)
                             }
-                            placeholder="Title"
+                            placeholder="ex. HikakinTV"
                           />
                         </div>
                         {/* bookmarkInfo.url */}
                         <div className="flex items-center space-x-2 pb-1">
-                          <Label className="w-[104px] whitespace-nowrap">
+                          <Label className="min-w-20 whitespace-nowrap">
                             URL
                           </Label>
                           <Input
@@ -257,12 +263,12 @@ export const FileManager: React.FC<FileManagerProps> = ({
                             onChange={(e) =>
                               handleChange(e, config, setConfig, infoIndex)
                             }
-                            placeholder="URL"
+                            placeholder="ex. https://www.youtube.com/user/HikakinTV"
                           />
                         </div>
                         {/* bookmarkInfo.description */}
                         <div className="flex items-center space-x-2 pb-1">
-                          <Label className="w-[104px] whitespace-nowrap">
+                          <Label className="min-w-20 whitespace-nowrap">
                             Desc
                           </Label>
                           <Input
@@ -273,12 +279,12 @@ export const FileManager: React.FC<FileManagerProps> = ({
                             onChange={(e) =>
                               handleChange(e, config, setConfig, infoIndex)
                             }
-                            placeholder="Description"
+                            placeholder="ex. HikakinTV channel"
                           />
                         </div>
                         {/* bookmarkInfo.tags */}
                         <div className="flex items-center space-x-2">
-                          <Label className="w-[104px] whitespace-nowrap">
+                          <Label className="min-w-20 whitespace-nowrap">
                             Tags
                           </Label>
                           <Input
@@ -289,7 +295,7 @@ export const FileManager: React.FC<FileManagerProps> = ({
                             onChange={(e) =>
                               handleChange(e, config, setConfig, infoIndex)
                             }
-                            placeholder="Tags"
+                            placeholder="ex. hikakin,channel,youtube"
                           />
                         </div>
                       </div>
@@ -302,6 +308,9 @@ export const FileManager: React.FC<FileManagerProps> = ({
                       >
                         <TrashIcon />
                       </Button>
+                      <pre className="ml-1 max-h-[156px] w-[367px] overflow-scroll rounded border bg-black p-2 text-xs">
+                        {JSON.stringify(info, null, 2)}
+                      </pre>
                     </div>
                   )
                 )}
@@ -314,8 +323,13 @@ export const FileManager: React.FC<FileManagerProps> = ({
                 </Button>
               </div>
 
-              {isEmojiPickerOpen ? (
-                <div key="emoji-picker">
+              {isEmojiPickerOpen && (
+                <div
+                  id="emoji-picker"
+                  key="emoji-picker"
+                  // 上下中央
+                  className="absolute right-10 top-1/2 -translate-y-1/2 transform"
+                >
                   <Picker
                     onEmojiClick={(emojiObject) =>
                       onEmojiClick(
@@ -326,30 +340,10 @@ export const FileManager: React.FC<FileManagerProps> = ({
                       )
                     }
                     theme={Theme.DARK}
-                    width={"260px"}
-                    height={"485px"}
+                    width={"300px"}
+                    height={"450px"}
                   />
                 </div>
-              ) : (
-                <Accordion
-                  type="single"
-                  className="w-[260px]"
-                  collapsible
-                  defaultValue="item-1"
-                >
-                  <AccordionItem value="item-1">
-                    <AccordionTrigger>JSON Preview</AccordionTrigger>
-                    <AccordionContent>
-                      <div className="w-full overflow-x-auto whitespace-pre-wrap rounded">
-                        <Textarea
-                          className="h-[445px] min-h-[250px] w-full select-none"
-                          placeholder={JSON.stringify(config, null, 2)}
-                          disabled
-                        />
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
               )}
             </div>
             <DialogClose asChild>

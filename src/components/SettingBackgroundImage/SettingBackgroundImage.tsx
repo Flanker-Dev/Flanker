@@ -13,9 +13,7 @@ export const SettingBackgroundImage = ({
     <fieldset className="my-1 w-full rounded border border-white px-1 pb-1">
       <legend className="px-1 text-xs">Background Image</legend>
       <div className="flex items-center justify-between px-1">
-        <div className="cursor-default select-none text-[10px]">
-          Upload Image
-        </div>
+        <div className="cursor-default text-[10px]">Upload Image</div>
         {isBackgroundImage ? (
           <ImageUploaderButton
             setBgColor={setBgColor}

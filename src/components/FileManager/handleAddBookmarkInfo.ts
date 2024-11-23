@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from "uuid";
+
 import { FileConfig } from "@/shared/types/types";
 
 export const handleAddBookmarkInfo = (
@@ -14,10 +16,18 @@ export const handleAddBookmarkInfo = (
         index === 0
           ? {
               ...item,
-              bookmarkInfo: [
-                ...item.bookmarkInfo,
-                { title: "", url: "", description: "", tags: [] },
-              ],
+              bookmarkInfo: item.bookmarkInfo
+                .map((info) => ({
+                  ...info,
+                  id: info.id || uuidv4(),
+                }))
+                .concat({
+                  id: uuidv4(),
+                  title: "",
+                  url: "",
+                  description: "",
+                  tags: [],
+                }),
             }
           : item
       ),

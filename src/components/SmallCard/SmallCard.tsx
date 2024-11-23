@@ -2,14 +2,6 @@ import { ClipboardCopyIcon } from "@radix-ui/react-icons";
 // import Marquee from "react-fast-marquee";
 
 import { Button } from "../ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
 import { toast } from "@/hooks/use-toast";
 import { getFavicon } from "@/shared/const/Favicon";
 
@@ -22,10 +14,12 @@ interface Bookmark {
 
 export const SmallCard = ({
   selectedFileContent,
+  open,
 }: {
   selectedFileContent: {
     bookmark: { bookmarkList: { name: string; bookmarkInfo: Bookmark[] }[] };
   };
+  open: boolean;
 }) => {
   const handleCopyUrl = (url: string) => {
     navigator.clipboard.writeText(`https://${url}`);
@@ -34,19 +28,22 @@ export const SmallCard = ({
     });
   };
 
+  const hasBookmarks = (content: typeof selectedFileContent) =>
+    content && content.bookmark.bookmarkList;
+
   const renderBookmark = (
     bookmark: Bookmark,
     groupIndex: number,
     bookmarkIndex: number
   ) => (
-    <Card
+    <div
       key={`${groupIndex}-${bookmarkIndex}`}
-      className="w-32 select-none space-y-1 rounded border"
+      className="mt-0.5 rounded border p-2"
     >
-      <CardHeader className="flex flex-row justify-between">
+      <div className="flex items-center justify-between">
         <a
           href={bookmark.url}
-          className="flex items-center justify-start"
+          className="flex items-center"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -57,56 +54,35 @@ export const SmallCard = ({
               className="mr-1 h-6 w-6"
             />
           )}
-          <CardTitle className="flex w-20 flex-row items-center justify-center capitalize leading-none">
-            {/* <Marquee
-              gradient={false}
-              speed={40}
-              pauseOnHover={true}
-              autoFill={false}
-            >
-              {bookmark.title}&nbsp;
-            </Marquee> */}
-          </CardTitle>
+          <p className="truncate capitalize">{bookmark.title}</p>
         </a>
-      </CardHeader>
-      <CardContent>
-        <CardDescription className="truncate">
-          {bookmark.description}
-        </CardDescription>
-      </CardContent>
-      <CardFooter className="flex flex-row items-center justify-between">
-        <div className="w-5/6 select-text">
-          {/* <Marquee gradient={false} speed={40} pauseOnHover={true}>
-            {bookmark.url}&nbsp;
-          </Marquee> */}
-        </div>
         <Button
           variant={"clipboard"}
           size={"clipboard"}
           onClick={() => handleCopyUrl(bookmark.url)}
-          className="w-1/6 border-l"
         >
           <ClipboardCopyIcon />
         </Button>
-      </CardFooter>
-    </Card>
+      </div>
+      {/* <p className="truncate">{bookmark.description}</p> */}
+    </div>
   );
 
-  const renderBookmarkGroup = (
-    group: { bookmarkInfo: Bookmark[] },
-    groupIndex: number
-  ) =>
-    group.bookmarkInfo.map((bookmark, bookmarkIndex) =>
-      renderBookmark(bookmark, groupIndex, bookmarkIndex)
-    );
-
   return (
-    <div className="flex flex-wrap gap-2">
-      {selectedFileContent ? (
-        selectedFileContent.bookmark.bookmarkList.map(renderBookmarkGroup)
+    <ul
+      className={`grid gap-1 lg:grid-cols-3 ${open ? "sm:grid-cols-1" : "sm:grid-cols-1"}`}
+    >
+      {hasBookmarks(selectedFileContent) ? (
+        selectedFileContent.bookmark.bookmarkList.map((group, groupIndex) =>
+          group.bookmarkInfo
+            ? group.bookmarkInfo.map((bookmark, bookmarkIndex) =>
+                renderBookmark(bookmark, groupIndex, bookmarkIndex)
+              )
+            : null
+        )
       ) : (
         <p>No bookmarks available</p>
       )}
-    </div>
+    </ul>
   );
 };
