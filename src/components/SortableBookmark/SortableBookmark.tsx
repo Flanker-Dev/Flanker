@@ -17,6 +17,7 @@ export const SortableBookmark = ({
   id,
   title,
   url,
+  // description,
   handleCopyUrl,
   FaviconComponent,
 }: SortableBookmarkProps) => {
@@ -36,7 +37,7 @@ export const SortableBookmark = ({
     <div
       ref={setNodeRef}
       style={{ transform: transformStyle, transition: transitionStyle }}
-      className={`bookmark-item rounded-lg border p-2 shadow-md backdrop-blur-[3px] ${
+      className={`bookmark-item rounded border p-2 shadow-md backdrop-blur-[3px] ${
         isDragging
           ? "is-dragging pointer-events-none z-10 border border-amber-500 dark:bg-gray-700"
           : "pointer-events-auto z-0 opacity-100"
@@ -51,7 +52,6 @@ export const SortableBookmark = ({
             href={url}
             target="_blank"
             className="ml-1 font-semibold text-white dark:text-white"
-            onClick={(e) => e.stopPropagation()}
           >
             {title}
           </a>
@@ -64,6 +64,7 @@ export const SortableBookmark = ({
           <ClipboardCopyIcon />
         </Button>
       </div>
+      {/* <p className="text-sm text-gray-500">{description}</p> */}
     </div>
   );
 };

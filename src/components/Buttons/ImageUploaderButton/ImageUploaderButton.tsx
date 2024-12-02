@@ -1,9 +1,6 @@
 import { useState, useEffect } from "react";
 
-import {
-  saveImage,
-  loadImageBase64,
-} from "../../../shared/utils/backgroundUtils";
+import { saveImage, loadImageBase64 } from "@/utils/backgroundUtils";
 
 interface ImageUploaderProps {
   setBgColor?: (color: string) => void;

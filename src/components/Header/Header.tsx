@@ -1,8 +1,8 @@
 import Marquee from "react-fast-marquee";
 
-import { alwaysOnTop } from "../../shared/utils/alwaysOnTop";
 import { ReloadButton } from "../Buttons/ReloadButton/ReloadButton";
 import { SettingButton } from "../Buttons/SettingButton/SettingButton";
+import { alwaysOnTop } from "@/utils/alwaysOnTop";
 // import { SideMenuBarButton } from "../Buttons/SideMenuBarButton/SideMenuBarButton";
 // import { TitleBarButton } from "../Buttons/TitleBarButton/TitleBarButton";
 // import { TrafficLightButton } from "../Buttons/TrafficLightButton/TrafficLightButton";

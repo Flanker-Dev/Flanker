@@ -13,13 +13,13 @@ export const NoFile = () =>
   {
     return (
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform cursor-default text-center">
-        <div className="mb-4 flex items-center justify-center">
+        {/* <div className="mb-4 flex items-center justify-center">
           <img
             src="src/assets/Flanker_full_logo.svg"
             alt="Flanker"
             className="w-40"
           />
-        </div>
+        </div> */}
         <p className="text-nowrap">
           No file selected or Inaccurate file format.
         </p>

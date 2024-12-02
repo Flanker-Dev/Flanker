@@ -1,7 +1,7 @@
 import { readTextFile, exists, BaseDirectory } from "@tauri-apps/api/fs";
 import { homeDir } from "@tauri-apps/api/path";
 
-import { FileConfig } from "@/shared/types/types";
+import { FileConfig } from "@/types/types";
 
 export const loadConfig = async (): Promise<FileConfig | null> => {
   const homePath = await homeDir();

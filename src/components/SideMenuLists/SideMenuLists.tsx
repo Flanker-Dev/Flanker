@@ -2,7 +2,7 @@
 // import { Tooltip } from "react-tooltip";
 
 import { Category } from "../../constants/Category";
-import { useStore } from "../../shared/store/store";
+import { useStore } from "@/store/store";
 
 // type Place = "right";
 

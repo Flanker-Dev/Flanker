@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 
 // import { ImageUploaderButton } from "../Buttons/ImageUploaderButton/ImageUploaderButton";
 import { FileManager } from "../FileManager/FileManager";
+import { FlankerFullLogo } from "../Logos/FlankerFullLogo";
 import {
   Sidebar,
   SidebarContent,
@@ -165,11 +166,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
             Dev Mode
           </p>
         ) : null}
-        <img
-          src="src/assets/Flanker_full_logo.svg"
-          alt="Flanker Logo"
-          className="w-24 cursor-default"
-        />
+        <FlankerFullLogo className="w-24 cursor-default" />
       </div>
     </Sidebar>
   );

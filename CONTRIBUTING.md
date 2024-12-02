@@ -2,8 +2,8 @@
 
 ## Issues
 
-[ALL](https://github.com/Coordinate-Cat/Flanker/issues)
-[bugs](https://github.com/Coordinate-Cat/Flanker/labels/bug)
+- [All](https://github.com/Coordinate-Cat/Flanker/issues)
+- [Bugs](https://github.com/Coordinate-Cat/Flanker/labels/bug)
 
 ## Commands
 
@@ -11,6 +11,7 @@
 npm run tauri dev
 npm run format
 npm run lint
+npm run tauri build
 ```
 
 ## Branches

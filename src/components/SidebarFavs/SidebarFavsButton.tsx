@@ -11,7 +11,7 @@ export const SidebarFavsButton = forwardRef<
   <PopoverTrigger asChild>
     <Button
       ref={ref}
-      className="z-20 h-6 rounded-full bg-background p-1 text-black hover:text-white"
+      className="z-20 h-6 w-[52px] rounded bg-background text-black hover:text-white"
       {...props}
     >
       <Plus size={16} className="" />
