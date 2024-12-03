@@ -124,31 +124,33 @@ function App() {
                 defaultValue="isSmallCard"
                 className="p-0"
               >
-                {/* tab trigger */}
-                <TabsList
-                  className="w-[calc(100%+8px)] border-b p-1"
-                  data-tauri-drag-region
-                >
-                  <TabsTrigger
-                    value="isBigCard"
-                    className="hover:bg-white hover:text-black"
+                <div className="h-7 w-[calc(100%+8px)] border-b p-1">
+                  {/* tab trigger */}
+                  <TabsList
+                    // className="w-[calc(100%+8px)] border-b p-1"
+                    data-tauri-drag-region
                   >
-                    <Grid3x3 className="h-4 w-4" />
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="isSmallCard"
-                    className="hover:bg-white hover:text-black"
-                  >
-                    <List className="h-4 w-4" />
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="isTable"
-                    className="hover:bg-white hover:text-black"
-                  >
-                    <Table className="h-4 w-4" />
-                  </TabsTrigger>
-                </TabsList>
-                {/* tab trigger end */}
+                    <TabsTrigger
+                      value="isBigCard"
+                      className="hover:bg-white hover:text-black"
+                    >
+                      <Grid3x3 className="h-4 w-4" />
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="isSmallCard"
+                      className="hover:bg-white hover:text-black"
+                    >
+                      <List className="h-4 w-4" />
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="isTable"
+                      className="hover:bg-white hover:text-black"
+                    >
+                      <Table className="h-4 w-4" />
+                    </TabsTrigger>
+                  </TabsList>
+                  {/* tab trigger end */}
+                </div>
 
                 <div
                   className={`${open ? "w-[calc(100vw-332px)]" : "w-[calc(100vw-76px)]"}`}
@@ -171,7 +173,7 @@ function App() {
                   {/* small card component */}
                   <TabsContent value="isSmallCard" data-tauri-drag-region>
                     <ScrollArea
-                      className={`${open ? "w-[calc(100vw-328px)]" : "w-[calc(100vw-72px)]"} h-[calc(100vh-32px)] px-1`}
+                      className={`${open ? "w-[calc(100vw-328px)]" : "w-[calc(100vw-72px)]"} h-[calc(100vh-32px)] px-1 pt-1`}
                     >
                       {isBookmarkInfoNotEmpty(selectedFileContent) &&
                       selectedFileContent ? (

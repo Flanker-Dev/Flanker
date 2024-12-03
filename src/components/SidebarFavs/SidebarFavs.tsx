@@ -36,6 +36,7 @@ import { Input } from "../ui/input";
 import { Popover, PopoverContent } from "../ui/popover";
 import { ScrollArea } from "../ui/scroll-area";
 import { Separator } from "../ui/separator";
+import { toast } from "@/hooks/use-toast";
 
 interface SidebarFavsProps {
   getFavicon: string;
@@ -140,7 +141,7 @@ export const SidebarFavs = ({ getFavicon }: SidebarFavsProps) => {
   const [newUrl, setNewUrl] = useState("");
   const [newKey, setNewKey] = useState("");
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
-  // const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [saveTimeout, setSaveTimeout] = useState<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const loadFavs = async () => {
@@ -192,6 +193,13 @@ export const SidebarFavs = ({ getFavicon }: SidebarFavsProps) => {
     document.body.style.cursor = "grabbing";
   };
 
+  const handleSaveFavs = () => {
+    toast({
+      description: "Saved",
+    });
+    // 実際の保存処理をここに追加
+  };
+
   const handleDragEnd = (event: {
     active: { id: UniqueIdentifier };
     over: { id: UniqueIdentifier } | null;
@@ -217,6 +225,11 @@ export const SidebarFavs = ({ getFavicon }: SidebarFavsProps) => {
           {} as { [key: string]: string }
         );
 
+        if (saveTimeout) {
+          clearTimeout(saveTimeout);
+        }
+        const timeout = setTimeout(handleSaveFavs, 5000);
+        setSaveTimeout(timeout);
         return newItems;
       });
     }
