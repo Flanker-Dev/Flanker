@@ -14,6 +14,7 @@ import { Button } from "./components/ui/button";
 import { SidebarProvider } from "./components/ui/sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
 import { FileContent } from "./types/types";
+import { alwaysOnTop } from "./utils/alwaysOnTop";
 import { isBookmarkInfoNotEmpty } from "./utils/isBookmarkInfoNotEmpty";
 import { cn } from "./utils/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -30,6 +31,8 @@ function App() {
   const [showSplash, setShowSplash] = useState(true); // スプラッシュスクリーンの表示状態
   const [fadeOut, setFadeOut] = useState(false); // フェードアウトの状態
   const [progress, setProgress] = useState(0); // プログレスバーの状態
+  const [alwaysOnTopView, setAlwaysOnTopView] = useState(false); // 常に最前面表示の状態
+  const [tabKey, setTabKey] = useState("isSmallCard");
 
   useEffect(() => {
     async function loadImage() {
@@ -64,6 +67,10 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {
+    setTabKey((prevKey) => prevKey + "_updated");
+  }, [selectedFileContent]);
+
   return (
     <div className="relative">
       {imageUrl ? (
@@ -86,6 +93,7 @@ function App() {
             setSelectedFileContent={setSelectedFileContent}
             setFiles={setFiles}
             setLoading={setLoading}
+            setImageSrc={(src: string | null) => setImageUrl(src || "")}
           />
           <div className="flex">
             {/* sidemenu */}
@@ -123,8 +131,9 @@ function App() {
                 data-tauri-drag-region
                 defaultValue="isSmallCard"
                 className="p-0"
+                key={tabKey}
               >
-                <div className="h-7 w-[calc(100%+8px)] border-b p-1">
+                <div className="flex h-7 w-[calc(100%+8px)] items-center justify-between border-b p-1">
                   {/* tab trigger */}
                   <TabsList
                     // className="w-[calc(100%+8px)] border-b p-1"
@@ -132,23 +141,55 @@ function App() {
                   >
                     <TabsTrigger
                       value="isBigCard"
-                      className="hover:bg-white hover:text-black"
+                      className="p-0.5 hover:bg-white hover:text-black"
                     >
                       <Grid3x3 className="h-4 w-4" />
                     </TabsTrigger>
                     <TabsTrigger
                       value="isSmallCard"
-                      className="hover:bg-white hover:text-black"
+                      className="p-0.5 hover:bg-white hover:text-black"
                     >
                       <List className="h-4 w-4" />
                     </TabsTrigger>
                     <TabsTrigger
                       value="isTable"
-                      className="hover:bg-white hover:text-black"
+                      className="p-0.5 hover:bg-white hover:text-black"
                     >
                       <Table className="h-4 w-4" />
                     </TabsTrigger>
                   </TabsList>
+
+                  <button
+                    onClick={() =>
+                      alwaysOnTop(alwaysOnTopView, setAlwaysOnTopView)
+                    }
+                    className={
+                      `flex cursor-pointer items-center justify-center rounded p-0.5 hover:bg-white hover:text-black` +
+                      (alwaysOnTopView ? " bg-white text-black" : "")
+                    }
+                  >
+                    {alwaysOnTopView ? (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 -930 960 960"
+                        className="fill-black hover:fill-black"
+                      >
+                        <path d="m640-480 80 80v80H520v240l-40 40-40-40v-240H240v-80l80-80v-280h-40v-80h400v80h-40v280Zm-286 80h252l-46-46v-314H400v314l-46 46Zm126 0Z" />
+                      </svg>
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 -930 960 960"
+                        className="fill-white hover:fill-black"
+                      >
+                        <path d="M680-840v80h-40v327l-80-80v-247H400v87l-87-87-33-33v-47h400ZM480-40l-40-40v-240H240v-80l80-80v-46L56-792l56-56 736 736-58 56-264-264h-6v240l-40 40ZM354-400h92l-44-44-2-2-46 46Zm126-193Zm-78 149Z" />
+                      </svg>
+                    )}
+                  </button>
                   {/* tab trigger end */}
                 </div>
 
@@ -156,7 +197,11 @@ function App() {
                   className={`${open ? "w-[calc(100vw-332px)]" : "w-[calc(100vw-76px)]"}`}
                 >
                   {/* big card component */}
-                  <TabsContent value="isBigCard" data-tauri-drag-region>
+                  <TabsContent
+                    key="isBigCard"
+                    value="isBigCard"
+                    data-tauri-drag-region
+                  >
                     <ScrollArea
                       className={`${open ? "w-[calc(100vw-328px)]" : "w-[calc(100vw-72px)]"} h-[calc(100vh-32px)] px-1`}
                     >
@@ -171,7 +216,11 @@ function App() {
                   {/* big card component end */}
 
                   {/* small card component */}
-                  <TabsContent value="isSmallCard" data-tauri-drag-region>
+                  <TabsContent
+                    key="isSmallCard"
+                    value="isSmallCard"
+                    data-tauri-drag-region
+                  >
                     <ScrollArea
                       className={`${open ? "w-[calc(100vw-328px)]" : "w-[calc(100vw-72px)]"} h-[calc(100vh-32px)] px-1 pt-1`}
                     >
@@ -189,7 +238,11 @@ function App() {
                   {/* small card component end */}
 
                   {/* table component */}
-                  <TabsContent value="isTable" data-tauri-drag-region>
+                  <TabsContent
+                    key="isTable"
+                    value="isTable"
+                    data-tauri-drag-region
+                  >
                     <ScrollArea
                       className={`${open ? "w-[calc(100vw-328px)]" : "w-[calc(100vw-72px)]"} h-[calc(100vh-32px)] px-1`}
                     >

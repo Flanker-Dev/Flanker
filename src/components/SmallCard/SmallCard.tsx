@@ -117,17 +117,19 @@ export const SmallCard = ({
             bookmarks.map((group) =>
               group.bookmarkInfo
                 ? group.bookmarkInfo.map((bookmark) => (
-                    <SortableBookmark
-                      key={bookmark.id}
-                      id={bookmark.id}
-                      title={bookmark.title}
-                      url={bookmark.url}
-                      description={bookmark.description}
-                      handleCopyUrl={handleCopyUrl}
-                      FaviconComponent={
-                        <Favicon url={bookmark.url} title={bookmark.title} />
-                      }
-                    />
+                    <li key={bookmark.id}>
+                      <SortableBookmark
+                        key={bookmark.id}
+                        id={bookmark.id}
+                        title={bookmark.title}
+                        url={bookmark.url}
+                        description={bookmark.description}
+                        handleCopyUrl={handleCopyUrl}
+                        FaviconComponent={
+                          <Favicon url={bookmark.url} title={bookmark.title} />
+                        }
+                      />
+                    </li>
                   ))
                 : null
             )

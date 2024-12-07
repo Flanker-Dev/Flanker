@@ -1,11 +1,14 @@
 // FileManager.tsx
-import { PlusIcon, ReloadIcon, TrashIcon } from "@radix-ui/react-icons";
+import { PlusIcon, TrashIcon } from "@radix-ui/react-icons";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import Picker, { Theme } from "emoji-picker-react";
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 import { handleDeleteBookmarkInfo } from "./handleDeleteBookmarkInfo";
+import { handleDragLeave } from "./handleDragLeave";
+import { handleDragOver } from "./handleDragOver";
+import { handleDrop } from "./handleDrop";
 import { handleNewFileNameChange } from "./handleNewFileNameChange";
 import { onEmojiClick } from "./onEmojiClick";
 import { Button } from "../ui/button";
@@ -40,52 +43,48 @@ interface FileManagerProps {
   ) => void;
   loadFileContent: (file: string) => void;
   handleDeleteFile: (file: string) => void;
-  selectedFileContent: Record<string, string> | null;
 }
 
-export const FileManager: React.FC<FileManagerProps> = ({
-  files,
-  loading,
-  loadFileContent,
-  handleDeleteFile,
-  selectedFileContent,
-}) => {
+export const FileManager: React.FC<FileManagerProps> = () => {
   const [config, setConfig] = useState<FileConfig | null>(null);
   const [newFile, setNewFile] = useState("");
   const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
   const [chosenEmoji, setChosenEmoji] = useState<{ emoji: string } | null>(
     null
   );
-
-  const fetchConfig = async () => {
-    const configData = await loadConfig();
-    if (configData) {
-      configData.bookmark.bookmarkList[0].bookmarkInfo =
-        configData.bookmark.bookmarkList[0].bookmarkInfo.map((info) => ({
-          id: info.id || uuidv4(),
-          title: info.title,
-          url: info.url,
-          description: info.description,
-          tags: info.tags,
-        }));
-    }
-    setConfig(configData);
-  };
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
 
   useEffect(() => {
+    const fetchConfig = async () => {
+      const configData = await loadConfig();
+      if (configData) {
+        configData.bookmark.bookmarkList[0].bookmarkInfo =
+          configData.bookmark.bookmarkList[0].bookmarkInfo.map((info) => ({
+            id: info.id || uuidv4(),
+            title: info.title,
+            url: info.url,
+            description: info.description,
+            tags: info.tags,
+          }));
+      }
+      setConfig(configData);
+    };
+
     fetchConfig();
-  }, []);
 
-  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const emojiPicker = document.getElementById("emoji-picker");
       const emojiButton = document.getElementById("emoji-button");
       const target = event.target as Node;
 
-      if (isEmojiPickerOpen && emojiPicker && emojiButton) {
-        if (!emojiPicker.contains(target) && !emojiButton.contains(target)) {
-          setIsEmojiPickerOpen(false);
-        }
+      if (
+        isEmojiPickerOpen &&
+        emojiPicker &&
+        emojiButton &&
+        !emojiPicker.contains(target) &&
+        !emojiButton.contains(target)
+      ) {
+        setIsEmojiPickerOpen(false);
       }
     };
 
@@ -148,11 +147,12 @@ export const FileManager: React.FC<FileManagerProps> = ({
                   </Label>
                   <Input
                     type="text"
+                    disabled={true}
                     name="bookmarkTitle"
                     autoCorrect="off"
                     className="flex-1"
-                    value={config?.bookmark.bookmarkTitle || ""}
-                    onChange={(e) => handleChange(e, config, setConfig)}
+                    value={newFile}
+                    onChange={(e) => handleNewFileNameChange(e, setNewFile)}
                     placeholder="ex. YouTube channel list"
                   />
                 </div>
@@ -232,7 +232,28 @@ export const FileManager: React.FC<FileManagerProps> = ({
 
                 {config?.bookmark.bookmarkList[0].bookmarkInfo.map(
                   (info, infoIndex) => (
-                    <div key={infoIndex} className="flex border-t pt-2">
+                    <div
+                      key={infoIndex}
+                      className="relative flex border-t pb-1 pt-2"
+                      onDrop={(e) =>
+                        handleDrop(
+                          e,
+                          infoIndex,
+                          config,
+                          setConfig,
+                          setDragOverIndex
+                        )
+                      }
+                      onDragOver={(e) =>
+                        handleDragOver(e, infoIndex, setDragOverIndex)
+                      }
+                      onDragLeave={() => handleDragLeave(setDragOverIndex)}
+                    >
+                      {dragOverIndex === infoIndex && (
+                        <div className="absolute inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50 text-white">
+                          ここにドロップ
+                        </div>
+                      )}
                       <div className="flex-1">
                         {/* bookmarkInfo.title */}
                         <div className="flex items-center space-x-2 pb-1">
@@ -299,6 +320,9 @@ export const FileManager: React.FC<FileManagerProps> = ({
                           />
                         </div>
                       </div>
+                      <pre className="ml-1 max-h-[156px] w-[367px] overflow-scroll rounded border bg-black p-2 text-xs">
+                        {JSON.stringify(info, null, 2)}
+                      </pre>
                       <Button
                         variant={"destructive"}
                         className="ml-1 h-[156px] w-8 border p-0"
@@ -308,9 +332,6 @@ export const FileManager: React.FC<FileManagerProps> = ({
                       >
                         <TrashIcon />
                       </Button>
-                      <pre className="ml-1 max-h-[156px] w-[367px] overflow-scroll rounded border bg-black p-2 text-xs">
-                        {JSON.stringify(info, null, 2)}
-                      </pre>
                     </div>
                   )
                 )}
@@ -352,7 +373,7 @@ export const FileManager: React.FC<FileManagerProps> = ({
                 className={
                   // required fields are empty
                   `mt-2 ${
-                    !config?.bookmark.bookmarkTitle || // bookmarkTitle
+                    // !config?.bookmark.bookmarkTitle || // bookmarkTitle
                     !config?.bookmark.bookmarkList[0].name || // bookmarkList title
                     newFile.length === 0 || // 0 length
                     newFile.length === 100 // 100 length
@@ -370,41 +391,6 @@ export const FileManager: React.FC<FileManagerProps> = ({
           </DialogContent>
         </Dialog>
       </div>
-      {loading ? (
-        <div className="flex h-6 w-full items-center justify-start">
-          <span className="mr-1">Loading</span>
-          <ReloadIcon className="h-4 w-4 animate-spin" />
-        </div>
-      ) : (
-        <div className="mt-1 flex w-full flex-col space-y-1">
-          {files.length > 0 ? (
-            files
-              .filter((file) => file !== ".DS_Store")
-              .map((file, index) => (
-                <Button
-                  key={index}
-                  variant={"menu"}
-                  size={"sideMenu"}
-                  onClick={() => loadFileContent(file)}
-                  className="group flex w-auto justify-between"
-                >
-                  <span className={"w-64 truncate text-left"}>
-                    {file.replace(/\.[^/.]+$/, "")}
-                  </span>
-                  {/* delete */}
-                  <span
-                    onClick={() => handleDeleteFile(file)}
-                    className="ml-auto hidden group-hover:block"
-                  >
-                    {selectedFileContent?.title === file}×
-                  </span>
-                </Button>
-              ))
-          ) : (
-            <li>No files found</li>
-          )}
-        </div>
-      )}
     </ScrollArea>
   );
 };

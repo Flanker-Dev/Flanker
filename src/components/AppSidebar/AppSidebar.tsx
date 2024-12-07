@@ -1,3 +1,4 @@
+import { ReloadIcon } from "@radix-ui/react-icons";
 import { readTextFile } from "@tauri-apps/api/fs";
 import { homeDir } from "@tauri-apps/api/path";
 import { invoke } from "@tauri-apps/api/tauri";
@@ -5,16 +6,21 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { useEffect, useState } from "react";
 
 // import { ImageUploaderButton } from "../Buttons/ImageUploaderButton/ImageUploaderButton";
+import { ImageUploaderButton } from "../Buttons/ImageUploaderButton/ImageUploaderButton";
 import { FileManager } from "../FileManager/FileManager";
-import { FlankerFullLogo } from "../Logos/FlankerFullLogo";
+import { Button } from "../ui/button";
+import { DevModeIndicator } from "./DevModeIndicator/DevModeIndicator";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuTrigger,
+} from "../ui/context-menu";
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
   SidebarMenu,
-  // SidebarMenuButton,
-  // SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { handleCreateNewFile } from "@/utils/createNewFile";
 import { handleError } from "@/utils/errorToast";
@@ -59,6 +65,13 @@ interface Bookmark {
 
 interface FileContent {
   bookmark: {
+    bookmarkTitle: string;
+    bookmarkDescription: string;
+    bookmarkTags: string[];
+    emoji: string;
+    nsfw: boolean;
+    createdAt: string;
+    updatedAt: string;
     bookmarkList: {
       name: string;
       bookmarkInfo: Bookmark[];
@@ -75,16 +88,17 @@ interface AppSidebarProps {
   >;
   setFiles: React.Dispatch<React.SetStateAction<string[]>>;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  // setImageSrc: (src: string | null) => void;
+  setImageSrc: (src: string | null) => void;
 }
 
 export const AppSidebar: React.FC<AppSidebarProps> = ({
   files,
   loading,
+  selectedFileContent,
   setSelectedFileContent,
   setFiles,
   setLoading,
-  // setImageSrc,
+  setImageSrc,
 }) => {
   const [newFile, setNewFile] = useState("");
 
@@ -100,9 +114,11 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
     const home = await homeDir();
     const path = `${home}.config/flanker/bookmarks/${fileName}`;
     const content = await readTextFile(path);
-    console.log("ファイルの内容:", JSON.parse(content));
+    const parsedContent = JSON.parse(content);
+    console.log("ファイルの内容:", parsedContent);
 
-    setSelectedFileContent(JSON.parse(content));
+    setSelectedFileContent(parsedContent);
+    console.log("選択されたファイルの内容:", parsedContent);
   };
 
   const handleDeleteFile = async (fileName: string) => {
@@ -126,6 +142,11 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
 
     return () => clearInterval(intervalId);
   }, []);
+
+  useEffect(() => {
+    console.log("selectedFileContentが変更されました:", selectedFileContent);
+  }, [selectedFileContent]);
+
   const isDev = import.meta.env.MODE === "development";
 
   return (
@@ -143,9 +164,8 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
                 handleCreateNewFile={handleCreateNewFile}
                 loadFileContent={loadFileContent}
                 handleDeleteFile={handleDeleteFile}
-                selectedFileContent={null}
               />
-              {/* <ImageUploaderButton setImageSrc={setImageSrc} /> */}
+              <ImageUploaderButton setImageSrc={setImageSrc} />
               {/* {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
@@ -156,18 +176,91 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))} */}
+              {loading ? (
+                <div className="flex h-6 w-full items-center justify-start">
+                  <span className="mr-1">Loading</span>
+                  <ReloadIcon className="h-4 w-4 animate-spin" />
+                </div>
+              ) : (
+                <div className="mt-1 flex w-full flex-col space-y-1">
+                  {files.length > 0 ? (
+                    files
+                      .filter((file) => file !== ".DS_Store")
+                      .map((file) => (
+                        <ContextMenu key={file}>
+                          <ContextMenuTrigger>
+                            <Button
+                              variant={"menu"}
+                              size={"sideMenu"}
+                              onClick={() => loadFileContent(file)}
+                              className="relative flex"
+                            >
+                              {/* nsfwタグ表示 */}
+                              {selectedFileContent?.bookmark.nsfw && (
+                                <span className="text-xs text-red-500">
+                                  NSFW
+                                </span>
+                              )}
+                              <span className={"w-64 truncate text-left"}>
+                                {file.replace(/\.[^/.]+$/, "")}
+                              </span>
+                            </Button>
+                          </ContextMenuTrigger>
+                          <ContextMenuContent className="relative left-20 top-0 bg-black">
+                            <span className="text-sm font-bold text-white">
+                              {file.replace(/\.[^/.]+$/, "")}
+                            </span>
+                            <div className="flex flex-col space-y-2">
+                              <Button
+                                variant="destructive"
+                                onClick={() => {
+                                  handleDeleteFile(file);
+                                }}
+                              >
+                                Delete
+                              </Button>
+                            </div>
+                          </ContextMenuContent>
+                        </ContextMenu>
+                      ))
+                  ) : (
+                    <li key="no-files">No files found</li>
+                  )}
+                </div>
+              )}
+              {selectedFileContent && (
+                <div className="mt-4 border-t p-2">
+                  {selectedFileContent.bookmark.bookmarkList.map(
+                    (bookmarkList, index) => (
+                      <div
+                        key={`${bookmarkList.name}-${index}`}
+                        className="mb-2"
+                      >
+                        <h3 className="font-bold">{bookmarkList.name}</h3>
+                        {/* nsfw */}
+                        <div>
+                          {selectedFileContent.bookmark.nsfw && (
+                            <span className="text-xs text-red-500">NSFW</span>
+                          )}
+                        </div>
+                        {bookmarkList.bookmarkInfo.map((bookmark) => (
+                          <div key={bookmark.id} className="ml-2">
+                            <p className="text-sm">{bookmark.title}</p>
+                            <p className="text-xs text-gray-500">
+                              {bookmark.description}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    )
+                  )}
+                </div>
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <div className="m-2">
-        {isDev ? (
-          <p className="cursor-default font-bold italic text-zinc-500">
-            Dev Mode
-          </p>
-        ) : null}
-        <FlankerFullLogo className="w-24 cursor-default" />
-      </div>
+      <DevModeIndicator isDev={isDev} />
     </Sidebar>
   );
 };

@@ -9,11 +9,14 @@ export const handleGenerate = async (
   setNewFile: (value: string) => void,
   setConfig: (config: FileConfig | null) => void
 ) => {
+  if (config) {
+    config.bookmark.bookmarkTitle = newFile;
+  }
   await handleSave(config, newFile);
   setNewFile("");
   setConfig({
     bookmark: {
-      bookmarkTitle: "",
+      bookmarkTitle: newFile,
       bookmarkDescription: "",
       bookmarkTags: [],
       emoji: "",
@@ -25,7 +28,7 @@ export const handleGenerate = async (
           name: "",
           bookmarkInfo: [
             {
-              id: uuidv4(), // Add the id property here
+              id: uuidv4(),
               title: "",
               url: "",
               description: "",

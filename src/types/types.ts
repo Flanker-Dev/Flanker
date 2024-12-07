@@ -41,9 +41,21 @@ export interface Bookmark {
 
 export interface FileContent {
   bookmark: {
+    bookmarkTitle: string;
+    bookmarkDescription: string;
+    bookmarkTags: string[];
+    emoji: string;
+    nsfw: boolean;
+    createdAt: string;
+    updatedAt: string;
     bookmarkList: {
       name: string;
       bookmarkInfo: Bookmark[];
     }[];
   };
+}
+
+export interface FileInfo {
+  name: string;
+  nsfw: boolean;
 }
