@@ -5,6 +5,7 @@ import { invoke } from "@tauri-apps/api/tauri";
 // import { SquareArrowOutUpRight } from "lucide-react";
 // import { Scroll } from "lucide-react";
 import {
+  CornerRightDown,
   MessageSquareText,
   Signature,
   SquareArrowOutUpRight,
@@ -173,7 +174,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
       <SidebarContent>
         <SidebarGroup className="mt-6 p-0">
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="max-h-[calc(100vh-95px)]">
               <Accordion type="single" collapsible>
                 <AccordionItem value="item-1">
                   <div
@@ -267,21 +268,21 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
                 <AccordionItem value="item-2">
                   <div className="flex min-w-0 items-center justify-between border-y">
                     <AccordionTrigger className="flex-grow pb-0 text-xs font-bold leading-3">
-                      Outline
+                      <p className="hover:underline">Outline</p>
+                      <div className="flex items-center whitespace-nowrap px-1">
+                        <p className="text-xs">
+                          {selectedFileContent?.bookmark.bookmarkTitle}
+                        </p>
+                        {/* nsfw */}
+                        <p className="ml-1 text-xs">
+                          {selectedFileContent?.bookmark.nsfw && <NSFWBadge />}
+                        </p>
+                        <span className="ml-2 text-xs text-stone-400">
+                          ({selectedFileContent?.bookmark.bookmarkList.length}{" "}
+                          items)
+                        </span>
+                      </div>
                     </AccordionTrigger>
-                    <div className="flex items-center whitespace-nowrap px-1">
-                      <p className="text-xs">
-                        {selectedFileContent?.bookmark.bookmarkTitle}
-                      </p>
-                      {/* nsfw */}
-                      <p className="ml-1 text-xs">
-                        {selectedFileContent?.bookmark.nsfw && <NSFWBadge />}
-                      </p>
-                      <span className="ml-2 text-xs text-stone-400">
-                        ({selectedFileContent?.bookmark.bookmarkList.length}{" "}
-                        items)
-                      </span>
-                    </div>
                   </div>
                   <AccordionContent>
                     <ScrollArea className="relative left-[1px] h-[calc(100vh-130px)] border-b">
@@ -290,10 +291,6 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
                           {selectedFileContent.bookmark.bookmarkList.map(
                             (bookmarkList, index) => (
                               <div key={`${bookmarkList.name}-${index}`}>
-                                <h3 className="font-bold">
-                                  {bookmarkList.name}
-                                </h3>
-
                                 {bookmarkList.bookmarkInfo.map((bookmark) => (
                                   <div
                                     key={bookmark.id}
@@ -319,14 +316,20 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
                                       <div className="ml-[9px] flex cursor-pointer items-center gap-1 border-l border-stone-400 pl-2 text-stone-400 hover:bg-stone-600 hover:text-white">
                                         <SquareArrowOutUpRight className="h-3 w-3 text-purple-500" />
                                         {/* 親幅いっぱいにリンク */}
-                                        <a
-                                          className="w-52 truncate text-xs"
-                                          href={bookmark.url}
-                                          target="_blank"
-                                          rel="noreferrer"
-                                        >
-                                          {bookmark.url}
-                                        </a>
+                                        {bookmark.url ? (
+                                          <a
+                                            className="w-52 truncate text-xs"
+                                            href={bookmark.url}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                          >
+                                            {bookmark.url}
+                                          </a>
+                                        ) : (
+                                          <p className="w-52 truncate text-xs">
+                                            No Url
+                                          </p>
+                                        )}
                                       </div>
                                       <div className="ml-[9px] flex items-center gap-1 border-l border-stone-400 pl-2 text-stone-400 hover:bg-stone-600">
                                         <MessageSquareText className="h-3 w-3 text-green-500" />
@@ -336,17 +339,18 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
                                           </p>
                                         ) : (
                                           <p className="w-52 truncate text-xs">
-                                            No description
+                                            No Description
                                           </p>
                                         )}
                                       </div>
                                       {/* tags */}
-                                      <div className="ml-[9px] flex flex-col border-l border-stone-400 pl-2 text-stone-400">
-                                        <div className="flex items-center gap-1">
-                                          <Tags className="h-3 w-3 text-yellow-500" />{" "}
+                                      <div className="ml-[9px] flex flex-col border-l border-stone-400 text-stone-400">
+                                        <div className="group/item flex items-center gap-1 pl-2 hover:bg-stone-600">
+                                          <Tags className="h-3 w-3 text-yellow-500" />
                                           <p className="text-xs">Tags</p>
+                                          <CornerRightDown className="h-3 w-3 text-transparent group-hover/item:text-stone-400" />
                                         </div>
-                                        <div className="flex flex-col">
+                                        <div className="flex flex-col pl-2">
                                           {bookmark.tags.length > 0 ? (
                                             bookmark.tags.map((tag) => (
                                               <div
@@ -358,8 +362,8 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
                                               </div>
                                             ))
                                           ) : (
-                                            <span className="rounded-sm px-1 text-xs">
-                                              No tags
+                                            <span className="ml-1.5 border-l border-stone-400 px-1 pl-2.5 text-xs">
+                                              No Tags
                                             </span>
                                           )}
                                         </div>
