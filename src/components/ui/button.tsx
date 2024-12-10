@@ -19,7 +19,7 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-white underline-offset-4 hover:underline",
         blur: "border border-input backdrop-blur-sm backdrop-filter shadow-sm hover:bg-accent hover:text-accent-foreground",
-        menu: "border border-input shadow-sm px-2 py-0 backdrop-blur-sm backdrop-filter",
+        menu: "bg-transparent",
         clipboard:
           "backdrop-blur-sm backdrop-filter rounded-none rounded-br-xs text-primary-foreground shadow hover:text-gray-600",
       },

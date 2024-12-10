@@ -1,6 +1,7 @@
+import { readDir } from "@tauri-apps/api/fs";
 import { homeDir, join } from "@tauri-apps/api/path";
 import { convertFileSrc } from "@tauri-apps/api/tauri";
-import { Grid3x3, List, PanelLeft, Table } from "lucide-react";
+import { Grid3x3, List, PanelLeft, RefreshCcw, Table } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { AppSidebar } from "./components/AppSidebar/AppSidebar";
@@ -38,9 +39,16 @@ function App() {
     async function loadImage() {
       try {
         const home = await homeDir();
-        const filePath = await join(home, ".config/flanker/images/pxfuel.jpg");
-        const assetUrl = convertFileSrc(filePath);
-        setImageUrl(assetUrl);
+        const imagesDir = await join(home, ".config", "flanker", "images");
+        const files = await readDir(imagesDir);
+        const imageFiles = files.filter(
+          (file) => file.name && /\.(jpg|jpeg|png|gif)$/i.test(file.name)
+        );
+        if (imageFiles.length > 0) {
+          const filePath = imageFiles[0].path;
+          const assetUrl = convertFileSrc(filePath);
+          setImageUrl(assetUrl);
+        }
       } catch (error) {
         console.error("Error loading image:", error);
       }
@@ -71,6 +79,19 @@ function App() {
     setTabKey((prevKey) => prevKey + "_updated");
   }, [selectedFileContent]);
 
+  // command + rで画面更新
+  useEffect(() => {
+    const handleKeydown = (event: KeyboardEvent) => {
+      if (event.key === "r" && event.metaKey) {
+        window.location.reload();
+      }
+    };
+    window.addEventListener("keydown", handleKeydown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeydown);
+    };
+  }, []);
   return (
     <div className="relative">
       {imageUrl ? (
@@ -135,10 +156,7 @@ function App() {
               >
                 <div className="flex h-7 w-[calc(100%+8px)] items-center justify-between border-b p-1">
                   {/* tab trigger */}
-                  <TabsList
-                    // className="w-[calc(100%+8px)] border-b p-1"
-                    data-tauri-drag-region
-                  >
+                  <TabsList data-tauri-drag-region>
                     <TabsTrigger
                       value="isBigCard"
                       className="p-0.5 hover:bg-white hover:text-black"
@@ -159,37 +177,48 @@ function App() {
                     </TabsTrigger>
                   </TabsList>
 
-                  <button
-                    onClick={() =>
-                      alwaysOnTop(alwaysOnTopView, setAlwaysOnTopView)
-                    }
-                    className={
-                      `flex cursor-pointer items-center justify-center rounded p-0.5 hover:bg-white hover:text-black` +
-                      (alwaysOnTopView ? " bg-white text-black" : "")
-                    }
-                  >
-                    {alwaysOnTopView ? (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        viewBox="0 -930 960 960"
-                        className="fill-black hover:fill-black"
-                      >
-                        <path d="m640-480 80 80v80H520v240l-40 40-40-40v-240H240v-80l80-80v-280h-40v-80h400v80h-40v280Zm-286 80h252l-46-46v-314H400v314l-46 46Zm126 0Z" />
-                      </svg>
-                    ) : (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        viewBox="0 -930 960 960"
-                        className="fill-white hover:fill-black"
-                      >
-                        <path d="M680-840v80h-40v327l-80-80v-247H400v87l-87-87-33-33v-47h400ZM480-40l-40-40v-240H240v-80l80-80v-46L56-792l56-56 736 736-58 56-264-264h-6v240l-40 40ZM354-400h92l-44-44-2-2-46 46Zm126-193Zm-78 149Z" />
-                      </svg>
-                    )}
-                  </button>
+                  <div className="flex items-center space-x-1">
+                    {/* 画面更新 */}
+                    <button
+                      onClick={() => window.location.reload()}
+                      className="flex cursor-pointer items-center justify-center rounded p-0.5 hover:bg-white hover:text-black"
+                    >
+                      {/* lucide icon */}
+                      <RefreshCcw className="h-4 w-4" />
+                    </button>
+                    <button
+                      onClick={() =>
+                        alwaysOnTop(alwaysOnTopView, setAlwaysOnTopView)
+                      }
+                      className={
+                        `flex cursor-pointer items-center justify-center rounded p-0.5 hover:bg-white hover:text-black` +
+                        (alwaysOnTopView ? " bg-white text-black" : "")
+                      }
+                    >
+                      {alwaysOnTopView ? (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 -930 960 960"
+                          className="fill-black hover:fill-black"
+                        >
+                          <path d="m640-480 80 80v80H520v240l-40 40-40-40v-240H240v-80l80-80v-280h-40v-80h400v80h-40v280Zm-286 80h252l-46-46v-314H400v314l-46 46Zm126 0Z" />
+                        </svg>
+                      ) : (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 -930 960 960"
+                          className="fill-white hover:fill-black"
+                        >
+                          <path d="M680-840v80h-40v327l-80-80v-247H400v87l-87-87-33-33v-47h400ZM480-40l-40-40v-240H240v-80l80-80v-46L56-792l56-56 736 736-58 56-264-264h-6v240l-40 40ZM354-400h92l-44-44-2-2-46 46Zm126-193Zm-78 149Z" />
+                        </svg>
+                      )}
+                    </button>
+                  </div>
+
                   {/* tab trigger end */}
                 </div>
 
