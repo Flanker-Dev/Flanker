@@ -58,4 +58,5 @@ export interface FileContent {
 export interface FileInfo {
   name: string;
   nsfw: boolean;
+  emoji: string;
 }
