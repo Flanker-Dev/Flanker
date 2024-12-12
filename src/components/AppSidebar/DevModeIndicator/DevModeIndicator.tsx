@@ -4,9 +4,7 @@ interface DevModeIndicatorProps {
   isDev: boolean;
 }
 
-export const DevModeIndicator: React.FC<DevModeIndicatorProps> = ({
-  isDev,
-}) => {
+export const DevModeIndicator = ({ isDev }: DevModeIndicatorProps) => {
   return (
     <div className="m-2">
       {isDev ? (

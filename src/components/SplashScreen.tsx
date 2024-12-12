@@ -5,10 +5,10 @@ interface SplashScreenProps {
   progress: number;
 }
 
-const SplashScreen: React.FC<SplashScreenProps> = ({ fadeOut, progress }) => {
+export const SplashScreen = ({ fadeOut, progress }: SplashScreenProps) => {
   return (
     <div
-      className={`fixed inset-0 left-[1px] z-50 flex h-[calc(100vh-1px)] w-[calc(100%-2px)] flex-col items-end justify-end rounded-lg border bg-black transition-all duration-1000 ${
+      className={`fixed inset-0 left-[1px] z-50 flex  flex-col items-end justify-end rounded-lg border bg-black transition-all duration-1000 ${
         fadeOut ? "opacity-0" : "opacity-100"
       }`}
     >
@@ -31,5 +31,3 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ fadeOut, progress }) => {
     </div>
   );
 };
-
-export default SplashScreen;

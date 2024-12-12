@@ -1,14 +1,13 @@
 import { readTextFile } from "@tauri-apps/api/fs";
 import { homeDir } from "@tauri-apps/api/path";
 import { invoke } from "@tauri-apps/api/tauri";
-import { PlugZap, Unplug } from "lucide-react";
 import { useEffect, useState, useCallback, useMemo } from "react";
 
 import { AccordionContentComponent } from "./FinderContent/FinderContent";
 import { OutlineContentComponent } from "./OutlineContent/OutlineContent";
 import { FileManager } from "../FileManager/FileManager";
 import { DevModeIndicator } from "./DevModeIndicator/DevModeIndicator";
-import { NSFWBadge } from "./NSFWBadge/NSFWBadge";
+import { SelectedFileContentDisplay } from "./SelectedFileContentDisplay/SelectedFileContentDisplay";
 import {
   Accordion,
   AccordionItem,
@@ -119,6 +118,7 @@ export const AppSidebar = ({
     }
   }, [files, fetchFileInfos, setLoading, setFiles]);
 
+  // Fetch file infos on mount
   useEffect(() => {
     refreshFileList();
 
@@ -137,12 +137,13 @@ export const AppSidebar = ({
           <SidebarGroupContent>
             <SidebarMenu className="max-h-[calc(100vh-95px)]">
               <Accordion type="single" collapsible>
-                <AccordionItem value="item-1">
+                {/* ---------- Finder Accordion ---------- */}
+                <AccordionItem value="finder">
                   <div
                     className={`flex min-w-0 items-center justify-between border-t`}
                     onClick={() =>
                       setActiveAccordion(
-                        activeAccordion === "item-1" ? null : "item-1"
+                        activeAccordion === "finder" ? null : "finder"
                       )
                     }
                   >
@@ -170,45 +171,21 @@ export const AppSidebar = ({
                     />
                   </AccordionContent>
                 </AccordionItem>
-                <AccordionItem value="item-2">
+                {/* ---------- Outline Accordion ---------- */}
+                <AccordionItem value="outline">
                   <div
                     className="flex min-w-0 items-center justify-between border-y"
                     onClick={() =>
                       setActiveAccordion(
-                        activeAccordion === "item-2" ? null : "item-2"
+                        activeAccordion === "outline" ? null : "outline"
                       )
                     }
                   >
                     <AccordionTrigger className="w-full flex-grow cursor-default pb-0 text-xs font-bold leading-3 hover:underline">
                       <p className="hover:underline">{OUTLINE}</p>
-                      <div className="flex w-full items-center justify-end">
-                        {selectedFileContent ? (
-                          <div className="flex gap-0.5">
-                            <p className="text-xs">
-                              {selectedFileContent?.bookmark.bookmarkTitle}
-                            </p>
-                            <p className="text-xs">
-                              {selectedFileContent?.bookmark.nsfw && (
-                                <NSFWBadge />
-                              )}
-                            </p>
-                            <p className="text-xs text-stone-500">
-                              (
-                              {
-                                selectedFileContent?.bookmark.bookmarkList
-                                  .length
-                              }
-                              )
-                            </p>
-                            <PlugZap className="h-3.5 w-3.5" />
-                          </div>
-                        ) : (
-                          // 右寄せ
-                          <div className="flex w-full items-center justify-end">
-                            <Unplug className="h-3.5 w-3.5" />
-                          </div>
-                        )}
-                      </div>
+                      <SelectedFileContentDisplay
+                        selectedFileContent={selectedFileContent}
+                      />
                     </AccordionTrigger>
                   </div>
                   <AccordionContent isVisible={activeAccordion === "item-2"}>

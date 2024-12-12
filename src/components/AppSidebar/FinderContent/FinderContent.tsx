@@ -15,9 +15,11 @@ interface AccordionContentComponentProps {
   handleDeleteFile: (fileName: string) => void;
 }
 
-export const AccordionContentComponent: React.FC<
-  AccordionContentComponentProps
-> = ({ fileInfos, loadFileContent, handleDeleteFile }) => {
+export const AccordionContentComponent = ({
+  fileInfos,
+  loadFileContent,
+  handleDeleteFile,
+}: AccordionContentComponentProps) => {
   return (
     <ScrollArea className="relative left-[1px] h-[calc(100vh-130px)] border-t">
       <ul className="mt-0.5 flex flex-col gap-0.5">
@@ -33,7 +35,6 @@ export const AccordionContentComponent: React.FC<
                       onClick={() => loadFileContent(fileInfo.name)}
                       className="flex h-fit w-[255px] cursor-auto truncate p-0 px-1"
                     >
-                      {/* emoji */}
                       <span className="mr-1 text-xs">{fileInfo.emoji}</span>
                       <span className={"w-64 truncate text-left text-xs"}>
                         {fileInfo.name.replace(/\.[^/.]+$/, "")}
