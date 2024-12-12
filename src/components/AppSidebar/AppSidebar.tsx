@@ -22,9 +22,9 @@ import { DevModeIndicator } from "./DevModeIndicator/DevModeIndicator";
 import { NSFWBadge } from "./NSFWBadge/NSFWBadge";
 import {
   Accordion,
-  AccordionContent,
   AccordionItem,
   AccordionTrigger,
+  AccordionContent,
 } from "../ui/accordion";
 import {
   ContextMenu,
@@ -97,6 +97,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
 }) => {
   const [newFile, setNewFile] = useState("");
   const [fileInfos, setFileInfos] = useState<FileInfo[]>([]);
+  const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
 
   const handleNewFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -179,6 +180,11 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
                 <AccordionItem value="item-1">
                   <div
                     className={`flex min-w-0 items-center justify-between border-t`}
+                    onClick={() =>
+                      setActiveAccordion(
+                        activeAccordion === "item-1" ? null : "item-1"
+                      )
+                    }
                   >
                     <AccordionTrigger className="flex-grow pb-0 text-xs font-bold leading-3">
                       Finder
@@ -196,7 +202,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
                       />
                     </div>
                   </div>
-                  <AccordionContent>
+                  <AccordionContent isVisible={activeAccordion === "item-1"}>
                     {/* <ImageUploaderButton setImageSrc={setImageSrc} /> */}
                     <ScrollArea className="relative left-[1px] h-[calc(100vh-130px)] border-t">
                       {loading ? (
@@ -266,7 +272,14 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="item-2">
-                  <div className="flex min-w-0 items-center justify-between border-y">
+                  <div
+                    className="flex min-w-0 items-center justify-between border-y"
+                    onClick={() =>
+                      setActiveAccordion(
+                        activeAccordion === "item-2" ? null : "item-2"
+                      )
+                    }
+                  >
                     <AccordionTrigger className="flex-grow pb-0 text-xs font-bold leading-3">
                       <p className="hover:underline">Outline</p>
                       <div className="flex items-center whitespace-nowrap px-1">
@@ -284,7 +297,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
                       </div>
                     </AccordionTrigger>
                   </div>
-                  <AccordionContent>
+                  <AccordionContent isVisible={activeAccordion === "item-2"}>
                     <ScrollArea className="relative left-[1px] h-[calc(100vh-130px)] border-b">
                       {selectedFileContent ? (
                         <div>
