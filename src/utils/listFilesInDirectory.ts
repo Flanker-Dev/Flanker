@@ -6,7 +6,7 @@ export const listFilesInDirectory = async (
   setFiles: (files: string[]) => void
 ) => {
   const home = await homeDir();
-  const path = `${home}.config/flanker/bookmarks/`;
+  const path = `${home}.config/flk/bookmarks/`;
 
   try {
     // ディレクトリ内のファイルを取得

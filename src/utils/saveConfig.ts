@@ -6,7 +6,7 @@ import { FileConfig } from "../types/types";
 export const saveConfig = async (config: FileConfig, fileName: string) => {
   const configString = JSON.stringify(config, null, 2);
   const home = await homeDir();
-  const path = `${home}.config/flanker/bookmarks/${fileName}`;
+  const path = `${home}.config/flk/bookmarks/${fileName}`;
 
   await writeTextFile({
     path: `${path}.json`,

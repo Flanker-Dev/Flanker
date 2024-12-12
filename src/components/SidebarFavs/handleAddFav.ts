@@ -18,7 +18,7 @@ export const handleAddFav = (
   (async () => {
     try {
       const home = await homeDir();
-      const favsPath = `${home}.config/flanker/sidebar_favs/favs.json`;
+      const favsPath = `${home}.config/flk/sidebar_favs/favs.json`;
       await invoke("write_file", {
         filePath: favsPath,
         contents: JSON.stringify(updatedUrls),

@@ -147,7 +147,7 @@ export const SidebarFavs = ({ getFavicon }: SidebarFavsProps) => {
     const loadFavs = async () => {
       try {
         const home = await homeDir();
-        const favsPath = `${home}.config/flanker/sidebar_favs/favs.json`;
+        const favsPath = `${home}.config/flk/sidebar_favs/favs.json`;
         const data = await invoke<string>("read_file", { filePath: favsPath });
         setUrls(JSON.parse(data));
       } catch (err) {
@@ -163,7 +163,7 @@ export const SidebarFavs = ({ getFavicon }: SidebarFavsProps) => {
     setUrls(updatedUrls);
     try {
       const home = await homeDir();
-      const favsPath = `${home}.config/flanker/sidebar_favs/favs.json`;
+      const favsPath = `${home}.config/flk/sidebar_favs/favs.json`;
       await invoke("write_file", {
         filePath: favsPath,
         contents: JSON.stringify(updatedUrls),

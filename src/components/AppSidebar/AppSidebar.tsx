@@ -108,7 +108,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
 
   const loadFileContent = async (fileName: string) => {
     const home = await homeDir();
-    const path = `${home}.config/flanker/bookmarks/${fileName}`;
+    const path = `${home}.config/flk/bookmarks/${fileName}`;
     const content = await readTextFile(path);
     const parsedContent = JSON.parse(content);
     console.log("ファイルの内容:", parsedContent);
@@ -119,7 +119,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
 
   const handleDeleteFile = async (fileName: string) => {
     const home = await homeDir();
-    const path = `${home}.config/flanker/bookmarks/${fileName}`;
+    const path = `${home}.config/flk/bookmarks/${fileName}`;
     try {
       await invoke("delete_file", { filePath: path });
       listFilesInDirectory(setLoading, setFiles);
@@ -135,7 +135,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
       files
         .filter((file) => file !== ".DS_Store")
         .map(async (file) => {
-          const path = `${home}.config/flanker/bookmarks/${file}`;
+          const path = `${home}.config/flk/bookmarks/${file}`;
           const content = await readTextFile(path);
           const parsedContent = JSON.parse(content);
           return {

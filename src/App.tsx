@@ -1,5 +1,5 @@
 import { readDir } from "@tauri-apps/api/fs";
-import { homeDir, join } from "@tauri-apps/api/path";
+import { homeDir } from "@tauri-apps/api/path";
 import { convertFileSrc } from "@tauri-apps/api/tauri";
 import { Grid3x3, List, PanelLeft, RefreshCcw, Table } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -39,7 +39,7 @@ function App() {
     async function loadImage() {
       try {
         const home = await homeDir();
-        const imagesDir = await join(home, ".config", "flanker", "images");
+        const imagesDir = `${home}.config/flk/images`;
         const files = await readDir(imagesDir);
         const imageFiles = files.filter(
           (file) => file.name && /\.(jpg|jpeg|png|gif)$/i.test(file.name)

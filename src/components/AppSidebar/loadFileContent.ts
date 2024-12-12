@@ -24,7 +24,7 @@ export const loadFileContent = async (
   >
 ) => {
   const home = await homeDir();
-  const path = `${home}.config/flanker/bookmarks/${fileName}`;
+  const path = `${home}.config/flk/bookmarks/${fileName}`;
   const content = await readTextFile(path);
 
   setSelectedFileContent(JSON.parse(content));

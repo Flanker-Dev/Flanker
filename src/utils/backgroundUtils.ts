@@ -13,7 +13,7 @@ import { useStore } from "../store/store";
 // 画像を保存する関数
 export const saveImage = async (file: File): Promise<void> => {
   const homePath = await homeDir();
-  const saveDir = `${homePath}.config/flanker/images`;
+  const saveDir = `${homePath}.config/flk/images`;
   const savePath = `${saveDir}/${file.name}`;
 
   // ディレクトリが存在しない場合は作成
@@ -59,7 +59,7 @@ export const loadImageBase64 = async (
   fileName: string
 ): Promise<string | null> => {
   const homePath = await homeDir();
-  const imagePath = `${homePath}.config/flanker/images/${fileName}`;
+  const imagePath = `${homePath}.config/flk/images/${fileName}`;
 
   try {
     const uint8Array = await readBinaryFile(imagePath, {

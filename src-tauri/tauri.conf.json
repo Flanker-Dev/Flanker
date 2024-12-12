@@ -18,7 +18,7 @@
       },
       "fs": {
         "all": true,
-        "scope": ["$HOME/.config/flanker/**"]
+        "scope": ["$HOME/.config/flk/**"]
       },
       "path": {
         "all": true
@@ -49,10 +49,7 @@
       },
       "protocol": {
         "asset": true,
-        "assetScope": [
-          "$HOME/.config/flanker/images",
-          "$HOME/.config/flanker/images/*"
-        ]
+        "assetScope": ["$HOME/.config/flk/images", "$HOME/.config/flk/images/*"]
       }
     },
     "windows": [

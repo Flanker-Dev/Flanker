@@ -5,7 +5,7 @@ import { FileConfig } from "@/types/types";
 
 export const loadConfig = async (): Promise<FileConfig | null> => {
   const homePath = await homeDir();
-  const configFilePath = `${homePath}.config/flanker/flankerConfig.json`;
+  const configFilePath = `${homePath}.config/flk/config.json`;
 
   if (await exists(configFilePath, { dir: BaseDirectory.Home })) {
     const config = JSON.parse(
