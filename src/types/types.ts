@@ -60,3 +60,7 @@ export interface FileInfo {
   nsfw: boolean;
   emoji: string;
 }
+
+export interface OutlineContentComponentProps {
+  selectedFileContent: FileContent | null;
+}

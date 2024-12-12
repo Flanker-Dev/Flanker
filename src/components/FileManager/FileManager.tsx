@@ -105,7 +105,7 @@ export const FileManager: React.FC<FileManagerProps> = () => {
 
   return (
     <Dialog>
-      <DialogTrigger className="flex items-center justify-center rounded hover:bg-stone-800 hover:text-white">
+      <DialogTrigger className="flex cursor-default items-center justify-center rounded hover:bg-stone-800 hover:text-white">
         <PlusIcon className="h-4 w-4" />
       </DialogTrigger>
       <DialogContent className="h-fit max-h-[calc(60vh)] max-w-screen-md overflow-scroll lg:max-h-[calc(75vh)] xl:max-h-[calc(80vh)] 2xl:max-h-[calc(85vh)]">

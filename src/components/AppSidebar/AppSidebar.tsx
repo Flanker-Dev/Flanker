@@ -4,8 +4,8 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { PlugZap, Unplug } from "lucide-react";
 import { useEffect, useState, useCallback, useMemo } from "react";
 
-import { AccordionContentComponent } from "./FinderContent";
-import { OutlineContentComponent } from "./OutlineContent";
+import { AccordionContentComponent } from "./FinderContent/FinderContent";
+import { OutlineContentComponent } from "./OutlineContent/OutlineContent";
 import { FileManager } from "../FileManager/FileManager";
 import { DevModeIndicator } from "./DevModeIndicator/DevModeIndicator";
 import { NSFWBadge } from "./NSFWBadge/NSFWBadge";
@@ -41,19 +41,19 @@ interface AppSidebarProps {
   setImageSrc: (src: string | null) => void;
 }
 
-export const AppSidebar: React.FC<AppSidebarProps> = ({
+export const AppSidebar = ({
   files,
   loading,
   selectedFileContent,
   setSelectedFileContent,
   setFiles,
   setLoading,
-  // setImageSrc,
-}) => {
+}: AppSidebarProps) => {
   const [newFile, setNewFile] = useState("");
   const [fileInfos, setFileInfos] = useState<FileInfo[]>([]);
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
 
+  // Handle changes in the file name input field
   const handleNewFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     if (value.length === 100 && newFile.length < 100) {
@@ -62,6 +62,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
     setNewFile(e.target.value);
   };
 
+  // Read the content of the selected file
   const loadFileContent = useCallback(
     async (fileName: string) => {
       const home = await homeDir();
@@ -74,6 +75,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
     [setSelectedFileContent]
   );
 
+  // Delete file
   const handleDeleteFile = useCallback(
     async (fileName: string) => {
       const home = await homeDir();
@@ -89,6 +91,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
     [setLoading, setFiles, setSelectedFileContent]
   );
 
+  // Fetch file infos
   const fetchFileInfos = useCallback(async () => {
     const home = await homeDir();
     const fileInfos = await Promise.all(
@@ -108,6 +111,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
     setFileInfos(fileInfos);
   }, [files]);
 
+  // Refresh the file list every 5 seconds
   const refreshFileList = useCallback(() => {
     listFilesInDirectory(setLoading, setFiles);
     if (files.length > 0) {
@@ -123,10 +127,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
     return () => clearInterval(intervalId);
   }, [refreshFileList]);
 
-  useEffect(() => {
-    console.log("selectedFileContentが変更されました:", selectedFileContent);
-  }, [selectedFileContent]);
-
+  // Prevent unnecessary re-renders
   const fileInfosMemo = useMemo(() => fileInfos, [fileInfos]);
 
   return (
@@ -145,8 +146,8 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
                       )
                     }
                   >
-                    <AccordionTrigger className="flex-grow pb-0 text-xs font-bold leading-3">
-                      <p className="hover:underline">{FINDER}</p>
+                    <AccordionTrigger className="w-full flex-grow cursor-default pb-0 text-xs font-bold leading-3 hover:underline">
+                      <p>{FINDER}</p>
                     </AccordionTrigger>
                     <div className="flex-shrink-0 pb-0 leading-3">
                       <FileManager
@@ -163,7 +164,6 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
                   </div>
                   <AccordionContent isVisible={activeAccordion === "item-1"}>
                     <AccordionContentComponent
-                      loading={loading}
                       fileInfos={fileInfosMemo}
                       loadFileContent={loadFileContent}
                       handleDeleteFile={handleDeleteFile}
@@ -179,7 +179,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
                       )
                     }
                   >
-                    <AccordionTrigger className="flex-grow pb-0 text-xs font-bold leading-3">
+                    <AccordionTrigger className="w-full flex-grow cursor-default pb-0 text-xs font-bold leading-3 hover:underline">
                       <p className="hover:underline">{OUTLINE}</p>
                       <div className="flex w-full items-center justify-end">
                         {selectedFileContent ? (
@@ -200,7 +200,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
                               }
                               )
                             </p>
-                            <PlugZap className="h-4 w-4" />
+                            <PlugZap className="h-3.5 w-3.5" />
                           </div>
                         ) : (
                           // 右寄せ
