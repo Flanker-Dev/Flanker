@@ -14,7 +14,7 @@ npm run lint
 npm run tauri build
 ```
 
-## Branches
+## Branches (WIP)
 
 ```plaintext
 main (production)
@@ -44,7 +44,7 @@ src/
   ⎿ types/ (Typescript types.)
 ```
 
-## Types
+## Types (WIP)
 
 ```typescript
 export type Config = {
@@ -75,9 +75,7 @@ export type FileConfig = {
 
 ## Contributions
 
-![Alt](https://repobeats.axiom.co/api/embed/42a25ba8b65843eba3c9852c3be27de59967a4a0.svg "Repobeats analytics image")
-
-We are open to contributions. Please read the [CONTRIBUTING.md](CONTRIBUTING.md) file for more information.
+We are open to contributions. Please read the [Code of Conduct](CODE_OF_CONDUCT.md) before contributing.
 
 <a href="https://github.com/Coordinate-Cat/Flanker/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=Coordinate-Cat/Flanker" />
