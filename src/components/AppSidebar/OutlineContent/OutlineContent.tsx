@@ -21,7 +21,7 @@ export const OutlineContentComponent = ({
   selectedFileContent,
 }: OutlineContentComponentProps) => {
   return (
-    <ScrollArea className="relative left-[1px] h-[calc(100vh-130px)] border-b">
+    <ScrollArea className="scrollbar relative left-[1px] h-[calc(100vh-130px)] border-b">
       {selectedFileContent ? (
         <Accordion type="multiple">
           {selectedFileContent.bookmark.bookmarkList.map(

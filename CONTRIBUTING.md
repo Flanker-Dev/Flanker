@@ -2,8 +2,8 @@
 
 ## Issues
 
-- [All](https://github.com/Coordinate-Cat/Flanker/issues)
-- [Bugs](https://github.com/Coordinate-Cat/Flanker/labels/bug)
+- [All](https://github.com/Flanker-Dev/Flanker/issues)
+- [Bugs](https://github.com/Flanker-Dev/Flanker/labels/bug)
 
 ## Commands
 

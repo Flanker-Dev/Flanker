@@ -92,6 +92,13 @@ function App() {
       window.removeEventListener("keydown", handleKeydown);
     };
   }, []);
+
+  useEffect(() => {
+    // windowが82より小さい場合openを非表示にする
+    if (window.innerHeight <= 82) {
+      setOpen(false);
+    }
+  }, [window.innerHeight]);
   return (
     <div className="relative">
       {imageUrl ? (
@@ -107,15 +114,19 @@ function App() {
         className="relative z-30 h-[calc(100vh-4px)] w-full rounded-lg"
       >
         <SidebarProvider open={open} onOpenChange={setOpen}>
-          <AppSidebar
-            loading={loading}
-            files={files}
-            selectedFileContent={selectedFileContent}
-            setSelectedFileContent={setSelectedFileContent}
-            setFiles={setFiles}
-            setLoading={setLoading}
-            setImageSrc={(src: string | null) => setImageUrl(src || "")}
-          />
+          <div
+            className={`${window.innerHeight > 82 ? "" : "hidden"} flex h-[calc(100vh-90px)] flex-col items-center`}
+          >
+            <AppSidebar
+              loading={loading}
+              files={files}
+              selectedFileContent={selectedFileContent}
+              setSelectedFileContent={setSelectedFileContent}
+              setFiles={setFiles}
+              setLoading={setLoading}
+              setImageSrc={(src: string | null) => setImageUrl(src || "")}
+            />
+          </div>
           <div className="flex">
             {/* sidemenu */}
             <div
@@ -124,15 +135,17 @@ function App() {
             >
               {/* Sidebar trigger */}
               <div
-                className={`${open ? "pt-2" : "pt-6"} pb-2 duration-500 focus:outline-none`}
+                className={`${open ? "pt-2" : "pt-6"} ${window.innerHeight > 82 ? "" : "pt-6"} pb-2 duration-500 focus:outline-none`}
               >
                 <Button
                   data-sidebar="trigger"
-                  variant="ghost"
+                  variant={window.innerHeight > 82 ? "ghost" : "disabled"}
                   size="icon"
                   className={cn("h-10 w-10")}
                   onClick={(event) => {
                     event.preventDefault();
+                    // windowが82より小さい場合発火しない
+                    if (window.innerHeight <= 82) return;
                     setOpen(!open);
                   }}
                 >
@@ -147,14 +160,20 @@ function App() {
             </div>
             {/* sidemenu end */}
 
-            <div className="flex h-[calc(100vh-4px)] flex-col items-start justify-start border-l">
+            <div
+              className="flex h-[calc(100vh-4px)] w-full flex-col items-start justify-start border-l"
+              data-tauri-drag-region
+            >
               <Tabs
                 data-tauri-drag-region
                 defaultValue="isSmallCard"
                 className="p-0"
                 key={tabKey}
               >
-                <div className="flex h-7 w-[calc(100%+8px)] items-center justify-between border-b p-1">
+                <div
+                  className="flex h-7 w-[calc(100%+8px)] items-center justify-between border-b p-1"
+                  data-tauri-drag-region
+                >
                   {/* tab trigger */}
                   <TabsList data-tauri-drag-region>
                     <TabsTrigger

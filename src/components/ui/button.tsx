@@ -22,6 +22,7 @@ const buttonVariants = cva(
         menu: "bg-transparent",
         clipboard:
           "backdrop-blur-sm backdrop-filter rounded-none rounded-br-xs text-primary-foreground shadow hover:text-gray-600",
+        disabled: "text-stone-600 cursor-default",
       },
       size: {
         default: "h-9 px-4 py-2",
