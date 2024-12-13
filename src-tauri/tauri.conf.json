@@ -50,6 +50,9 @@
       "protocol": {
         "asset": true,
         "assetScope": ["$HOME/.config/flk/images", "$HOME/.config/flk/images/*"]
+      },
+      "globalShortcut": {
+        "all": true
       }
     },
     "windows": [

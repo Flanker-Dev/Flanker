@@ -11,7 +11,7 @@ edition = "2021"
 tauri-build = { version = "1", features = [] }
 
 [dependencies]
-tauri = { version = "1", features = [ "protocol-asset", "http-all", "path-all", "fs-all", "os-all", "clipboard-all", "window-set-always-on-top", "macos-private-api", "window-unmaximize", "window-start-dragging", "window-show", "window-minimize", "window-close", "window-unminimize", "window-hide", "window-maximize", "shell-open"] }
+tauri = { version = "1", features = [ "global-shortcut-all", "protocol-asset", "http-all", "path-all", "fs-all", "os-all", "clipboard-all", "window-set-always-on-top", "macos-private-api", "window-unmaximize", "window-start-dragging", "window-show", "window-minimize", "window-close", "window-unminimize", "window-hide", "window-maximize", "shell-open"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 # tauri-plugin-system-info = "1.0.0"
