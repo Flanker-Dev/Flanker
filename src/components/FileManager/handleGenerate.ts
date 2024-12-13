@@ -25,7 +25,6 @@ export const handleGenerate = async (
       updatedAt: "",
       bookmarkList: [
         {
-          name: "",
           bookmarkInfo: [
             {
               id: uuidv4(),

@@ -193,19 +193,19 @@ function App() {
                   <TabsList data-tauri-drag-region>
                     <TabsTrigger
                       value="isBigCard"
-                      className="p-0.5 hover:bg-white hover:text-black"
+                      className="cursor-default p-0.5 hover:bg-white hover:text-black"
                     >
                       <Grid3x3 className="h-4 w-4" />
                     </TabsTrigger>
                     <TabsTrigger
                       value="isSmallCard"
-                      className="p-0.5 hover:bg-white hover:text-black"
+                      className="cursor-default p-0.5 hover:bg-white hover:text-black"
                     >
                       <List className="h-4 w-4" />
                     </TabsTrigger>
                     <TabsTrigger
                       value="isTable"
-                      className="p-0.5 hover:bg-white hover:text-black"
+                      className="cursor-default p-0.5 hover:bg-white hover:text-black"
                     >
                       <Table className="h-4 w-4" />
                     </TabsTrigger>
@@ -215,7 +215,7 @@ function App() {
                     {/* 画面更新 */}
                     <button
                       onClick={() => window.location.reload()}
-                      className="flex cursor-pointer items-center justify-center rounded p-0.5 hover:bg-white hover:text-black"
+                      className="flex cursor-default items-center justify-center rounded p-0.5 hover:bg-white hover:text-black"
                     >
                       {/* lucide icon */}
                       <RefreshCcw className="h-4 w-4" />
@@ -225,7 +225,7 @@ function App() {
                         alwaysOnTop(alwaysOnTopView, setAlwaysOnTopView)
                       }
                       className={
-                        `flex cursor-pointer items-center justify-center rounded p-0.5 hover:bg-white hover:text-black` +
+                        `flex cursor-default items-center justify-center rounded p-0.5 hover:bg-white hover:text-black` +
                         (alwaysOnTopView ? " bg-white text-black" : "")
                       }
                     >

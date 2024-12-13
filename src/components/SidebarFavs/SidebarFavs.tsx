@@ -76,7 +76,7 @@ const SortableFav = ({
         transform: transformStyle,
         transition: transitionStyle,
       }}
-      className={`backdrop-sepia ${
+      className={`${
         isDragging
           ? "is-dragging pointer-events-none z-10"
           : "pointer-events-auto z-0"
@@ -90,12 +90,12 @@ const SortableFav = ({
             href={url.startsWith("http") ? url : `https://${url}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="relative"
+            className="relative cursor-default"
           >
             <img
               src={`${getFavicon}${url}`}
               alt={keyName}
-              className="z-10 h-6 w-6 rounded-sm bg-white"
+              className="z-10 h-6 w-6 rounded-sm bg-white hover:sepia hover:backdrop-filter"
             />
           </a>
         </ContextMenuTrigger>

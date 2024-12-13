@@ -11,7 +11,6 @@ interface Bookmark {
 interface FileContent {
   bookmark: {
     bookmarkList: {
-      name: string;
       bookmarkInfo: Bookmark[];
     }[];
   };

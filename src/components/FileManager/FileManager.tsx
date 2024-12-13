@@ -27,6 +27,18 @@ import { handleAddBookmarkInfo } from "@/components/FileManager/handleAddBookmar
 import { handleChange } from "@/components/FileManager/handleChange";
 import { handleGenerate } from "@/components/FileManager/handleGenerate";
 import { handleSwitchChange } from "@/components/FileManager/handleSwitchChange";
+import {
+  FILEMANAGERTITLE,
+  FILEMANAGERDESC,
+  FILENAME,
+  FILEEXTENSION,
+  BOOKMARKTITLE,
+  BOOKMARKDESC,
+  BOOKMARKTAGS,
+  BOOKMARKEMOJI,
+  BOOKMARKNSFW,
+  // BOOKMARKLISTTITLE,
+} from "@/constants/Text";
 import { FileConfig } from "@/types/types";
 import { loadConfig } from "@/utils/loadConfig";
 
@@ -35,18 +47,17 @@ interface FileManagerProps {
   setNewFile: (value: string) => void;
   files: string[];
   loading: boolean;
-  handleNewFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleCreateNewFile: (
-    fileName: string,
-    setNewFile: (value: string) => void
-  ) => void;
-  loadFileContent: (file: string) => void;
-  handleDeleteFile: (file: string) => void;
+  // handleNewFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  // handleCreateNewFile: (
+  //   fileName: string,
+  //   setNewFile: (value: string) => void
+  // ) => void;
+  // loadFileContent: (file: string) => void;
+  // handleDeleteFile: (file: string) => void;
 }
 
-export const FileManager: React.FC<FileManagerProps> = () => {
+export const FileManager = ({ newFile, setNewFile }: FileManagerProps) => {
   const [config, setConfig] = useState<FileConfig | null>(null);
-  const [newFile, setNewFile] = useState("");
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [pickerState, setPickerState] = useState({
     isOpen: false,
@@ -110,16 +121,14 @@ export const FileManager: React.FC<FileManagerProps> = () => {
       </DialogTrigger>
       <DialogContent className="h-fit max-h-[calc(60vh)] max-w-screen-md overflow-scroll lg:max-h-[calc(75vh)] xl:max-h-[calc(80vh)] 2xl:max-h-[calc(85vh)]">
         <DialogHeader>
-          <DialogTitle>Generate New File</DialogTitle>
-          <DialogDescription>
-            Enter the name of the new file you want to generate.
-          </DialogDescription>
+          <DialogTitle>{FILEMANAGERTITLE}</DialogTitle>
+          <DialogDescription>{FILEMANAGERDESC}</DialogDescription>
         </DialogHeader>
         <div className="mt-2 flex justify-between">
           <div className="flex-1 space-y-1">
             <div className="flex items-center space-x-2">
               <Label className="w-20 whitespace-nowrap">
-                File Name
+                {FILENAME}
                 <span className="text-red-500">*</span>
               </Label>
               <div className="relative flex-1">
@@ -146,30 +155,20 @@ export const FileManager: React.FC<FileManagerProps> = () => {
                   {newFile.length}/100
                 </span>
               </div>
-              <span>.json</span>
+              <span>{FILEEXTENSION}</span>
             </div>
 
             {/* bookmarkTitle */}
             <div className="flex items-center space-x-2">
-              <Label className="w-20 whitespace-nowrap">Title</Label>
-              <div className="flex flex-1 items-center">
-                <p className="px-[13px] py-1 text-sm">{newFile}</p>
+              <Label className="w-20 whitespace-nowrap">{BOOKMARKTITLE}</Label>
+              <div className="flex max-w-[556px] flex-1 items-center">
+                <p className="h-6 truncate px-[13px] text-sm">{newFile}</p>
               </div>
-              {/* <Input
-                    type="text"
-                    disabled={true}
-                    name="bookmarkTitle"
-                    autoCorrect="off"
-                    className="flex-1"
-                    value={newFile}
-                    onChange={(e) => handleNewFileNameChange(e, setNewFile)}
-                    placeholder="ex. YouTube channel list"
-                  /> */}
             </div>
 
             {/* bookmarkDescription */}
             <div className="flex items-center space-x-2">
-              <Label className="w-20 whitespace-nowrap">Desc</Label>
+              <Label className="w-20 whitespace-nowrap">{BOOKMARKDESC}</Label>
               <Input
                 type="text"
                 name="bookmarkDescription"
@@ -183,7 +182,7 @@ export const FileManager: React.FC<FileManagerProps> = () => {
 
             {/* bookmarkTags */}
             <div className="flex items-center space-x-2">
-              <Label className="w-20 whitespace-nowrap">Tags</Label>
+              <Label className="w-20 whitespace-nowrap">{BOOKMARKTAGS}</Label>
               <Input
                 type="text"
                 name="bookmarkTags"
@@ -197,7 +196,9 @@ export const FileManager: React.FC<FileManagerProps> = () => {
 
             {/* emoji */}
             <div className="flex items-center">
-              <Label className="mr-1 w-20 whitespace-nowrap">Emoji</Label>
+              <Label className="mr-1 w-20 whitespace-nowrap">
+                {BOOKMARKEMOJI}
+              </Label>
               <Button
                 id="emoji-button"
                 variant={"outline"}
@@ -210,7 +211,7 @@ export const FileManager: React.FC<FileManagerProps> = () => {
 
             {/* nsfw */}
             <div className="flex h-8 items-center space-x-2">
-              <Label className="w-20 whitespace-nowrap">Nsfw</Label>
+              <Label className="w-20 whitespace-nowrap">{BOOKMARKNSFW}</Label>
               <Switch
                 name="nsfw"
                 className="max-w-12 flex-1"
@@ -218,23 +219,6 @@ export const FileManager: React.FC<FileManagerProps> = () => {
                 onCheckedChange={(checked) =>
                   handleSwitchChange(checked, config, setConfig)
                 }
-              />
-            </div>
-
-            {/* bookmarkList Title */}
-            <div className="flex items-center space-x-2 pb-1">
-              <Label className="w-20 whitespace-nowrap">
-                List Title
-                <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                type="text"
-                name="bookmarkList"
-                autoCorrect="off"
-                className="flex-1"
-                value={config?.bookmark.bookmarkList[0].name || ""}
-                onChange={(e) => handleChange(e, config, setConfig)}
-                placeholder="ex. YouTube channel list"
               />
             </div>
 
@@ -368,7 +352,9 @@ export const FileManager: React.FC<FileManagerProps> = () => {
               // required fields are empty
               `mt-2 ${
                 // !config?.bookmark.bookmarkTitle || // bookmarkTitle
-                !config?.bookmark.bookmarkList[0].name || // bookmarkList title
+                config?.bookmark.bookmarkList[0].bookmarkInfo
+                  .map((info) => !info.title || !info.url)
+                  .includes(true) || // bookmarkInfo.title, url
                 newFile.length === 0 || // 0 length
                 newFile.length === 100 // 100 length
                   ? "pointer-events-none w-[718px] cursor-not-allowed opacity-50"

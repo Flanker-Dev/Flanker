@@ -1,16 +1,10 @@
 import Favicon from "../Favicon/Favicon";
-
-interface Bookmark {
-  title: string;
-  url: string;
-}
+import { FileConfig } from "@/types/types";
 
 export const BigCard = ({
   selectedFileContent,
 }: {
-  selectedFileContent: {
-    bookmark: { bookmarkList: { name: string; bookmarkInfo: Bookmark[] }[] };
-  };
+  selectedFileContent: FileConfig;
 }) => {
   return (
     <ul className="flex flex-wrap gap-1">

@@ -19,7 +19,6 @@ export type FileConfig = {
     createdAt: string;
     updatedAt: string;
     bookmarkList: {
-      name: string;
       bookmarkInfo: {
         id: string; // ここにidプロパティを追加
         title: string;
@@ -49,7 +48,6 @@ export interface FileContent {
     createdAt: string;
     updatedAt: string;
     bookmarkList: {
-      name: string;
       bookmarkInfo: Bookmark[];
     }[];
   };

@@ -19,21 +19,14 @@ import { useState } from "react";
 import Favicon from "../Favicon/Favicon";
 import { SortableBookmark } from "../SortableBookmark/SortableBookmark";
 import { toast } from "@/hooks/use-toast";
-
-interface Bookmark {
-  id: string;
-  title: string;
-  description: string;
-  url: string;
-  tags: string[];
-}
+import { Bookmark } from "@/types/types";
 
 export const SmallCard = ({
   selectedFileContent,
   open,
 }: {
   selectedFileContent: {
-    bookmark: { bookmarkList: { name: string; bookmarkInfo: Bookmark[] }[] };
+    bookmark: { bookmarkList: { bookmarkInfo: Bookmark[] }[] };
   };
   open: boolean;
 }) => {

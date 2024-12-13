@@ -18,7 +18,7 @@ export const TableWrapper = ({
   selectedFileContent,
 }: {
   selectedFileContent: {
-    bookmark: { bookmarkList: { name: string; bookmarkInfo: Bookmark[] }[] };
+    bookmark: { bookmarkList: { bookmarkInfo: Bookmark[] }[] };
   };
 }) => {
   return (

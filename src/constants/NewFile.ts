@@ -11,7 +11,6 @@ export const fileConfig: FileConfig = {
     updatedAt: "",
     bookmarkList: [
       {
-        name: "",
         bookmarkInfo: [
           {
             id: "",

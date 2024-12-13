@@ -7,11 +7,14 @@
 
 ## Commands
 
-```
+```sh
 npm run tauri dev
 npm run format
 npm run lint
 npm run tauri build
+
+# Generate icon
+npm run tauri icon src-tauri/icons/icon.png
 ```
 
 ## Branches (WIP)

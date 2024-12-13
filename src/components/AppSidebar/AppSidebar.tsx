@@ -21,11 +21,10 @@ import {
   SidebarGroupContent,
   SidebarMenu,
 } from "../ui/sidebar";
+// import { handleNewFileChange } from "@/components/AppSidebar/handleNewFileChange";
 import { isDev } from "@/constants/Mode";
 import { FINDER, OUTLINE } from "@/constants/Text";
 import { FileContent, FileInfo } from "@/types/types";
-import { handleCreateNewFile } from "@/utils/createNewFile";
-import { handleError } from "@/utils/errorToast";
 import { listFilesInDirectory } from "@/utils/listFilesInDirectory";
 
 interface AppSidebarProps {
@@ -51,15 +50,6 @@ export const AppSidebar = ({
   const [newFile, setNewFile] = useState("");
   const [fileInfos, setFileInfos] = useState<FileInfo[]>([]);
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
-
-  // Handle changes in the file name input field
-  const handleNewFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (value.length === 100 && newFile.length < 100) {
-      handleError(); // 100文字になった瞬間にのみトーストを表示
-    }
-    setNewFile(e.target.value);
-  };
 
   // Read the content of the selected file
   const loadFileContent = useCallback(
@@ -156,10 +146,10 @@ export const AppSidebar = ({
                         setNewFile={setNewFile}
                         files={files}
                         loading={loading}
-                        handleNewFileChange={handleNewFileChange}
-                        handleCreateNewFile={handleCreateNewFile}
-                        loadFileContent={loadFileContent}
-                        handleDeleteFile={handleDeleteFile}
+                        // handleNewFileChange={handleNewFileChangeWrapper}
+                        // handleCreateNewFile={handleCreateNewFile}
+                        // loadFileContent={loadFileContent}
+                        // handleDeleteFile={handleDeleteFile}
                       />
                     </div>
                   </div>

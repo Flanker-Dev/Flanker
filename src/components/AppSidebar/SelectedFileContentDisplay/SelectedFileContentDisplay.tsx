@@ -21,7 +21,8 @@ export const SelectedFileContentDisplay = ({
             {selectedFileContent?.bookmark.nsfw && <NSFWBadge />}
           </p>
           <p className="text-xs text-stone-500">
-            ({selectedFileContent?.bookmark.bookmarkList.length})
+            ({selectedFileContent?.bookmark.bookmarkList[0].bookmarkInfo.length}
+            )
           </p>
           <PlugZap className="h-3.5 w-3.5" />
         </div>

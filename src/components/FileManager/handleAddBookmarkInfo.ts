@@ -12,25 +12,21 @@ export const handleAddBookmarkInfo = (
     ...config,
     bookmark: {
       ...config.bookmark,
-      bookmarkList: config.bookmark.bookmarkList.map((item, index) =>
-        index === 0
-          ? {
-              ...item,
-              bookmarkInfo: item.bookmarkInfo
-                .map((info) => ({
-                  ...info,
-                  id: info.id || uuidv4(),
-                }))
-                .concat({
-                  id: uuidv4(),
-                  title: "",
-                  url: "",
-                  description: "",
-                  tags: [],
-                }),
-            }
-          : item
-      ),
+      bookmarkList: config.bookmark.bookmarkList.map((item) => ({
+        ...item,
+        bookmarkInfo: item.bookmarkInfo
+          .map((info) => ({
+            ...info,
+            id: info.id || uuidv4(),
+          }))
+          .concat({
+            id: uuidv4(),
+            title: "",
+            url: "",
+            description: "",
+            tags: [],
+          }),
+      })),
     },
   };
 
