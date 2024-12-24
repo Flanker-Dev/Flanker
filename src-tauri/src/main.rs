@@ -8,6 +8,12 @@ mod app_launcher;
 mod image_handler;
 mod open_devtools;
 mod github;
+mod toggle_maximize;
+mod toggle_tight;
+mod decrease_height;
+mod increase_height;
+mod decrease_width;
+mod increase_width;
 
 use system_info::get_system_info;
 use window_events::setup_window_event_listeners;
@@ -17,79 +23,14 @@ use app_launcher::open_application;
 use image_handler::get_image_path;
 use open_devtools::register_open_devtools_shortcut;
 use github::get_contributions;
+use toggle_maximize::toggle_maximize;
+use toggle_tight::toggle_tight;
+use decrease_height::decrease_height;
+use increase_height::increase_height;
+use decrease_width::decrease_width;
+use increase_width::increase_width;
 
 use tauri::Manager;
-use tauri::Window;
-
-#[tauri::command]
-fn toggle_maximize(window: Window) {
-    if window.is_maximized().unwrap() {
-        window.unmaximize().unwrap();
-    } else {
-        window.maximize().unwrap();
-    }
-}
-
-#[tauri::command]
-fn toggle_tight(window: Window) {
-    let current_size = window.inner_size().unwrap();
-    let scale_factor = window.scale_factor().unwrap();
-    let new_size = if current_size.height == 76 {
-        tauri::Size::Logical(tauri::LogicalSize {
-            width: current_size.width as f64 / scale_factor,
-            height: 96.0,
-        })
-    } else {
-        tauri::Size::Logical(tauri::LogicalSize {
-            width: 768.0,
-            height: 76.0,
-        })
-    };
-    window.set_size(new_size).unwrap();
-}
-
-#[tauri::command]
-fn decrease_height(window: Window) {
-    let current_size = window.outer_size().unwrap();
-    let scale_factor = window.scale_factor().unwrap();
-    window.set_size(tauri::Size::Logical(tauri::LogicalSize {
-        width: current_size.width as f64 / scale_factor,
-        height: (current_size.height as f64 / scale_factor - 20.0).max(76.0),
-    })).unwrap();
-}
-
-#[tauri::command]
-fn increase_height(window: Window) {
-    let current_size = window.outer_size().unwrap();
-    let scale_factor = window.scale_factor().unwrap();
-    window.set_size(tauri::Size::Logical(tauri::LogicalSize {
-        width: current_size.width as f64 / scale_factor,
-        height: current_size.height as f64 / scale_factor + 20.0,
-    })).unwrap();
-}
-
-#[tauri::command]
-fn decrease_width(window: Window) {
-    let current_size = window.outer_size().unwrap();
-    let scale_factor = window.scale_factor().unwrap();
-    window.set_size(tauri::Size::Logical(tauri::LogicalSize {
-        width: (current_size.width as f64 / scale_factor - 20.0).max(768.0),
-        height: current_size.height as f64 / scale_factor,
-    })).unwrap();
-}
-
-#[tauri::command]
-fn increase_width(window: Window) {
-    let current_size = window.outer_size().unwrap();
-    let scale_factor = window.scale_factor().unwrap();
-    let monitor = window.primary_monitor().unwrap().unwrap();
-    let monitor_width = monitor.size().width as f64 / scale_factor;
-    let new_width = (current_size.width as f64 / scale_factor + 20.0).min(monitor_width);
-    window.set_size(tauri::Size::Logical(tauri::LogicalSize {
-        width: new_width,
-        height: current_size.height as f64 / scale_factor,
-    })).unwrap();
-}
 
 fn main() {
     tauri::Builder::default()
