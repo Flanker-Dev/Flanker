@@ -23,6 +23,7 @@ const buttonVariants = cva(
         clipboard:
           "rounded-none rounded-br-xs text-primary-foreground hover:text-gray-600",
         disabled: "text-stone-600 cursor-default",
+        fit: "w-fit p-0 m-0",
       },
       size: {
         default: "h-9 px-4 py-2",
@@ -32,6 +33,7 @@ const buttonVariants = cva(
         sideMenu:
           "w-full rounded text-lg text-left flex items-center justify-start",
         clipboard: "h-3 w-3 mr-0.5",
+        fit: "m-0 p-0",
       },
     },
     defaultVariants: {

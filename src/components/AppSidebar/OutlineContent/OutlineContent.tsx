@@ -5,6 +5,7 @@ import {
   Tag,
   Tags,
 } from "lucide-react";
+import { useEffect, useState } from "react";
 
 import {
   Accordion,
@@ -19,11 +20,25 @@ import { OutlineContentComponentProps } from "@/types/types";
 
 export const OutlineContentComponent = ({
   selectedFileContent,
-}: OutlineContentComponentProps) => {
+  closeAllAccordions,
+}: OutlineContentComponentProps & { closeAllAccordions: boolean }) => {
+  const [accordionValue, setAccordionValue] = useState<string[]>([]);
+
+  // closeAllAccordions が true のとき全てのアコーディオンを閉じる
+  useEffect(() => {
+    if (closeAllAccordions) {
+      setAccordionValue([]); // すべて閉じる
+    }
+  }, [closeAllAccordions]);
+
   return (
     <ScrollArea className="left-[1px] h-[calc(100vh-64px)]">
       {selectedFileContent ? (
-        <Accordion type="multiple">
+        <Accordion
+          type="multiple"
+          value={accordionValue}
+          onValueChange={setAccordionValue}
+        >
           {selectedFileContent.bookmark.bookmarkList.map(
             (bookmarkList, index) => (
               <AccordionItem
@@ -33,7 +48,7 @@ export const OutlineContentComponent = ({
                 {bookmarkList.bookmarkInfo.map((bookmark) => (
                   <AccordionItem key={bookmark.id} value={bookmark.id}>
                     <div key={bookmark.id}>
-                      <AccordionTrigger className="flex-grow pb-0 text-xs font-bold leading-3 hover:bg-stone-600 hover:underline">
+                      <AccordionTrigger className="flex-grow cursor-default pb-0 text-xs font-bold leading-3 hover:bg-stone-600 hover:underline">
                         <div className="flex w-full items-center pl-1">
                           <img
                             src={`${getFavicon}${bookmark.url.replace(
@@ -93,7 +108,7 @@ export const OutlineContentComponent = ({
                                 {/* bookmark.tags */}
                                 <Accordion type="single" collapsible>
                                   <AccordionItem value="tags">
-                                    <AccordionTrigger className="group/item flex items-center gap-1 pb-0 pl-4 hover:bg-stone-600">
+                                    <AccordionTrigger className="group/item flex cursor-default items-center gap-1 pb-0 pl-4 hover:bg-stone-600">
                                       <Tags className="h-3 w-3 text-yellow-500" />
                                       <p className="text-xs">
                                         {TAGS}

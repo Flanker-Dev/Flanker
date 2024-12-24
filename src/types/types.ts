@@ -61,4 +61,5 @@ export interface FileInfo {
 
 export interface OutlineContentComponentProps {
   selectedFileContent: FileContent | null;
+  closeAllAccordions: boolean; // これを追加
 }

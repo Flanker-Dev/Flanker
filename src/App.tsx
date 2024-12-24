@@ -295,6 +295,7 @@ function App() {
                         <div>
                           <SmallCard
                             selectedFileContent={selectedFileContent}
+                            closeAllAccordions={false}
                           />
                         </div>
                       ) : (

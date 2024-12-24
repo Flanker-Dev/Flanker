@@ -1,6 +1,7 @@
 import { readTextFile } from "@tauri-apps/api/fs";
 import { homeDir } from "@tauri-apps/api/path";
 import { invoke } from "@tauri-apps/api/tauri";
+import { SquareMinus } from "lucide-react";
 import { useEffect, useState, useCallback, useMemo } from "react";
 
 import { AccordionContentComponent } from "./FinderContent/FinderContent";
@@ -14,6 +15,7 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "../ui/accordion";
+import { Button } from "../ui/button";
 import {
   Sidebar,
   SidebarContent,
@@ -50,6 +52,7 @@ export const AppSidebar = ({
   const [newFile, setNewFile] = useState("");
   const [fileInfos, setFileInfos] = useState<FileInfo[]>([]);
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
+  const [closeAllAccordions, setCloseAllAccordions] = useState(false);
 
   // const [isVisibleFinder, setIsVisibleFinder] = useState(false);
   // const [isVisibleOutline, setIsVisibleOutline] = useState(false);
@@ -131,6 +134,18 @@ export const AppSidebar = ({
   // Prevent unnecessary re-renders
   const fileInfosMemo = useMemo(() => fileInfos, [fileInfos]);
 
+  // 全て閉じるボタンのクリックハンドラ
+  const handleCloseAllAccordions = () => {
+    setCloseAllAccordions(true); // トリガーをセット
+  };
+
+  // closeAllAccordions の状態が変化した時の処理
+  useEffect(() => {
+    if (closeAllAccordions) {
+      setCloseAllAccordions(false); // 状態をリセット
+    }
+  }, [closeAllAccordions]);
+
   return (
     <Sidebar>
       <SidebarContent>
@@ -179,19 +194,30 @@ export const AppSidebar = ({
                     }
                   >
                     <AccordionTrigger
-                      className={`w-full flex-grow cursor-default border-y pb-0 text-xs font-bold leading-3 hover:underline ${
+                      className={`w-full flex-grow cursor-default border-y pb-0 text-xs font-bold leading-3 ${
                         activeAccordion === "finder" ? "rounded-bl-lg" : ""
                       }`}
                     >
-                      <p className="hover:underline">{OUTLINE}</p>
+                      <p className="w-full hover:underline">{OUTLINE}</p>
+                    </AccordionTrigger>
+                    <div className="flex border-y">
                       <SelectedFileContentDisplay
                         selectedFileContent={selectedFileContent}
                       />
-                    </AccordionTrigger>
+                      <Button
+                        onClick={handleCloseAllAccordions}
+                        variant={"fit"}
+                        size={"fit"}
+                        className="cursor-default rounded hover:bg-stone-800 hover:text-white"
+                      >
+                        <SquareMinus className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                   <AccordionContent isVisible={activeAccordion === "item-2"}>
                     <OutlineContentComponent
                       selectedFileContent={selectedFileContent}
+                      closeAllAccordions={closeAllAccordions}
                     />
                   </AccordionContent>
                 </AccordionItem>
