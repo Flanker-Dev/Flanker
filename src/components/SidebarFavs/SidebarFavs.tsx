@@ -256,14 +256,13 @@ export const SidebarFavs = ({ getFavicon }: SidebarFavsProps) => {
           `flex h-[calc(100vh-90px)] flex-col items-center`
         }
       >
-        <div className="relative">
-          <Separator className="w-[52px]" />
-        </div>
-
         <SortableContext
           items={Object.keys(urls)}
           strategy={rectSortingStrategy}
         >
+          <div className="relative flex">
+            <Separator className="w-[52px]" />
+          </div>
           <ScrollArea className="relative right-[0px] h-fit p-1 pb-0 pt-1">
             <ul className="grid h-full grid-cols-2 gap-1">
               {Object.entries(urls).map(([key, url]) => (
@@ -281,9 +280,14 @@ export const SidebarFavs = ({ getFavicon }: SidebarFavsProps) => {
           </ScrollArea>
         </SortableContext>
 
-        <div className="my-1 ml-[8px] flex w-[60px] items-center">
+        <div className="my-1 ml-[8px] w-[60px] items-end">
           <Popover>
-            <SidebarFavsButton />
+            <div className="flex flex-col">
+              <SidebarFavsButton />
+              <div className="relative right-[0px] mt-1">
+                <Separator className="w-[52px]" />
+              </div>
+            </div>
             <PopoverContent className="relative left-20 top-0 bg-black">
               <span className="text-sm font-bold capitalize text-white">
                 Add a new favorite
@@ -314,9 +318,6 @@ export const SidebarFavs = ({ getFavicon }: SidebarFavsProps) => {
               </div>
             </PopoverContent>
           </Popover>
-        </div>
-        <div className="relative right-[0px] mb-2">
-          <Separator className="w-[52px]" />
         </div>
       </div>
     </DndContext>

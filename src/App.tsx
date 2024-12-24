@@ -154,7 +154,7 @@ function App() {
 
       keydownTimeout = setTimeout(() => {
         keydownTimeout = null;
-      }, 50); // 200msの間隔を設定
+      }, 10);
     };
 
     window.addEventListener("keydown", handleKeydown);
@@ -277,7 +277,7 @@ function App() {
                   </TabsList>
 
                   <div className="flex items-center space-x-1">
-                    <p className="active-rotate h-fit pt-[2px] leading-none duration-300">
+                    <p className="active-rotate h-fit pt-[2px] leading-none duration-1000">
                       {"◒"}
                     </p>
                     <div className="flex h-4 items-center justify-between rounded border">
