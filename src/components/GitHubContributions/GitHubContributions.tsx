@@ -1,5 +1,5 @@
 import { invoke } from "@tauri-apps/api";
-import { RefreshCw } from "lucide-react";
+import { RefreshCw, Loader } from "lucide-react";
 import { useState, useEffect, useCallback, useMemo, memo } from "react";
 import CalendarHeatmap from "react-calendar-heatmap";
 
@@ -27,7 +27,6 @@ const GitHubContributionsComponent: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const fetchContributions = useCallback(async () => {
-    setIsLoading(true);
     try {
       console.log(`GitHub Contributionsの取得を開始: ${username}`); // デバッグログ
       const data = await invoke("get_contributions", { username, token });
@@ -37,8 +36,6 @@ const GitHubContributionsComponent: React.FC = () => {
     } catch (err) {
       console.error("情報の取得中にエラーが発生しました:", err);
       setError("情報の取得に失敗しました。");
-    } finally {
-      setIsLoading(false);
     }
   }, [username, token]);
 
@@ -48,13 +45,19 @@ const GitHubContributionsComponent: React.FC = () => {
     if (contributions.length > 0) {
       localStorage.setItem("contributions", JSON.stringify(contributions));
     }
-    if (username && token && contributions.length === 0) {
-      fetchContributions();
-    }
-  }, [username, token, contributions, fetchContributions]);
+  }, [username, token, contributions]);
 
   const handleFetchContributions = async () => {
+    if (!username || !token) {
+      setError("ユーザー名とトークンを入力してください。");
+      return;
+    }
+    setIsLoading(true);
+    const startTime = Date.now();
     await fetchContributions();
+    const elapsedTime = Date.now() - startTime;
+    const remainingTime = 5000 - elapsedTime;
+    setTimeout(() => setIsLoading(false), Math.max(remainingTime, 0));
   };
 
   const memoizedContributions = useMemo(() => contributions, [contributions]);
@@ -89,37 +92,49 @@ const GitHubContributionsComponent: React.FC = () => {
       )}
 
       {error ? <p className="text-red-500">{error}</p> : null}
-      {contributions.length > 0 && (
-        <CalendarHeatmap
-          startDate={
-            new Date(new Date().setFullYear(new Date().getFullYear() - 1))
-          }
-          endDate={new Date()}
-          values={memoizedContributions}
-          classForValue={(value) => {
-            if (!value) {
-              return "color-empty";
+      {isLoading ? (
+        <p className="w-[150px] animate-pulse text-center text-xs italic">
+          {"- Now Loading -"}
+        </p>
+      ) : (
+        contributions.length > 0 && (
+          <CalendarHeatmap
+            startDate={
+              new Date(new Date().setFullYear(new Date().getFullYear() - 1))
             }
-            const count = Math.min(value.count, 30);
-            if (count >= 25) return "fill-stone-900";
-            if (count >= 20) return "fill-stone-800";
-            if (count >= 15) return "fill-stone-600";
-            if (count >= 10) return "fill-stone-400";
-            if (count >= 5) return "fill-stone-200";
-            return "transparent";
-          }}
-          showWeekdayLabels={false}
-          showMonthLabels={false}
-        />
+            endDate={new Date()}
+            values={memoizedContributions}
+            classForValue={(value) => {
+              if (!value) {
+                return "color-empty";
+              }
+              const count = Math.min(value.count, 30);
+              if (count >= 25) return "fill-stone-900";
+              if (count >= 20) return "fill-stone-800";
+              if (count >= 15) return "fill-stone-600";
+              if (count >= 10) return "fill-stone-400";
+              if (count >= 5) return "fill-stone-200";
+              return "transparent";
+            }}
+            showWeekdayLabels={false}
+            showMonthLabels={false}
+          />
+        )
       )}
 
       {/* 更新ボタン */}
-      <button
+      <Button
+        variant={"fit"}
+        size={"fit"}
         onClick={handleFetchContributions}
         className="flex cursor-default items-center justify-center rounded p-0.5 hover:bg-white hover:text-black"
       >
-        <RefreshCw className="h-4 w-4" />
-      </button>
+        {isLoading ? (
+          <Loader className="h-4 w-4 animate-spin" />
+        ) : (
+          <RefreshCw className="h-4 w-4" />
+        )}
+      </Button>
     </div>
   );
 };

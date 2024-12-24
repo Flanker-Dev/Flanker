@@ -2,7 +2,19 @@ import { tauri } from "@tauri-apps/api";
 import { readDir } from "@tauri-apps/api/fs";
 import { homeDir } from "@tauri-apps/api/path";
 import { convertFileSrc } from "@tauri-apps/api/tauri";
-import { Grid3x3, List, PanelLeft, Table } from "lucide-react";
+import { appWindow } from "@tauri-apps/api/window";
+import {
+  FoldVertical,
+  Grid3x3,
+  List,
+  Maximize,
+  Minimize,
+  PanelLeft,
+  Pin,
+  PinOff,
+  Table,
+  UnfoldVertical,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { AppSidebar } from "./components/AppSidebar/AppSidebar";
@@ -17,7 +29,8 @@ import { Button } from "./components/ui/button";
 import { SidebarProvider } from "./components/ui/sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
 import { FileContent } from "./types/types";
-import { alwaysOnTop } from "./utils/alwaysOnTop";
+import alwaysOnTop from "./utils/alwaysOnTop";
+import { handleSplashScreen } from "./utils/handleSplashScreen";
 import { isBookmarkInfoNotEmpty } from "./utils/isBookmarkInfoNotEmpty";
 import { cn } from "./utils/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -56,57 +69,12 @@ function App() {
     }
     loadImage();
 
-    // スプラッシュスクリーンを3秒後にフェードアウト開始
-    const splashTimeout = setTimeout(() => {
-      setFadeOut(true);
-      // フェードアウトが完了するまでさらに1秒待つ
-      setTimeout(() => {
-        setShowSplash(false);
-      }, 1000);
-    }, 4000);
-
-    // プログレスバーの進行をシミュレート
-    const progressInterval = setInterval(() => {
-      setProgress((prev) => (prev < 100 ? prev + 1 : 100));
-    }, 30);
-
-    return () => {
-      clearInterval(progressInterval);
-      clearTimeout(splashTimeout);
-    };
+    handleSplashScreen(setFadeOut, setShowSplash, setProgress);
   }, []);
 
   useEffect(() => {
     setTabKey((prevKey) => prevKey + "_updated");
   }, [selectedFileContent]);
-
-  // command + rで画面更新
-  useEffect(() => {
-    const handleKeydown = (event: KeyboardEvent) => {
-      if (event.key === "r" && event.metaKey) {
-        window.location.reload();
-      }
-    };
-    window.addEventListener("keydown", handleKeydown);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeydown);
-    };
-  }, []);
-
-  // command + iで開発者ツールを開く
-  useEffect(() => {
-    const handleKeydown = (event: KeyboardEvent) => {
-      if (event.key === "i" && event.metaKey) {
-        tauri.invoke("open_devtools");
-      }
-    };
-    window.addEventListener("keydown", handleKeydown);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeydown);
-    };
-  }, []);
 
   useEffect(() => {
     // windowが82より小さい場合openを非表示にする
@@ -114,13 +82,107 @@ function App() {
       setOpen(false);
     }
   }, [window.innerHeight]);
+
+  const rotateElement = () => {
+    const element = document.querySelector(".active-rotate");
+    if (element) {
+      const currentRotation = parseInt(
+        element.getAttribute("data-rotation") || "0",
+        10
+      );
+      const newRotation = currentRotation + 450;
+      (element as HTMLElement).style.transform = `rotate(${newRotation}deg)`;
+      element.setAttribute("data-rotation", newRotation.toString());
+    }
+  };
+
+  const fullScreen = () => {
+    tauri.invoke("toggle_maximize");
+    rotateElement();
+  };
+
+  const tightScreen = () => {
+    tauri.invoke("toggle_tight");
+    rotateElement();
+  };
+
+  const decreaseHeight = () => {
+    tauri.invoke("decrease_height", { window: appWindow });
+    rotateElement();
+  };
+
+  const increaseHeight = () => {
+    tauri.invoke("increase_height", { window: appWindow });
+    rotateElement();
+  };
+
+  const decreaseWidth = () => {
+    tauri.invoke("decrease_width", { window: appWindow });
+    rotateElement();
+  };
+
+  const increaseWidth = () => {
+    tauri.invoke("increase_width", { window: appWindow });
+    rotateElement();
+  };
+
+  useEffect(() => {
+    let keydownTimeout: NodeJS.Timeout | null = null;
+
+    const handleKeydown = (event: KeyboardEvent) => {
+      if (keydownTimeout) return;
+
+      if (event.key === "f" && event.metaKey) fullScreen();
+      if (event.key === "t" && event.metaKey) tightScreen();
+      if (event.key === "ArrowDown" && event.metaKey) {
+        increaseHeight();
+      }
+      if (event.key === "ArrowUp" && event.metaKey) {
+        decreaseHeight();
+      }
+      if (event.key === "ArrowRight" && event.metaKey) {
+        increaseWidth();
+      }
+      if (event.key === "ArrowLeft" && event.metaKey) {
+        decreaseWidth();
+      }
+      if (event.key === "r" && event.metaKey) window.location.reload();
+      if (event.key === "i" && event.metaKey) tauri.invoke("open_devtools");
+      if (event.key === "p" && event.metaKey) {
+        alwaysOnTop(alwaysOnTopView, setAlwaysOnTopView);
+      }
+
+      keydownTimeout = setTimeout(() => {
+        keydownTimeout = null;
+      }, 50); // 200msの間隔を設定
+    };
+
+    window.addEventListener("keydown", handleKeydown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeydown);
+      if (keydownTimeout) clearTimeout(keydownTimeout);
+    };
+  }, [alwaysOnTopView]);
+
+  // アプリ画面縦と横のサイズを取得
+  const [height, setHeight] = useState(window.innerHeight);
+  const [width, setWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    const handleResize = () => {
+      setHeight(window.innerHeight);
+      setWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  });
+
   return (
     <div className="relative">
       {imageUrl ? (
         <img
           src={imageUrl}
           alt="UploadedImage"
-          // className="fixed inset-0 left-[1px] top-[1px] z-0 h-[calc(100vh-2px)] w-[calc(100%-2px)] rounded object-cover"
           className="fixed h-[calc(100vh-4px)] w-[calc(100%-6px)] rounded-md object-cover"
         />
       ) : null}
@@ -151,7 +213,7 @@ function App() {
             >
               {/* Sidebar trigger */}
               <div
-                className={`${open ? "pt-2" : "pt-6"} ${window.innerHeight > 82 ? "" : "pt-6"} pb-2 duration-500 focus:outline-none`}
+                className={`${open ? "pt-2" : "pt-6"} ${window.innerHeight > 82 ? "" : "pt-6"} flex w-16 justify-center pb-2 duration-500 focus:outline-none`}
               >
                 <Button
                   data-sidebar="trigger"
@@ -215,15 +277,80 @@ function App() {
                   </TabsList>
 
                   <div className="flex items-center space-x-1">
-                    <GitHubContributions />
-                    {/* 画面更新 */}
-                    {/* <button
-                      onClick={() => window.location.reload()}
+                    <p className="active-rotate h-fit pt-[2px] leading-none duration-300">
+                      {"◒"}
+                    </p>
+                    <div className="flex h-4 items-center justify-between rounded border">
+                      <p className="w-10 text-nowrap text-center text-xs font-bold leading-3">
+                        {height}
+                      </p>
+                      <p className="pb-0.5 text-xl">{"×"}</p>
+                      <p className="w-10 text-nowrap text-center text-xs font-bold leading-3">
+                        {width}
+                      </p>
+                    </div>
+                    <Button
+                      variant={"fit"}
+                      size={"fit"}
+                      onClick={fullScreen}
                       className="flex cursor-default items-center justify-center rounded p-0.5 hover:bg-white hover:text-black"
                     >
-                      <RefreshCcw className="h-4 w-4" />
-                    </button> */}
-                    <button
+                      <Maximize className="h-4 w-4" />
+                    </Button>
+                    {window.innerWidth !== 768 || window.innerHeight !== 76 ? (
+                      <Button
+                        variant={
+                          window.innerWidth === 768 && window.innerHeight === 76
+                            ? "disabled"
+                            : "fit"
+                        }
+                        size={"fit"}
+                        onClick={
+                          window.innerWidth === 768 && window.innerHeight === 76
+                            ? undefined
+                            : tightScreen
+                        }
+                        className={`flex cursor-default items-center justify-center rounded p-0.5  ${window.innerWidth === 768 && window.innerHeight === 76 ? "hover:bg-white hover:text-black" : ""}`}
+                      >
+                        <Minimize className="h-4 w-4" />
+                      </Button>
+                    ) : null}
+                    <Button
+                      variant={window.innerHeight > 76 ? "fit" : "disabled"}
+                      size={"fit"}
+                      onClick={decreaseHeight}
+                      className={`flex cursor-default items-center justify-center rounded p-0.5  ${window.innerHeight > 82 ? "hover:bg-white hover:text-black" : ""}`}
+                    >
+                      <FoldVertical className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant={"fit"}
+                      size={"fit"}
+                      onClick={increaseHeight}
+                      className="flex cursor-default items-center justify-center rounded p-0.5 hover:bg-white hover:text-black"
+                    >
+                      <UnfoldVertical className="h-4 w-4 rotate-180" />
+                    </Button>
+                    <Button
+                      variant={window.innerWidth > 768 ? "fit" : "disabled"}
+                      size={"fit"}
+                      onClick={decreaseWidth}
+                      className={`flex cursor-default items-center justify-center rounded p-0.5  ${window.innerWidth > 768 ? "hover:bg-white hover:text-black" : ""}`}
+                    >
+                      <FoldVertical className="h-4 w-4 rotate-90" />
+                    </Button>
+                    <Button
+                      variant={"fit"}
+                      size={"fit"}
+                      onClick={increaseWidth}
+                      className="flex cursor-default items-center justify-center rounded p-0.5 hover:bg-white hover:text-black"
+                    >
+                      <UnfoldVertical className="h-4 w-4 -rotate-90" />
+                    </Button>
+                    <GitHubContributions />
+                    <Button
+                      variant={"fit"}
+                      size={"fit"}
                       onClick={() =>
                         alwaysOnTop(alwaysOnTopView, setAlwaysOnTopView)
                       }
@@ -233,27 +360,11 @@ function App() {
                       }
                     >
                       {alwaysOnTopView ? (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          viewBox="0 -930 960 960"
-                          className="fill-black hover:fill-black"
-                        >
-                          <path d="m640-480 80 80v80H520v240l-40 40-40-40v-240H240v-80l80-80v-280h-40v-80h400v80h-40v280Zm-286 80h252l-46-46v-314H400v314l-46 46Zm126 0Z" />
-                        </svg>
+                        <Pin className="h-4 w-4" />
                       ) : (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          viewBox="0 -930 960 960"
-                          className="fill-white hover:fill-black"
-                        >
-                          <path d="M680-840v80h-40v327l-80-80v-247H400v87l-87-87-33-33v-47h400ZM480-40l-40-40v-240H240v-80l80-80v-46L56-792l56-56 736 736-58 56-264-264h-6v240l-40 40ZM354-400h92l-44-44-2-2-46 46Zm126-193Zm-78 149Z" />
-                        </svg>
+                        <PinOff className="h-4 w-4" />
                       )}
-                    </button>
+                    </Button>
                   </div>
 
                   {/* tab trigger end */}
@@ -292,12 +403,10 @@ function App() {
                     >
                       {isBookmarkInfoNotEmpty(selectedFileContent) &&
                       selectedFileContent ? (
-                        <div>
-                          <SmallCard
-                            selectedFileContent={selectedFileContent}
-                            closeAllAccordions={false}
-                          />
-                        </div>
+                        <SmallCard
+                          selectedFileContent={selectedFileContent}
+                          closeAllAccordions={false}
+                        />
                       ) : (
                         <NoFile />
                       )}

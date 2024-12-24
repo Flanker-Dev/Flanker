@@ -8,7 +8,7 @@ interface SplashScreenProps {
 export const SplashScreen = ({ fadeOut, progress }: SplashScreenProps) => {
   return (
     <div
-      className={`fixed inset-0 left-[1px] z-50 flex  flex-col items-end justify-end rounded-lg border bg-black transition-all duration-1000 ${
+      className={`fixed inset-0 left-0 z-50 m-[1px] flex flex-col items-end justify-end rounded-[7px] border bg-black transition-all duration-1000 ${
         fadeOut ? "opacity-0" : "opacity-100"
       }`}
     >
@@ -25,7 +25,7 @@ export const SplashScreen = ({ fadeOut, progress }: SplashScreenProps) => {
             }}
           ></div>
         </div>
-        <div className="w-10 italic text-white">{progress}%</div>
+        <div className="w-10 font-bold text-white">{progress}%</div>
         <FlankerFullLogo className="svg-elem irregular-blink-animation w-24 cursor-default" />
       </div>
     </div>

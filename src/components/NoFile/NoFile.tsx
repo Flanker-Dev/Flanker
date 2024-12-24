@@ -20,18 +20,14 @@ export const NoFile = () =>
             className="w-40"
           />
         </div> */}
-        <p className="text-nowrap">
-          No file selected or Inaccurate file format.
-        </p>
         <p className="flex">
           <span>← Please select from </span>
           <PanelLeft className="mx-1 dark:text-background" />{" "}
           <span>SideMenu.</span>
         </p>
         {/* files最新一件表示 */}
-        <div className="mr-6 mt-2 flex items-center justify-center">
-          {/* <p className="mr-2">Or...</p> */}
-          {/* <div>
+        {/* <p className="mr-2">Or...</p> */}
+        {/* <div>
           {files.length > 0 &&
             files
               .filter((file) => file !== ".DS_Store")
@@ -48,7 +44,6 @@ export const NoFile = () =>
                 </Button>
               ))}
         </div> */}
-        </div>
       </div>
     );
   };
