@@ -13,7 +13,7 @@ const Favicon = ({ url, title }: FaviconProps) => {
           <img
             src={`${getFavicon}${url.replace(/https?:\/\//, "")}`}
             alt={title}
-            className="h-6 w-6"
+            className="h-3 w-3"
           />
         </a>
       )}

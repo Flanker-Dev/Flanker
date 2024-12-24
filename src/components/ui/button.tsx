@@ -21,7 +21,7 @@ const buttonVariants = cva(
         blur: "border border-input backdrop-blur-sm backdrop-filter shadow-sm hover:bg-accent hover:text-accent-foreground",
         menu: "bg-transparent",
         clipboard:
-          "backdrop-blur-sm backdrop-filter rounded-none rounded-br-xs text-primary-foreground shadow hover:text-gray-600",
+          "rounded-none rounded-br-xs text-primary-foreground hover:text-gray-600",
         disabled: "text-stone-600 cursor-default",
       },
       size: {
@@ -31,7 +31,7 @@ const buttonVariants = cva(
         icon: "h-9 w-9",
         sideMenu:
           "w-full rounded text-lg text-left flex items-center justify-start",
-        clipboard: "h-6 w-6 mr-0.5",
+        clipboard: "h-3 w-3 mr-0.5",
       },
     },
     defaultVariants: {

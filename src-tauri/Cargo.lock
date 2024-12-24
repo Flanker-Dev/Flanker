@@ -824,6 +824,7 @@ version = "0.0.0"
 dependencies = [
  "chrono",
  "display-info",
+ "reqwest",
  "serde",
  "serde_json",
  "sysinfo",

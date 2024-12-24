@@ -12,7 +12,7 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "../../ui/accordion";
-import { ScrollArea } from "../../ui/scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { getFavicon } from "@/constants/Favicon";
 import { NODESCRIPTION, NOTAGS, NOTFOUND, NOURL, TAGS } from "@/constants/Text";
 import { OutlineContentComponentProps } from "@/types/types";
@@ -21,7 +21,7 @@ export const OutlineContentComponent = ({
   selectedFileContent,
 }: OutlineContentComponentProps) => {
   return (
-    <ScrollArea className="scrollbar relative left-[1px] h-[calc(100vh-130px)] border-b">
+    <ScrollArea className="left-[1px] h-[calc(100vh-64px)]">
       {selectedFileContent ? (
         <Accordion type="multiple">
           {selectedFileContent.bookmark.bookmarkList.map(
@@ -47,7 +47,7 @@ export const OutlineContentComponent = ({
                         </div>
                       </AccordionTrigger>
                       <AccordionContent isVisible={false}>
-                        <div className="border-b border-transparent">
+                        <div className="border-transparent">
                           <div className="flex cursor-default flex-col text-sm">
                             <div className="flex flex-col">
                               <div>

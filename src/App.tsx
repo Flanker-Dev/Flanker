@@ -2,11 +2,12 @@ import { tauri } from "@tauri-apps/api";
 import { readDir } from "@tauri-apps/api/fs";
 import { homeDir } from "@tauri-apps/api/path";
 import { convertFileSrc } from "@tauri-apps/api/tauri";
-import { Grid3x3, List, PanelLeft, RefreshCcw, Table } from "lucide-react";
+import { Grid3x3, List, PanelLeft, Table } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { AppSidebar } from "./components/AppSidebar/AppSidebar";
 import { BigCard } from "./components/BigCard/BigCard";
+import { GitHubContributions } from "./components/GitHubContributions/GitHubContributions";
 import { NoFile } from "./components/NoFile/NoFile";
 import { SidebarFavs } from "./components/SidebarFavs/SidebarFavs";
 import { SmallCard } from "./components/SmallCard/SmallCard";
@@ -154,13 +155,13 @@ function App() {
               >
                 <Button
                   data-sidebar="trigger"
-                  variant={window.innerHeight > 82 ? "ghost" : "disabled"}
+                  variant={window.innerHeight > 120 ? "ghost" : "disabled"}
                   size="icon"
                   className={cn("h-10 w-10 cursor-default")}
                   onClick={(event) => {
                     event.preventDefault();
                     // windowが82より小さい場合発火しない
-                    if (window.innerHeight <= 82) return;
+                    if (window.innerHeight <= 120) return;
                     setOpen(!open);
                   }}
                 >
@@ -170,7 +171,9 @@ function App() {
               {/* Sidebar trigger end */}
 
               {/* お気に入りアイコン群 */}
-              <SidebarFavs getFavicon={getFavicon} />
+              {window.innerHeight > 120 && (
+                <SidebarFavs getFavicon={getFavicon} />
+              )}
               {/* お気に入りアイコン群 end */}
             </div>
             {/* sidemenu end */}
@@ -212,14 +215,14 @@ function App() {
                   </TabsList>
 
                   <div className="flex items-center space-x-1">
+                    <GitHubContributions />
                     {/* 画面更新 */}
-                    <button
+                    {/* <button
                       onClick={() => window.location.reload()}
                       className="flex cursor-default items-center justify-center rounded p-0.5 hover:bg-white hover:text-black"
                     >
-                      {/* lucide icon */}
                       <RefreshCcw className="h-4 w-4" />
-                    </button>
+                    </button> */}
                     <button
                       onClick={() =>
                         alwaysOnTop(alwaysOnTopView, setAlwaysOnTopView)
@@ -289,10 +292,11 @@ function App() {
                     >
                       {isBookmarkInfoNotEmpty(selectedFileContent) &&
                       selectedFileContent ? (
-                        <SmallCard
-                          selectedFileContent={selectedFileContent}
-                          open={open}
-                        />
+                        <div>
+                          <SmallCard
+                            selectedFileContent={selectedFileContent}
+                          />
+                        </div>
                       ) : (
                         <NoFile />
                       )}

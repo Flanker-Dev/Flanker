@@ -177,6 +177,15 @@ input[type="color"]::-webkit-color-swatch {
   animation: irregular-blink 2s infinite;
 }
 
+/* ------------------------- carendar style ------------------------- */
+.react-calendar-heatmap {
+  width: 150px;
+  height: 34px;
+  padding: 0;
+  margin: 0;
+  border: none;
+}
+
 /* ------------------------- shadcn ------------------------- */
 
 @layer base {
@@ -260,4 +269,22 @@ input[type="color"]::-webkit-color-swatch {
   background-color: #000000 !important;
   border-radius: 4px;
   border: 1px solid #ffffff;
+}
+
+.FinderAccordion,
+.OutlineAccordion {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.accordion-content {
+  overflow-y: auto;
+  flex-grow: 1; /* 高さを動的に調整 */
+  max-height: 100%; /* スクロール領域の制限 */
+}
+
+.scroll-area {
+  overflow-y: auto;
+  max-height: 100%; /* 必要に応じて調整 */
 }

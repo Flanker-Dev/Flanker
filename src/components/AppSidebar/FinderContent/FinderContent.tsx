@@ -4,8 +4,8 @@ import {
   ContextMenuContent,
   ContextMenuTrigger,
 } from "../../ui/context-menu";
-import { ScrollArea } from "../../ui/scroll-area";
 import { NSFWBadge } from "../NSFWBadge/NSFWBadge";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { DELETE, NOTFOUND } from "@/constants/Text";
 import { FileInfo } from "@/types/types";
 
@@ -21,8 +21,8 @@ export const AccordionContentComponent = ({
   handleDeleteFile,
 }: AccordionContentComponentProps) => {
   return (
-    <ScrollArea className="relative left-[1px] h-[calc(100vh-130px)] border-t">
-      <ul className="mt-0.5 flex flex-col gap-0.5">
+    <ScrollArea className="left-[1px] h-[calc(100vh-62px)] border-t">
+      <ul>
         {fileInfos.length > 0 ? (
           fileInfos
             .filter((fileInfo) => fileInfo.name !== ".DS_Store")

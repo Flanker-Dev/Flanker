@@ -6,7 +6,7 @@ import { useEffect, useState, useCallback, useMemo } from "react";
 import { AccordionContentComponent } from "./FinderContent/FinderContent";
 import { OutlineContentComponent } from "./OutlineContent/OutlineContent";
 import { FileManager } from "../FileManager/FileManager";
-import { DevModeIndicator } from "./DevModeIndicator/DevModeIndicator";
+// import { DevModeIndicator } from "./DevModeIndicator/DevModeIndicator";
 import { SelectedFileContentDisplay } from "./SelectedFileContentDisplay/SelectedFileContentDisplay";
 import {
   Accordion,
@@ -22,7 +22,7 @@ import {
   SidebarMenu,
 } from "../ui/sidebar";
 // import { handleNewFileChange } from "@/components/AppSidebar/handleNewFileChange";
-import { isDev } from "@/constants/Mode";
+// import { isDev } from "@/constants/Mode";
 import { FINDER, OUTLINE } from "@/constants/Text";
 import { FileContent, FileInfo } from "@/types/types";
 import { listFilesInDirectory } from "@/utils/listFilesInDirectory";
@@ -50,6 +50,17 @@ export const AppSidebar = ({
   const [newFile, setNewFile] = useState("");
   const [fileInfos, setFileInfos] = useState<FileInfo[]>([]);
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
+
+  // const [isVisibleFinder, setIsVisibleFinder] = useState(false);
+  // const [isVisibleOutline, setIsVisibleOutline] = useState(false);
+
+  // const toggleVisibilityFinder = useCallback(() => {
+  //   setIsVisibleFinder((prev) => !prev);
+  // }, []);
+
+  // const toggleVisibilityOutline = useCallback(() => {
+  //   setIsVisibleFinder((prev) => !prev);
+  // }, []);
 
   // Read the content of the selected file
   const loadFileContent = useCallback(
@@ -126,7 +137,7 @@ export const AppSidebar = ({
         <SidebarGroup className="mt-6 p-0">
           <SidebarGroupContent>
             <SidebarMenu className="max-h-[calc(100vh-95px)]">
-              <Accordion type="single" collapsible>
+              <Accordion type="single" collapsible defaultValue="finder">
                 {/* ---------- Finder Accordion ---------- */}
                 <AccordionItem value="finder">
                   <div
@@ -146,10 +157,6 @@ export const AppSidebar = ({
                         setNewFile={setNewFile}
                         files={files}
                         loading={loading}
-                        // handleNewFileChange={handleNewFileChangeWrapper}
-                        // handleCreateNewFile={handleCreateNewFile}
-                        // loadFileContent={loadFileContent}
-                        // handleDeleteFile={handleDeleteFile}
                       />
                     </div>
                   </div>
@@ -164,14 +171,18 @@ export const AppSidebar = ({
                 {/* ---------- Outline Accordion ---------- */}
                 <AccordionItem value="outline">
                   <div
-                    className="flex min-w-0 items-center justify-between border-y"
+                    className="flex min-w-0 items-center justify-between"
                     onClick={() =>
                       setActiveAccordion(
                         activeAccordion === "outline" ? null : "outline"
                       )
                     }
                   >
-                    <AccordionTrigger className="w-full flex-grow cursor-default pb-0 text-xs font-bold leading-3 hover:underline">
+                    <AccordionTrigger
+                      className={`w-full flex-grow cursor-default border-y pb-0 text-xs font-bold leading-3 hover:underline ${
+                        activeAccordion === "finder" ? "rounded-bl-lg" : ""
+                      }`}
+                    >
                       <p className="hover:underline">{OUTLINE}</p>
                       <SelectedFileContentDisplay
                         selectedFileContent={selectedFileContent}
@@ -189,7 +200,7 @@ export const AppSidebar = ({
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <DevModeIndicator isDev={isDev} />
+      {/* <DevModeIndicator isDev={isDev} /> */}
     </Sidebar>
   );
 };
