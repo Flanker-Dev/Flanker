@@ -14,6 +14,10 @@ mod decrease_height;
 mod increase_height;
 mod decrease_width;
 mod increase_width;
+mod move_window_top_left;
+mod move_window_top_right;
+mod move_window_bottom_left;
+mod move_window_bottom_right;
 
 use system_info::get_system_info;
 use window_events::setup_window_event_listeners;
@@ -29,6 +33,10 @@ use decrease_height::decrease_height;
 use increase_height::increase_height;
 use decrease_width::decrease_width;
 use increase_width::increase_width;
+use move_window_top_left::move_window_top_left;
+use move_window_top_right::move_window_top_right;
+use move_window_bottom_left::move_window_bottom_left;
+use move_window_bottom_right::move_window_bottom_right;
 
 use tauri::Manager;
 
@@ -59,6 +67,10 @@ fn main() {
             toggle_maximize,
             decrease_width,
             increase_width,
+            move_window_top_left,
+            move_window_top_right,
+            move_window_bottom_left,
+            move_window_bottom_right,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

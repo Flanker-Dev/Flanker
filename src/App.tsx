@@ -1,7 +1,7 @@
 import { tauri } from "@tauri-apps/api";
 import { readDir } from "@tauri-apps/api/fs";
 import { homeDir } from "@tauri-apps/api/path";
-import { convertFileSrc } from "@tauri-apps/api/tauri";
+import { convertFileSrc, InvokeArgs } from "@tauri-apps/api/tauri";
 import { appWindow } from "@tauri-apps/api/window";
 import {
   FoldVertical,
@@ -14,12 +14,16 @@ import {
   PinOff,
   Table,
   UnfoldVertical,
+  SquareArrowUpLeft,
+  SquareArrowUpRight,
+  SquareArrowDownLeft,
+  SquareArrowDownRight,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { AppSidebar } from "./components/AppSidebar/AppSidebar";
 import { BigCard } from "./components/BigCard/BigCard";
-import { GitHubContributions } from "./components/GitHubContributions/GitHubContributions";
+// import { GitHubContributions } from "./components/GitHubContributions/GitHubContributions";
 import { NoFile } from "./components/NoFile/NoFile";
 import { SidebarFavs } from "./components/SidebarFavs/SidebarFavs";
 import { SmallCard } from "./components/SmallCard/SmallCard";
@@ -96,36 +100,34 @@ function App() {
     }
   };
 
-  const fullScreen = () => {
-    tauri.invoke("toggle_maximize");
+  const invokeTauriCommand = (command: string, args?: InvokeArgs) => {
+    tauri.invoke(command, args);
     rotateElement();
   };
 
-  const tightScreen = () => {
-    tauri.invoke("toggle_tight");
-    rotateElement();
-  };
+  const fullScreen = () => invokeTauriCommand("toggle_maximize");
 
-  const decreaseHeight = () => {
-    tauri.invoke("decrease_height", { window: appWindow });
-    rotateElement();
-  };
+  const tightScreen = () => invokeTauriCommand("toggle_tight");
 
-  const increaseHeight = () => {
-    tauri.invoke("increase_height", { window: appWindow });
-    rotateElement();
-  };
+  // windowの高さと幅を変更する
+  const decreaseHeight = () =>
+    invokeTauriCommand("decrease_height", { window: appWindow });
+  const increaseHeight = () =>
+    invokeTauriCommand("increase_height", { window: appWindow });
+  const decreaseWidth = () =>
+    invokeTauriCommand("decrease_width", { window: appWindow });
+  const increaseWidth = () =>
+    invokeTauriCommand("increase_width", { window: appWindow });
 
-  const decreaseWidth = () => {
-    tauri.invoke("decrease_width", { window: appWindow });
-    rotateElement();
-  };
+  // windowの位置を変更する
+  const moveWindowTopLeft = () => invokeTauriCommand("move_window_top_left");
+  const moveWindowTopRight = () => invokeTauriCommand("move_window_top_right");
+  const moveWindowBottomLeft = () =>
+    invokeTauriCommand("move_window_bottom_left");
+  const moveWindowBottomRight = () =>
+    invokeTauriCommand("move_window_bottom_right");
 
-  const increaseWidth = () => {
-    tauri.invoke("increase_width", { window: appWindow });
-    rotateElement();
-  };
-
+  const [keyup, setKeyup] = useState("");
   useEffect(() => {
     let keydownTimeout: NodeJS.Timeout | null = null;
 
@@ -134,23 +136,17 @@ function App() {
 
       if (event.key === "f" && event.metaKey) fullScreen();
       if (event.key === "t" && event.metaKey) tightScreen();
-      if (event.key === "ArrowDown" && event.metaKey) {
-        increaseHeight();
-      }
-      if (event.key === "ArrowUp" && event.metaKey) {
-        decreaseHeight();
-      }
-      if (event.key === "ArrowRight" && event.metaKey) {
-        increaseWidth();
-      }
-      if (event.key === "ArrowLeft" && event.metaKey) {
-        decreaseWidth();
-      }
+      if (event.key === "ArrowDown" && event.metaKey) increaseHeight();
+      if (event.key === "ArrowUp" && event.metaKey) decreaseHeight();
+      if (event.key === "ArrowRight" && event.metaKey) increaseWidth();
+      if (event.key === "ArrowLeft" && event.metaKey) decreaseWidth();
+      if (event.key === "u" && event.metaKey) moveWindowTopLeft();
+      if (event.key === "i" && event.metaKey) moveWindowTopRight();
+      if (event.key === "j" && event.metaKey) moveWindowBottomLeft();
+      if (event.key === "k" && event.metaKey) moveWindowBottomRight();
       if (event.key === "r" && event.metaKey) window.location.reload();
-      if (event.key === "i" && event.metaKey) tauri.invoke("open_devtools");
-      if (event.key === "p" && event.metaKey) {
+      if (event.key === "p" && event.metaKey)
         alwaysOnTop(alwaysOnTopView, setAlwaysOnTopView);
-      }
 
       keydownTimeout = setTimeout(() => {
         keydownTimeout = null;
@@ -158,6 +154,16 @@ function App() {
     };
 
     window.addEventListener("keydown", handleKeydown);
+
+    // 最新三件のキーを取得する
+    const keys: string[] = [];
+    const getHandleKeydown = (event: KeyboardEvent) => {
+      keys.push(event.key);
+      if (keys.length > 5) keys.shift();
+      setKeyup(keys.join(" "));
+      console.log(keys);
+    };
+    window && window.addEventListener("keydown", getHandleKeydown);
 
     return () => {
       window.removeEventListener("keydown", handleKeydown);
@@ -177,6 +183,98 @@ function App() {
     return () => window.removeEventListener("resize", handleResize);
   });
 
+  // const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // matrix rain
+  // useEffect(() => {
+  //   const canvas = canvasRef.current;
+  //   if (!canvas) return;
+  //   const context = canvas.getContext("2d");
+
+  //   // キャンバスのサイズをウィンドウに合わせて調整
+  //   const resizeCanvas = () => {
+  //     canvas.width = window.innerWidth;
+  //     canvas.height = window.innerHeight;
+  //   };
+
+  //   // 初期設定とリサイズイベント登録
+  //   resizeCanvas();
+  //   window.addEventListener("resize", resizeCanvas);
+
+  //   // 文字セットを文字列として定義
+  //   const dakuten = "がぎぐげござじずぜぞだぢづでどばびぶべぼ";
+  //   const handakuten = "ぱぴぷぺぽ";
+  //   const dakutenKatakana = "ガギグゲゴザジズゼゾダヂヅデドバビブベボ";
+  //   const handakutenKatakana = "パピプペポ";
+  //   const hiraganaBase =
+  //     "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん";
+  //   const katakanaBase =
+  //     "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
+  //   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  //   const numbers = "0123456789";
+
+  //   // すべての文字を一つの文字列にまとめる
+  //   const allCharacters =
+  //     hiraganaBase +
+  //     katakanaBase +
+  //     dakuten +
+  //     handakuten +
+  //     dakutenKatakana +
+  //     handakutenKatakana +
+  //     alphabet +
+  //     numbers;
+
+  //   // ランダムな文字を取得する関数
+  //   const getRandomCharacter = () => {
+  //     const randomIndex = Math.floor(Math.random() * allCharacters.length);
+  //     return allCharacters[randomIndex];
+  //   };
+
+  //   // 雨エフェクトの初期設定
+  //   const fontSize = 16;
+  //   const columns = Math.floor(canvas.width / fontSize);
+  //   const rainDrops = new Array(columns).fill(1);
+
+  //   // 描画処理
+  //   const draw = () => {
+  //     // 背景をわずかに暗くしてトレイルを残す
+  //     if (context) {
+  //       context.fillStyle = "rgba(0, 0, 0, 0.1)"; // ここで背景色を設定しています
+  //       context.fillRect(0, 0, canvas.width, canvas.height);
+
+  //       // 緑色の文字を描画
+  //       context.fillStyle = "#0F0";
+  //       context.font = `${fontSize}px monospace`;
+
+  //       // 左右反転
+  //       context.save();
+  //       context.setTransform(-1, 0, 0, 1, canvas.width, 0);
+
+  //       rainDrops.forEach((y, x) => {
+  //         const text = getRandomCharacter();
+  //         context.fillText(text, x * fontSize, y * fontSize);
+
+  //         // ドロップの位置をリセットする条件
+  //         if (y * fontSize > canvas.height && Math.random() > 0.97) {
+  //           rainDrops[x] = 0;
+  //         }
+  //         rainDrops[x]++;
+  //       });
+
+  //       context.restore();
+  //     }
+  //   };
+
+  //   // 描画ループ
+  //   const interval = setInterval(draw, 110);
+
+  //   // クリーンアップ
+  //   return () => {
+  //     clearInterval(interval);
+  //     window.removeEventListener("resize", resizeCanvas);
+  //   };
+  // }, []);
+
   return (
     <div className="relative">
       {imageUrl ? (
@@ -186,6 +284,10 @@ function App() {
           className="fixed h-[calc(100vh-4px)] w-[calc(100%-6px)] rounded-md object-cover"
         />
       ) : null}
+      {/* <canvas
+        ref={canvasRef}
+        className="fixed h-[calc(100vh-4px)] w-[calc(100%-6px)] rounded-md bg-transparent object-cover"
+      /> */}
       <div
         data-tauri-drag-region
         className="relative z-30 h-[calc(100vh-4px)] w-full rounded-lg"
@@ -254,28 +356,7 @@ function App() {
                   className="flex h-7 w-[calc(100%+8px)] items-center justify-between border-b p-1"
                   data-tauri-drag-region
                 >
-                  {/* tab trigger */}
-                  <TabsList data-tauri-drag-region>
-                    <TabsTrigger
-                      value="isBigCard"
-                      className="cursor-default p-0.5 hover:bg-white hover:text-black"
-                    >
-                      <Grid3x3 className="h-4 w-4" />
-                    </TabsTrigger>
-                    <TabsTrigger
-                      value="isSmallCard"
-                      className="cursor-default p-0.5 hover:bg-white hover:text-black"
-                    >
-                      <List className="h-4 w-4" />
-                    </TabsTrigger>
-                    <TabsTrigger
-                      value="isTable"
-                      className="cursor-default p-0.5 hover:bg-white hover:text-black"
-                    >
-                      <Table className="h-4 w-4" />
-                    </TabsTrigger>
-                  </TabsList>
-
+                  {/* header TODO: コンポーネント化 */}
                   <div className="flex items-center space-x-1">
                     <p className="active-rotate h-fit pt-[2px] leading-none duration-1000">
                       {"◒"}
@@ -347,7 +428,51 @@ function App() {
                     >
                       <UnfoldVertical className="h-4 w-4 -rotate-90" />
                     </Button>
-                    <GitHubContributions />
+                    <Button
+                      variant={"fit"}
+                      size={"fit"}
+                      onClick={moveWindowTopLeft}
+                      className="flex cursor-default items-center justify-center rounded p-0.5 hover:bg-white hover:text-black"
+                    >
+                      <SquareArrowUpLeft
+                        strokeWidth={1.6}
+                        className="h-4 w-4"
+                      />
+                    </Button>
+                    <Button
+                      variant={"fit"}
+                      size={"fit"}
+                      onClick={moveWindowTopRight}
+                      className="flex cursor-default items-center justify-center rounded p-0.5 hover:bg-white hover:text-black"
+                    >
+                      <SquareArrowUpRight
+                        strokeWidth={1.6}
+                        className="h-4 w-4"
+                      />
+                    </Button>
+                    <Button
+                      variant={"fit"}
+                      size={"fit"}
+                      onClick={moveWindowBottomLeft}
+                      className="flex cursor-default items-center justify-center rounded p-0.5 hover:bg-white hover:text-black"
+                    >
+                      <SquareArrowDownLeft
+                        strokeWidth={1.6}
+                        className="h-4 w-4"
+                      />
+                    </Button>
+                    <Button
+                      variant={"fit"}
+                      size={"fit"}
+                      onClick={moveWindowBottomRight}
+                      className="flex cursor-default items-center justify-center rounded p-0.5 hover:bg-white hover:text-black"
+                    >
+                      <SquareArrowDownRight
+                        strokeWidth={1.6}
+                        className="h-4 w-4"
+                      />
+                    </Button>
+                    {/* <GitHubContributions /> */}
                     <Button
                       variant={"fit"}
                       size={"fit"}
@@ -365,11 +490,59 @@ function App() {
                         <PinOff className="h-4 w-4" />
                       )}
                     </Button>
-                  </div>
+                    <div className="flex items-center space-x-1">
+                      {keyup
+                        .split(" ")
+                        // .reverse()
+                        .map((key, index) => {
+                          let displayKey = key;
+                          if (key === "Meta") displayKey = "⌘";
+                          else if (key === "ArrowUp") displayKey = "↑";
+                          else if (key === "ArrowDown") displayKey = "↓";
+                          else if (key === "ArrowLeft") displayKey = "←";
+                          else if (key === "ArrowRight") displayKey = "→";
+                          else if (key === "Escape") displayKey = "⎋";
+                          else if (key === "Control") displayKey = "^";
+                          else if (key === "Tab") displayKey = "⇥";
 
+                          return (
+                            <p
+                              key={index}
+                              className="rounded bg-neutral-600 px-1 text-xs capitalize text-white"
+                            >
+                              {displayKey}
+                            </p>
+                          );
+                        })}
+                    </div>
+                  </div>
+                  {/* header end TODO: コンポーネント化 */}
+
+                  {/* tab trigger */}
+                  <TabsList data-tauri-drag-region>
+                    <TabsTrigger
+                      value="isBigCard"
+                      className="cursor-default p-0.5 hover:bg-white hover:text-black"
+                    >
+                      <Grid3x3 className="h-4 w-4" />
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="isSmallCard"
+                      className="cursor-default p-0.5 hover:bg-white hover:text-black"
+                    >
+                      <List className="h-4 w-4" />
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="isTable"
+                      className="cursor-default p-0.5 hover:bg-white hover:text-black"
+                    >
+                      <Table className="h-4 w-4" />
+                    </TabsTrigger>
+                  </TabsList>
                   {/* tab trigger end */}
                 </div>
 
+                {/* main content */}
                 <div
                   className={`${open ? "w-[calc(100vw-332px)]" : "w-[calc(100vw-76px)]"}`}
                 >
@@ -435,6 +608,7 @@ function App() {
                   </TabsContent>
                   {/* table component end */}
                 </div>
+                {/* main content end */}
               </Tabs>
               {/* </ScrollArea> */}
             </div>
