@@ -30,6 +30,8 @@ main (production)
 
 ## Directory Structure
 
+### src/ (React: Colocation Patterns)
+
 We will adopt the philosophy of colocation patterns as much as possible to determine the directory structure of the tauri application.
 
 ```plaintext
@@ -45,6 +47,45 @@ src/
   ⎿ hooks/ (Custom hooks.)
   ⎿ store/ (State management.)
   ⎿ types/ (Typescript types.)
+```
+
+### src-tauri/ (Rust: Moduler Monolith)
+
+We will adopt the philosophy of moduler monolith as much as possible to determine the directory structure of the tauri application.
+
+```plaintext
+src-tauri/
+  ⎿ icons/
+  ⎿ src/
+      ├── modules/
+      │   ├── file_management/
+      │   │   ├── mod.rs               # ファイル管理モジュールのエントリ
+      │   │   ├── file_handler.rs      # ファイル操作 (例: 読み込み・削除)
+      │   │   ├── image_handler.rs     # 画像関連処理
+      │   ├── media/
+      │   │   ├── mod.rs               # メディア関連モジュールのエントリ
+      │   │   ├── spotify_info.rs      # Spotify 情報取得処理
+      │   │   ├── github.rs            # GitHub API 操作
+      │   ├── ui/
+      │   │   ├── mod.rs               # UI 操作関連のエントリ
+      │   │   ├── toggle_maximize.rs   # 最大化・最小化トグル
+      │   │   ├── toggle_tight.rs      # タイトモード切り替え
+      │   │   ├── resize/              # リサイズ関連
+      │   │       ├── increase_height.rs
+      │   │       ├── decrease_height.rs
+      │   │       ├── increase_width.rs
+      │   │       ├── decrease_width.rs
+      │   │   ├── window_position/     # ウィンドウ位置変更
+      │   │       ├── move_window_top_left.rs
+      │   │       ├── move_window_top_right.rs
+      │   │       ├── move_window_bottom_left.rs
+      │   │       ├── move_window_bottom_right.rs
+      │   ├── system/
+      │       ├── mod.rs               # システム関連モジュールのエントリ
+      │       ├── system_info.rs       # システム情報取得
+      │       ├── open_devtools.rs     # DevTools 起動
+      │       ├── window_events.rs     # ウィンドウイベント
+      ├── main.rs                      # アプリケーションのエントリポイント
 ```
 
 ## Types (WIP)
