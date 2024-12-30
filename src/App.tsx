@@ -18,6 +18,9 @@ import {
   SquareArrowUpRight,
   SquareArrowDownLeft,
   SquareArrowDownRight,
+  Keyboard,
+  PanelBottomClose,
+  FolderHeart,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -29,6 +32,12 @@ import { SidebarFavs } from "./components/SidebarFavs/SidebarFavs";
 import { SmallCard } from "./components/SmallCard/SmallCard";
 import { SplashScreen } from "./components/SplashScreen";
 import { TableWrapper } from "./components/TableWrapper/TableWrapper";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "./components/ui/accordion";
 import { Button } from "./components/ui/button";
 import { SidebarProvider } from "./components/ui/sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
@@ -52,8 +61,14 @@ function App() {
   const [fadeOut, setFadeOut] = useState(false); // フェードアウトの状態
   const [progress, setProgress] = useState(0); // プログレスバーの状態
   const [alwaysOnTopView, setAlwaysOnTopView] = useState(false); // 常に最前面表示の状態
-  const [tabKey, setTabKey] = useState("isSmallCard");
+  const [tabKey, setTabKey] = useState("isSmallCard"); // タブキー
+  const [isFooterVisible, setIsFooterVisible] = useState(false); // footerの表示状態
+  const [height, setHeight] = useState(window.innerHeight); // windowの高さ
+  const [width, setWidth] = useState(window.innerWidth); // windowの幅
+  const [keyup, setKeyup] = useState(""); // 最新5件のキーを取得
+  const [isLoading, setIsLoading] = useState(false); // スケルトン表示状態の管理
 
+  // 背景画像の読み込み
   useEffect(() => {
     async function loadImage() {
       try {
@@ -76,17 +91,19 @@ function App() {
     handleSplashScreen(setFadeOut, setShowSplash, setProgress);
   }, []);
 
+  // ファイルリストが更新されたときにタブキーを更新
   useEffect(() => {
     setTabKey((prevKey) => prevKey + "_updated");
   }, [selectedFileContent]);
 
+  // windowの高さが82より小さい場合sidebarの開閉ボタンを非活性にする
   useEffect(() => {
-    // windowが82より小さい場合openを非表示にする
     if (window.innerHeight <= 82) {
       setOpen(false);
     }
   }, [window.innerHeight]);
 
+  // 画面リサイズ時に回転アニメーションを実行
   const rotateElement = () => {
     const element = document.querySelector(".active-rotate");
     if (element) {
@@ -100,13 +117,14 @@ function App() {
     }
   };
 
+  // Tauriコマンドを呼び出す
   const invokeTauriCommand = (command: string, args?: InvokeArgs) => {
     tauri.invoke(command, args);
     rotateElement();
   };
 
+  // screenの最大化と最小化を切り替える
   const fullScreen = () => invokeTauriCommand("toggle_maximize");
-
   const tightScreen = () => invokeTauriCommand("toggle_tight");
 
   // windowの高さと幅を変更する
@@ -127,7 +145,6 @@ function App() {
   const moveWindowBottomRight = () =>
     invokeTauriCommand("move_window_bottom_right");
 
-  const [keyup, setKeyup] = useState("");
   useEffect(() => {
     let keydownTimeout: NodeJS.Timeout | null = null;
 
@@ -155,13 +172,12 @@ function App() {
 
     window.addEventListener("keydown", handleKeydown);
 
-    // 最新三件のキーを取得する
+    // 最新5件のキーを取得する
     const keys: string[] = [];
     const getHandleKeydown = (event: KeyboardEvent) => {
       keys.push(event.key);
       if (keys.length > 5) keys.shift();
       setKeyup(keys.join(" "));
-      console.log(keys);
     };
     window && window.addEventListener("keydown", getHandleKeydown);
 
@@ -172,8 +188,6 @@ function App() {
   }, [alwaysOnTopView]);
 
   // アプリ画面縦と横のサイズを取得
-  const [height, setHeight] = useState(window.innerHeight);
-  const [width, setWidth] = useState(window.innerWidth);
   useEffect(() => {
     const handleResize = () => {
       setHeight(window.innerHeight);
@@ -183,97 +197,25 @@ function App() {
     return () => window.removeEventListener("resize", handleResize);
   });
 
-  // const canvasRef = useRef<HTMLCanvasElement>(null);
+  // footerの表示
+  const footerVisible = () => {
+    setIsFooterVisible(!isFooterVisible);
+  };
 
-  // matrix rain
-  // useEffect(() => {
-  //   const canvas = canvasRef.current;
-  //   if (!canvas) return;
-  //   const context = canvas.getContext("2d");
+  // スケルトン表示を制御する関数
+  const handleAccordionTriggerClick = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 3000); // 2秒後にスケルトンを非表示にする
+  };
 
-  //   // キャンバスのサイズをウィンドウに合わせて調整
-  //   const resizeCanvas = () => {
-  //     canvas.width = window.innerWidth;
-  //     canvas.height = window.innerHeight;
-  //   };
-
-  //   // 初期設定とリサイズイベント登録
-  //   resizeCanvas();
-  //   window.addEventListener("resize", resizeCanvas);
-
-  //   // 文字セットを文字列として定義
-  //   const dakuten = "がぎぐげござじずぜぞだぢづでどばびぶべぼ";
-  //   const handakuten = "ぱぴぷぺぽ";
-  //   const dakutenKatakana = "ガギグゲゴザジズゼゾダヂヅデドバビブベボ";
-  //   const handakutenKatakana = "パピプペポ";
-  //   const hiraganaBase =
-  //     "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん";
-  //   const katakanaBase =
-  //     "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
-  //   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  //   const numbers = "0123456789";
-
-  //   // すべての文字を一つの文字列にまとめる
-  //   const allCharacters =
-  //     hiraganaBase +
-  //     katakanaBase +
-  //     dakuten +
-  //     handakuten +
-  //     dakutenKatakana +
-  //     handakutenKatakana +
-  //     alphabet +
-  //     numbers;
-
-  //   // ランダムな文字を取得する関数
-  //   const getRandomCharacter = () => {
-  //     const randomIndex = Math.floor(Math.random() * allCharacters.length);
-  //     return allCharacters[randomIndex];
-  //   };
-
-  //   // 雨エフェクトの初期設定
-  //   const fontSize = 16;
-  //   const columns = Math.floor(canvas.width / fontSize);
-  //   const rainDrops = new Array(columns).fill(1);
-
-  //   // 描画処理
-  //   const draw = () => {
-  //     // 背景をわずかに暗くしてトレイルを残す
-  //     if (context) {
-  //       context.fillStyle = "rgba(0, 0, 0, 0.1)"; // ここで背景色を設定しています
-  //       context.fillRect(0, 0, canvas.width, canvas.height);
-
-  //       // 緑色の文字を描画
-  //       context.fillStyle = "#0F0";
-  //       context.font = `${fontSize}px monospace`;
-
-  //       // 左右反転
-  //       context.save();
-  //       context.setTransform(-1, 0, 0, 1, canvas.width, 0);
-
-  //       rainDrops.forEach((y, x) => {
-  //         const text = getRandomCharacter();
-  //         context.fillText(text, x * fontSize, y * fontSize);
-
-  //         // ドロップの位置をリセットする条件
-  //         if (y * fontSize > canvas.height && Math.random() > 0.97) {
-  //           rainDrops[x] = 0;
-  //         }
-  //         rainDrops[x]++;
-  //       });
-
-  //       context.restore();
-  //     }
-  //   };
-
-  //   // 描画ループ
-  //   const interval = setInterval(draw, 110);
-
-  //   // クリーンアップ
-  //   return () => {
-  //     clearInterval(interval);
-  //     window.removeEventListener("resize", resizeCanvas);
-  //   };
-  // }, []);
+  // 高さが76より小さい場合footerを非表示にする
+  useEffect(() => {
+    if (window.innerHeight <= 76) {
+      setIsFooterVisible(false);
+    }
+  }, [window.innerHeight]);
 
   return (
     <div className="relative">
@@ -335,8 +277,26 @@ function App() {
               {/* Sidebar trigger end */}
 
               {/* お気に入りアイコン群 */}
-              {window.innerHeight > 120 && (
-                <SidebarFavs getFavicon={getFavicon} />
+              {window.innerHeight > 220 && (
+                <Accordion type="single" collapsible>
+                  <AccordionItem value="item-1">
+                    <AccordionTrigger
+                      icon={<FolderHeart />}
+                      iconOnly
+                      className="mx-auto mb-2 flex h-10 w-10 cursor-default justify-center rounded p-0 hover:bg-accent hover:text-accent-foreground"
+                      onClick={handleAccordionTriggerClick}
+                    ></AccordionTrigger>
+                    <AccordionContent isVisible={false}>
+                      {isLoading ? (
+                        <div
+                          className={`skeleton flex ${open ? "h-[calc(100vh-112px)]" : "h-[calc(100vh-128px)]"} w-[52px] animate-pulse flex-col items-center rounded`}
+                        ></div>
+                      ) : (
+                        <SidebarFavs getFavicon={getFavicon} open={open} />
+                      )}
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
               )}
               {/* お気に入りアイコン群 end */}
             </div>
@@ -352,16 +312,16 @@ function App() {
                 className="p-0"
                 key={tabKey}
               >
+                {/* header TODO: コンポーネント化 ----------------------------------- */}
                 <div
                   className="flex h-7 w-[calc(100%+8px)] items-center justify-between border-b p-1"
                   data-tauri-drag-region
                 >
-                  {/* header TODO: コンポーネント化 */}
                   <div className="flex items-center space-x-1">
-                    <p className="active-rotate h-fit pt-[2px] leading-none duration-1000">
+                    <p className="active-rotate h-fit cursor-default pt-[2px] leading-none duration-1000">
                       {"◒"}
                     </p>
-                    <div className="flex h-4 items-center justify-between rounded border">
+                    <div className="flex h-4 cursor-default items-center justify-between rounded border">
                       <p className="w-10 text-nowrap text-center text-xs font-bold leading-3">
                         {height}
                       </p>
@@ -378,24 +338,22 @@ function App() {
                     >
                       <Maximize className="h-4 w-4" />
                     </Button>
-                    {window.innerWidth !== 768 || window.innerHeight !== 76 ? (
-                      <Button
-                        variant={
-                          window.innerWidth === 768 && window.innerHeight === 76
-                            ? "disabled"
-                            : "fit"
-                        }
-                        size={"fit"}
-                        onClick={
-                          window.innerWidth === 768 && window.innerHeight === 76
-                            ? undefined
-                            : tightScreen
-                        }
-                        className={`flex cursor-default items-center justify-center rounded p-0.5  ${window.innerWidth === 768 && window.innerHeight === 76 ? "hover:bg-white hover:text-black" : ""}`}
-                      >
-                        <Minimize className="h-4 w-4" />
-                      </Button>
-                    ) : null}
+                    <Button
+                      variant={
+                        window.innerWidth === 768 && window.innerHeight === 76
+                          ? "disabled"
+                          : "fit"
+                      }
+                      size={"fit"}
+                      onClick={
+                        window.innerWidth === 768 && window.innerHeight === 76
+                          ? undefined
+                          : tightScreen
+                      }
+                      className={`flex cursor-default items-center justify-center rounded p-0.5  ${window.innerWidth > 768 || window.innerHeight > 76 ? "hover:bg-white hover:text-black" : ""}`}
+                    >
+                      <Minimize className="h-4 w-4" />
+                    </Button>
                     <Button
                       variant={window.innerHeight > 76 ? "fit" : "disabled"}
                       size={"fit"}
@@ -490,33 +448,17 @@ function App() {
                         <PinOff className="h-4 w-4" />
                       )}
                     </Button>
-                    <div className="flex items-center space-x-1">
-                      {keyup
-                        .split(" ")
-                        // .reverse()
-                        .map((key, index) => {
-                          let displayKey = key;
-                          if (key === "Meta") displayKey = "⌘";
-                          else if (key === "ArrowUp") displayKey = "↑";
-                          else if (key === "ArrowDown") displayKey = "↓";
-                          else if (key === "ArrowLeft") displayKey = "←";
-                          else if (key === "ArrowRight") displayKey = "→";
-                          else if (key === "Escape") displayKey = "⎋";
-                          else if (key === "Control") displayKey = "^";
-                          else if (key === "Tab") displayKey = "⇥";
-
-                          return (
-                            <p
-                              key={index}
-                              className="rounded bg-neutral-600 px-1 text-xs capitalize text-white"
-                            >
-                              {displayKey}
-                            </p>
-                          );
-                        })}
-                    </div>
+                    <Button
+                      variant={window.innerHeight > 76 ? "fit" : "disabled"}
+                      size={"fit"}
+                      onClick={
+                        window.innerHeight > 76 ? footerVisible : undefined
+                      }
+                      className={`flex cursor-default items-center justify-center rounded p-0.5 ${window.innerHeight > 76 ? "hover:bg-white hover:text-black" : ""}`}
+                    >
+                      <PanelBottomClose className="h-4 w-4" />
+                    </Button>
                   </div>
-                  {/* header end TODO: コンポーネント化 */}
 
                   {/* tab trigger */}
                   <TabsList data-tauri-drag-region>
@@ -541,8 +483,9 @@ function App() {
                   </TabsList>
                   {/* tab trigger end */}
                 </div>
+                {/* header end TODO: コンポーネント化 ----------------------------------- */}
 
-                {/* main content */}
+                {/* main content ----------------------------------- */}
                 <div
                   className={`${open ? "w-[calc(100vw-332px)]" : "w-[calc(100vw-76px)]"}`}
                 >
@@ -572,7 +515,7 @@ function App() {
                     data-tauri-drag-region
                   >
                     <ScrollArea
-                      className={`${open ? "w-[calc(100vw-328px)]" : "w-[calc(100vw-72px)]"} h-[calc(100vh-32px)] px-1 pt-1`}
+                      className={`${open ? "w-[calc(100vw-328px)]" : "w-[calc(100vw-72px)]"} ${isFooterVisible ? "h-[calc(100vh-60px)]" : "h-[calc(100vh-32px)]"} px-1 pt-1`}
                     >
                       {isBookmarkInfoNotEmpty(selectedFileContent) &&
                       selectedFileContent ? (
@@ -607,6 +550,42 @@ function App() {
                     </ScrollArea>
                   </TabsContent>
                   {/* table component end */}
+                  {/* footer */}
+
+                  {isFooterVisible && window.innerHeight > 76 && (
+                    <div
+                      className="flex h-7 w-[calc(100%+8px)] items-center justify-end border-t p-1"
+                      data-tauri-drag-region
+                    >
+                      <div className="flex items-center space-x-1">
+                        {keyup
+                          .split(" ")
+                          // .reverse()
+                          .map((key, index) => {
+                            let displayKey = key;
+                            if (key === "Meta") displayKey = "⌘";
+                            else if (key === "ArrowUp") displayKey = "↑";
+                            else if (key === "ArrowDown") displayKey = "↓";
+                            else if (key === "ArrowLeft") displayKey = "←";
+                            else if (key === "ArrowRight") displayKey = "→";
+                            else if (key === "Escape") displayKey = "⎋";
+                            else if (key === "Control") displayKey = "^";
+                            else if (key === "Tab") displayKey = "⇥";
+
+                            return (
+                              <p
+                                key={index}
+                                className="h-fit min-w-4 cursor-default rounded bg-neutral-600 px-1 text-center text-xs capitalize text-white"
+                              >
+                                {displayKey}
+                              </p>
+                            );
+                          })}
+                        <Keyboard className="h-4 w-4" />
+                      </div>
+                    </div>
+                  )}
+                  {/* footer end */}
                 </div>
                 {/* main content end */}
               </Tabs>

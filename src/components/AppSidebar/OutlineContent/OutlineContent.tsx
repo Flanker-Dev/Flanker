@@ -24,10 +24,9 @@ export const OutlineContentComponent = ({
 }: OutlineContentComponentProps & { closeAllAccordions: boolean }) => {
   const [accordionValue, setAccordionValue] = useState<string[]>([]);
 
-  // closeAllAccordions が true のとき全てのアコーディオンを閉じる
   useEffect(() => {
     if (closeAllAccordions) {
-      setAccordionValue([]); // すべて閉じる
+      setAccordionValue([]);
     }
   }, [closeAllAccordions]);
 
@@ -108,7 +107,7 @@ export const OutlineContentComponent = ({
                                 {/* bookmark.tags */}
                                 <Accordion type="single" collapsible>
                                   <AccordionItem value="tags">
-                                    <AccordionTrigger className="group/item flex cursor-default items-center gap-1 pb-0 pl-4 hover:bg-stone-600">
+                                    <AccordionTrigger className="group/item flex cursor-default items-center justify-start gap-1 pb-0 pl-4 hover:bg-stone-600">
                                       <Tags className="h-3 w-3 text-yellow-500" />
                                       <p className="text-xs">
                                         {TAGS}

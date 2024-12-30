@@ -35,11 +35,11 @@ import {
 import { Input } from "../ui/input";
 import { Popover, PopoverContent } from "../ui/popover";
 import { ScrollArea } from "../ui/scroll-area";
-import { Separator } from "../ui/separator";
 import { toast } from "@/hooks/use-toast";
 
 interface SidebarFavsProps {
   getFavicon: string;
+  open: boolean;
 }
 
 const SortableFav = ({
@@ -136,7 +136,7 @@ const SortableFav = ({
   );
 };
 
-export const SidebarFavs = ({ getFavicon }: SidebarFavsProps) => {
+export const SidebarFavs = ({ getFavicon, open }: SidebarFavsProps) => {
   const [urls, setUrls] = useState<{ [key: string]: string }>({});
   const [newUrl, setNewUrl] = useState("");
   const [newKey, setNewKey] = useState("");
@@ -253,17 +253,14 @@ export const SidebarFavs = ({ getFavicon }: SidebarFavsProps) => {
         className={
           `${window.innerHeight > 82 ? "" : "invisible"}` +
           ` ` +
-          `flex h-[calc(100vh-90px)] flex-col items-center`
+          `${open ? "flex h-[calc(100vh-108px)] max-h-[calc(100vh-108px)]" : "flex h-[calc(100vh-124px)] max-h-[calc(100vh-124px)]"} flex-col items-center`
         }
       >
         <SortableContext
           items={Object.keys(urls)}
           strategy={rectSortingStrategy}
         >
-          <div className="relative flex">
-            <Separator className="w-[52px]" />
-          </div>
-          <ScrollArea className="relative right-[0px] h-fit p-1 pb-0 pt-1">
+          <ScrollArea className="relative right-[0px] h-fit p-1 pb-1 pt-1">
             <ul className="grid h-full grid-cols-2 gap-1">
               {Object.entries(urls).map(([key, url]) => (
                 <SortableFav
@@ -278,47 +275,48 @@ export const SidebarFavs = ({ getFavicon }: SidebarFavsProps) => {
               ))}
             </ul>
           </ScrollArea>
-        </SortableContext>
 
-        <div className="my-1 ml-[8px] w-[60px] items-end">
-          <Popover>
-            <div className="flex flex-col">
-              <SidebarFavsButton />
-              <div className="relative right-[0px] mt-1">
-                <Separator className="w-[52px]" />
+          <div className="my-1 ml-[8px] mt-auto w-[60px] items-end">
+            <Popover>
+              <div className="flex flex-col">
+                <SidebarFavsButton />
               </div>
-            </div>
-            <PopoverContent className="relative left-20 top-0 bg-black">
-              <span className="text-sm font-bold capitalize text-white">
-                Add a new favorite
-              </span>
-              <div className="flex flex-col space-y-2">
-                <Input
-                  type="text"
-                  placeholder="Name"
-                  value={newKey}
-                  onChange={(e) => setNewKey(e.target.value)}
-                />
-                <Input
-                  type="text"
-                  placeholder="URL"
-                  value={newUrl}
-                  onChange={(e) => setNewUrl(e.target.value)}
-                />
-                <Button
-                  variant={"secondary"}
-                  onClick={() => {
-                    handleAddFav(urls, setUrls, newKey, newUrl);
-                    setNewKey("");
-                    setNewUrl("");
-                  }}
-                >
-                  Add
-                </Button>
-              </div>
-            </PopoverContent>
-          </Popover>
-        </div>
+              <PopoverContent className="relative left-[70px] top-0 bg-black">
+                <span className="cursor-default text-sm font-bold capitalize text-white">
+                  Add a new favorite
+                </span>
+                <div className="flex flex-col space-y-2">
+                  <Input
+                    type="text"
+                    placeholder="Name"
+                    value={newKey}
+                    autoCorrect="off"
+                    onChange={(e) => setNewKey(e.target.value)}
+                    className="text-white"
+                  />
+                  <Input
+                    type="text"
+                    placeholder="URL"
+                    value={newUrl}
+                    autoCorrect="off"
+                    onChange={(e) => setNewUrl(e.target.value)}
+                    className="text-white"
+                  />
+                  <Button
+                    variant={"secondary"}
+                    onClick={() => {
+                      handleAddFav(urls, setUrls, newKey, newUrl);
+                      setNewKey("");
+                      setNewUrl("");
+                    }}
+                  >
+                    Add
+                  </Button>
+                </div>
+              </PopoverContent>
+            </Popover>
+          </div>
+        </SortableContext>
       </div>
     </DndContext>
   );

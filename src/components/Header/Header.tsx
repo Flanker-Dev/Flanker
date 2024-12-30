@@ -2,7 +2,6 @@ import Marquee from "react-fast-marquee";
 
 import { ReloadButton } from "../Buttons/ReloadButton/ReloadButton";
 import { SettingButton } from "../Buttons/SettingButton/SettingButton";
-import { alwaysOnTop } from "@/utils/alwaysOnTop";
 // import { SideMenuBarButton } from "../Buttons/SideMenuBarButton/SideMenuBarButton";
 // import { TitleBarButton } from "../Buttons/TitleBarButton/TitleBarButton";
 // import { TrafficLightButton } from "../Buttons/TrafficLightButton/TrafficLightButton";
@@ -19,8 +18,6 @@ type HeaderProps = {
 };
 
 export const Header = ({
-  alwaysOnTopView,
-  setAlwaysOnTopView,
   isPrivacyMode,
   setIsPrivacyMode,
   isOpenSetting,
@@ -77,32 +74,6 @@ export const Header = ({
         {/* reload button */}
         <ReloadButton />
         {/* always on top button */}
-        <button
-          onClick={() => alwaysOnTop(alwaysOnTopView, setAlwaysOnTopView)}
-          className="flex h-5 w-6 cursor-pointer items-center justify-center rounded hover:bg-neutral-800"
-        >
-          {alwaysOnTopView ? (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 -930 960 960"
-              fill="#EBDCB2"
-            >
-              <path d="m640-480 80 80v80H520v240l-40 40-40-40v-240H240v-80l80-80v-280h-40v-80h400v80h-40v280Zm-286 80h252l-46-46v-314H400v314l-46 46Zm126 0Z" />
-            </svg>
-          ) : (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 -930 960 960"
-              fill="#EBDCB2"
-            >
-              <path d="M680-840v80h-40v327l-80-80v-247H400v87l-87-87-33-33v-47h400ZM480-40l-40-40v-240H240v-80l80-80v-46L56-792l56-56 736 736-58 56-264-264h-6v240l-40 40ZM354-400h92l-44-44-2-2-46 46Zm126-193Zm-78 149Z" />
-            </svg>
-          )}
-        </button>
         {/* <GithubButton /> */}
       </div>
     </header>

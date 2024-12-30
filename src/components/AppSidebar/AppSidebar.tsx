@@ -163,7 +163,7 @@ export const AppSidebar = ({
                       )
                     }
                   >
-                    <AccordionTrigger className="w-full flex-grow cursor-default pb-0 text-xs font-bold leading-3 hover:underline">
+                    <AccordionTrigger className="w-full flex-grow cursor-default justify-start pb-0 text-xs font-bold leading-3 hover:underline">
                       <p>{FINDER}</p>
                     </AccordionTrigger>
                     <div className="flex-shrink-0 pb-0 leading-3">

@@ -40,7 +40,7 @@ export const SortableBookmark = ({
     <div
       ref={setNodeRef}
       style={style}
-      className={`bookmark-item relative h-6 rounded border p-1 shadow-md backdrop-blur-[3px] ${
+      className={`bookmark-item relative h-9 rounded border p-1 shadow-md backdrop-blur-[3px] ${
         isDragging
           ? "pointer-events-none z-10 border-amber-500 dark:bg-gray-700"
           : "pointer-events-auto z-0 opacity-100"

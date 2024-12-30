@@ -87,7 +87,7 @@ export const SmallCard = ({
                 variant="default"
                 size="clipboard"
                 onClick={() => handleCopyUrl(bookmark.url)}
-                className="absolute bottom-0 right-1 top-0 translate-y-1/2 hover:text-neutral-400"
+                className="absolute bottom-0 right-2 top-1.5 translate-y-1/2 hover:text-neutral-400"
               >
                 <ClipboardCopyIcon className="h-3 w-3" />
               </Button>
