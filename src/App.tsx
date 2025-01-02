@@ -350,7 +350,7 @@ function App() {
                           ? undefined
                           : tightScreen
                       }
-                      className={`flex cursor-default items-center justify-center rounded p-0.5  ${window.innerWidth > 768 || window.innerHeight > 76 ? "hover:bg-white hover:text-black" : ""}`}
+                      className={`flex cursor-default items-center justify-center rounded p-0.5 ${window.innerWidth > 768 || window.innerHeight > 76 ? "hover:bg-white hover:text-black" : ""}`}
                     >
                       <Minimize className="h-4 w-4" />
                     </Button>
@@ -358,7 +358,7 @@ function App() {
                       variant={window.innerHeight > 76 ? "fit" : "disabled"}
                       size={"fit"}
                       onClick={decreaseHeight}
-                      className={`flex cursor-default items-center justify-center rounded p-0.5  ${window.innerHeight > 82 ? "hover:bg-white hover:text-black" : ""}`}
+                      className={`flex cursor-default items-center justify-center rounded p-0.5 ${window.innerHeight > 82 ? "hover:bg-white hover:text-black" : ""}`}
                     >
                       <FoldVertical className="h-4 w-4" />
                     </Button>
@@ -515,7 +515,7 @@ function App() {
                     data-tauri-drag-region
                   >
                     <ScrollArea
-                      className={`${open ? "w-[calc(100vw-328px)]" : "w-[calc(100vw-72px)]"} ${isFooterVisible ? "h-[calc(100vh-60px)]" : "h-[calc(100vh-32px)]"} px-1 pt-1`}
+                      className={`${open ? "w-[calc(100vw-328px)]" : "w-[calc(100vw-72px)]"} ${isFooterVisible ? "h-[calc(100vh-60px)]" : "h-[calc(100vh-32px)]"} px-1`}
                     >
                       {isBookmarkInfoNotEmpty(selectedFileContent) &&
                       selectedFileContent ? (

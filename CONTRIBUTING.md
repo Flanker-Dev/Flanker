@@ -59,33 +59,33 @@ src-tauri/
   ⎿ src/
       ├── modules/
       │   ├── file_management/
-      │   │   ├── mod.rs               # ファイル管理モジュールのエントリ
-      │   │   ├── file_handler.rs      # ファイル操作 (例: 読み込み・削除)
-      │   │   ├── image_handler.rs     # 画像関連処理
+      │   │   ├── mod.rs
+      │   │   ├── file_handler.rs
+      │   │   ├── image_handler.rs
       │   ├── media/
-      │   │   ├── mod.rs               # メディア関連モジュールのエントリ
-      │   │   ├── spotify_info.rs      # Spotify 情報取得処理
-      │   │   ├── github.rs            # GitHub API 操作
+      │   │   ├── mod.rs
+      │   │   ├── spotify_info.rs
+      │   │   ├── github.rs
       │   ├── ui/
-      │   │   ├── mod.rs               # UI 操作関連のエントリ
-      │   │   ├── toggle_maximize.rs   # 最大化・最小化トグル
-      │   │   ├── toggle_tight.rs      # タイトモード切り替え
-      │   │   ├── resize/              # リサイズ関連
+      │   │   ├── mod.rs
+      │   │   ├── toggle_maximize.rs
+      │   │   ├── toggle_tight.rs
+      │   │   ├── resize/
       │   │       ├── increase_height.rs
       │   │       ├── decrease_height.rs
       │   │       ├── increase_width.rs
       │   │       ├── decrease_width.rs
-      │   │   ├── window_position/     # ウィンドウ位置変更
+      │   │   ├── window_position/
       │   │       ├── move_window_top_left.rs
       │   │       ├── move_window_top_right.rs
       │   │       ├── move_window_bottom_left.rs
       │   │       ├── move_window_bottom_right.rs
       │   ├── system/
-      │       ├── mod.rs               # システム関連モジュールのエントリ
-      │       ├── system_info.rs       # システム情報取得
-      │       ├── open_devtools.rs     # DevTools 起動
-      │       ├── window_events.rs     # ウィンドウイベント
-      ├── main.rs                      # アプリケーションのエントリポイント
+      │       ├── mod.rs
+      │       ├── system_info.rs
+      │       ├── open_devtools.rs
+      │       ├── window_events.rs
+      ├── main.rs
 ```
 
 ## Types (WIP)

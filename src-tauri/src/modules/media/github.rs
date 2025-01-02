@@ -1,5 +1,5 @@
 // src-tauri/src/github.rs
-use reqwest::blocking::Client;
+use reqwest::Client;
 use serde::{Deserialize, Serialize};  // Serializeをインポート
 
 #[derive(Deserialize, Serialize, Debug)]  // Debugを追加
@@ -17,7 +17,7 @@ pub struct Contribution {
 }
 
 #[tauri::command]
-pub fn get_contributions(username: String, token: String) -> Result<Vec<Contribution>, String> {
+pub async fn get_contributions(username: String, token: String) -> Result<Vec<Contribution>, String> {
     println!("get_contributions関数が呼び出されました: {}", username);
 
     let client = Client::new();
@@ -46,11 +46,12 @@ pub fn get_contributions(username: String, token: String) -> Result<Vec<Contribu
         .header("Authorization", format!("Bearer {}", token))
         .header("User-Agent", "YourAppName")
         .json(&serde_json::json!({ "query": query }))
-        .send();
+        .send()
+        .await;
 
     match response {
         Ok(res) => {
-            let text = res.text().map_err(|e| e.to_string())?;
+            let text = res.text().await.map_err(|e| e.to_string())?;
             println!("APIレスポンスの内容: {}", text);
 
             let json: serde_json::Value = serde_json::from_str(&text).map_err(|e| e.to_string())?;

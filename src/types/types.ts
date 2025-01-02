@@ -36,6 +36,13 @@ export interface Bookmark {
   description: string;
   url: string;
   tags: string[];
+  statusCount: {
+    alive: number;
+    dead: number;
+    unknown: number;
+    timeout: number;
+    forbidden: number;
+  };
 }
 
 export interface FileContent {
