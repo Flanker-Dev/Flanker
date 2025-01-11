@@ -22,7 +22,7 @@ import {
   PanelBottomClose,
   FolderHeart,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { AppSidebar } from "./components/AppSidebar/AppSidebar";
 import { BigCard } from "./components/BigCard/BigCard";
@@ -63,8 +63,8 @@ function App() {
   const [alwaysOnTopView, setAlwaysOnTopView] = useState(false); // 常に最前面表示の状態
   const [tabKey, setTabKey] = useState("isSmallCard"); // タブキー
   const [isFooterVisible, setIsFooterVisible] = useState(false); // footerの表示状態
-  const [height, setHeight] = useState(window.innerHeight); // windowの高さ
-  const [width, setWidth] = useState(window.innerWidth); // windowの幅
+  const [height] = useState(window.innerHeight); // windowの高さ
+  const [width] = useState(window.innerWidth); // windowの幅
   const [keyup, setKeyup] = useState(""); // 最新5件のキーを取得
   const [isLoading, setIsLoading] = useState(false); // スケルトン表示状態の管理
 
@@ -89,6 +89,9 @@ function App() {
     loadImage();
 
     handleSplashScreen(setFadeOut, setShowSplash, setProgress);
+
+    // フォントの適用を一度だけ実行
+    applyFontStyles();
   }, []);
 
   // ファイルリストが更新されたときにタブキーを更新
@@ -188,14 +191,20 @@ function App() {
   }, [alwaysOnTopView]);
 
   // アプリ画面縦と横のサイズを取得
+  const windowSizeRef = useRef({
+    height: window.innerHeight,
+    width: window.innerWidth,
+  });
   useEffect(() => {
     const handleResize = () => {
-      setHeight(window.innerHeight);
-      setWidth(window.innerWidth);
+      windowSizeRef.current = {
+        height: window.innerHeight,
+        width: window.innerWidth,
+      };
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  });
+  }, []);
 
   // footerの表示
   const footerVisible = () => {
@@ -217,6 +226,76 @@ function App() {
     }
   }, [window.innerHeight]);
 
+  // フォントディレクトリをスキャンしてフォント情報を構築
+  async function loadFontStyles() {
+    const home = await homeDir();
+    const fontDir = `${home}.config/flk/fonts`;
+
+    try {
+      const files = await readDir(fontDir);
+
+      // フォントファイルをグループ化
+      const fontGroups = {};
+      files
+        .filter((file) => file.name && file.name.endsWith(".woff"))
+        .forEach((file) => {
+          const fontName = file.name ? file.name.split(".")[0] : "unknown"; // Extract font name from file name
+          if (!fontGroups[fontName]) {
+            fontGroups[fontName] = [];
+          }
+          const style = file.name ? file.name.split(".")[1] : "regular"; // Extract style from file name
+          fontGroups[fontName].push({
+            style: style.toLowerCase(), // スタイル情報 (regular, bold, etc.)
+            path: file.path,
+          });
+        });
+
+      console.log("Font Groups:", fontGroups);
+      return fontGroups;
+    } catch (err) {
+      console.error("Error reading font directory:", err);
+      return {};
+    }
+  }
+
+  // フォントスタイルを @font-face に登録
+  async function applyFontStyles() {
+    const fontGroups = await loadFontStyles();
+
+    Object.entries(fontGroups).forEach(([fontName, styles]) => {
+      (styles as { style: string; path: string }[]).forEach(
+        ({ style, path }) => {
+          const fontUrl = convertFileSrc(path, "asset");
+
+          const fontWeight = style.includes("bold")
+            ? "bold"
+            : style.includes("semibold")
+              ? "600"
+              : "normal";
+
+          const fontStyle = style.includes("italic") ? "italic" : "normal";
+
+          const styleElement = document.createElement("style");
+          styleElement.textContent = `
+        @font-face {
+          font-family: '${fontName}';
+          src: url('${fontUrl}') format('woff');
+          font-weight: ${fontWeight};
+          font-style: ${fontStyle};
+        }
+      `;
+          document.head.appendChild(styleElement);
+        }
+      );
+    });
+
+    // デフォルトフォントを適用
+    const firstFont = Object.keys(fontGroups)[0];
+    if (firstFont) {
+      document.body.style.fontFamily = firstFont;
+    }
+  }
+
   return (
     <div className="relative">
       {imageUrl ? (
@@ -226,15 +305,10 @@ function App() {
           className="fixed h-[calc(100vh-4px)] w-[calc(100%-6px)] rounded-md object-cover"
         />
       ) : null}
-      {/* <canvas
-        ref={canvasRef}
-        className="fixed h-[calc(100vh-4px)] w-[calc(100%-6px)] rounded-md bg-transparent object-cover"
-      /> */}
       <div
         data-tauri-drag-region
         className="relative z-30 h-[calc(100vh-4px)] w-full rounded-lg"
       >
-        {/* スプラッシュスクリーンの後ろの画面を表示 */}
         <SidebarProvider open={open} onOpenChange={setOpen}>
           <div
             className={`${window.innerHeight > 82 ? "" : "hidden"} flex h-[calc(100vh-90px)] flex-col items-center`}

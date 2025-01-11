@@ -6,11 +6,23 @@ import {
   CircleHelp,
   ClipboardCopyIcon,
   GripVertical,
+  QrCode,
   TriangleAlert,
 } from "lucide-react"; // アイコンのインポート
+import { QRCodeSVG } from "qrcode.react";
 import { useEffect, useState, useMemo } from "react";
+import { SiTorbrowser } from "react-icons/si"; // Torアイコンのインポート
 
+import Favicon from "../Favicon/Favicon";
 import { Button } from "../ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import {
   Tooltip,
   TooltipContent,
@@ -24,21 +36,21 @@ interface SortableBookmarkProps {
   title: string;
   url: string;
   description: string;
-  FaviconComponent: JSX.Element;
   onStatusCountChange: (statusCount: {
     alive: number;
     dead: number;
     unknown: number;
     timeout: number;
     forbidden: number;
+    onion: number;
   }) => void;
 }
 
 export const SortableBookmark = ({
   id,
   title,
+  description,
   url,
-  FaviconComponent,
   onStatusCountChange,
 }: SortableBookmarkProps) => {
   const {
@@ -113,7 +125,9 @@ export const SortableBookmark = ({
 
   useEffect(() => {
     const aliveCount = links.filter((link) => link.status === "alive").length;
-    const deadCount = links.filter((link) => link.status === "dead").length;
+    const deadCount = links.filter(
+      (link) => link.status === "dead" && !link.url.includes(".onion")
+    ).length;
     const unknownCount = links.filter(
       (link) => link.status === "unknown"
     ).length;
@@ -121,6 +135,9 @@ export const SortableBookmark = ({
       (link) => link.status === "Timeout or Unauthorized"
     ).length;
     const forbiddenCount = links.filter((link) => link.status === "403").length;
+    const onionCount = links.filter((link) =>
+      link.url.includes(".onion")
+    ).length;
 
     onStatusCountChange({
       alive: aliveCount,
@@ -128,6 +145,7 @@ export const SortableBookmark = ({
       unknown: unknownCount,
       timeout: timeoutCount,
       forbidden: forbiddenCount,
+      onion: onionCount,
     });
   }, [links, onStatusCountChange]);
 
@@ -143,37 +161,50 @@ export const SortableBookmark = ({
       {...attributes}
     >
       <div className="pointer-events-auto flex h-full justify-between">
+        {/* draggable grip */}
         <div className="flex cursor-grab items-center" {...listeners}>
           <GripVertical className="" />
         </div>
+
+        {/* link status ribbon */}
         <div className="flex flex-1 cursor-default items-center justify-between">
           <div className="flex items-center">
-            <div>
-              {loading ? (
-                <div className={`mr-1 h-9 w-1.5 border-y bg-stone-500`}></div>
-              ) : linkStatus === "alive" ? (
-                <div
-                  className={`${isDragging ? "border-y border-amber-500" : "border-white"} mr-1 h-9 w-1.5 border-y bg-green-500`}
-                ></div>
-              ) : linkStatus === "Timeout or Unauthorized" ? (
-                <div
-                  className={`${isDragging ? "border-y border-amber-500" : "border-white"} mr-1 h-9 w-1.5 border-y bg-yellow-500`}
-                ></div>
-              ) : linkStatus === "403" ? (
-                <div
-                  className={`${isDragging ? "border-y border-amber-500" : "border-white"} mr-1 h-9 w-1.5 border-y bg-yellow-500`}
-                ></div>
-              ) : linkStatus === "unknown" ? (
-                <div
-                  className={`${isDragging ? "border-y border-amber-500" : "border-white"} mr-1 h-9 w-1.5 border-y bg-stone-500`}
-                ></div>
-              ) : (
-                <div
-                  className={`${isDragging ? "border-y border-amber-500" : "border-white"} mr-1 h-9 w-1.5 border-y bg-red-500`}
-                ></div>
-              )}
-            </div>
-            {FaviconComponent}
+            {!url.includes(".onion") ? (
+              <div>
+                {loading ? (
+                  <div className={`mr-1 h-9 w-1.5 border-y bg-stone-500`}></div>
+                ) : linkStatus === "alive" ? (
+                  <div
+                    className={`${isDragging ? "border-y border-amber-500" : "border-white"} mr-1 h-9 w-1.5 border-y bg-green-500`}
+                  ></div>
+                ) : linkStatus === "Timeout or Unauthorized" ? (
+                  <div
+                    className={`${isDragging ? "border-y border-amber-500" : "border-white"} mr-1 h-9 w-1.5 border-y bg-yellow-500`}
+                  ></div>
+                ) : linkStatus === "403" ? (
+                  <div
+                    className={`${isDragging ? "border-y border-amber-500" : "border-white"} mr-1 h-9 w-1.5 border-y bg-yellow-500`}
+                  ></div>
+                ) : linkStatus === "unknown" ? (
+                  <div
+                    className={`${isDragging ? "border-y border-amber-500" : "border-white"} mr-1 h-9 w-1.5 border-y bg-stone-500`}
+                  ></div>
+                ) : (
+                  <div
+                    className={`${isDragging ? "border-y border-amber-500" : "border-white"} mr-1 h-9 w-1.5 border-y bg-red-500`}
+                  ></div>
+                )}
+              </div>
+            ) : (
+              <div
+                className={`${isDragging ? "border-y border-amber-500" : "border-white"} mr-1 h-9 w-1.5 border-y bg-purple-500`}
+              ></div>
+            )}
+
+            {/* Favicon */}
+            <Favicon url={url} title={title} />
+
+            {/* Title */}
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -194,13 +225,19 @@ export const SortableBookmark = ({
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
-            {/* timeout または 403 Forbidden が返ってきた場合は、403 と表示 */}
           </div>
+
+          {/* link status icons */}
           <div className="flex items-center">
+            {/* url includes .onion */}
+            {url.includes(".onion") && (
+              <SiTorbrowser className="mr-1 h-4 w-4 text-purple-500" />
+            )}
             {/* Timeout or Unauthorized or Forbidden */}
             {linkStatus !== "alive" &&
               linkStatus !== "dead" &&
-              linkStatus !== "unknown" && (
+              linkStatus !== "unknown" &&
+              !url.includes(".onion") && (
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -221,7 +258,7 @@ export const SortableBookmark = ({
                 </TooltipProvider>
               )}
             {/* dead */}
-            {linkStatus === "dead" && (
+            {linkStatus === "dead" && !url.includes(".onion") && (
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -250,14 +287,54 @@ export const SortableBookmark = ({
                 </Tooltip>
               </TooltipProvider>
             )}
+
+            {/* copy url */}
             <Button
               variant="fit"
               size={"fit"}
               onClick={(event) => handleCopyUrl(event)}
-              className="pointer-events-auto items-center justify-center rounded p-0.5 hover:bg-white hover:text-black"
+              className="pointer-events-auto mr-1 items-center justify-center rounded p-0.5 hover:bg-white hover:text-black"
             >
               <ClipboardCopyIcon className="h-4 w-4" />
             </Button>
+
+            {/* QR code */}
+            <Dialog>
+              <DialogTrigger className="pointer-events-auto items-center justify-center rounded p-0.5 hover:bg-white hover:text-black">
+                <QrCode className="h-4 w-4" />
+              </DialogTrigger>
+              <DialogContent>
+                <div className="flex items-center justify-center">
+                  <div className="flex-1">
+                    <DialogTitle className="mb-2 flex items-center gap-2">
+                      <Favicon url={url} title={title} />
+                      {title}
+                    </DialogTitle>
+                    <DialogDescription className="mb-2">
+                      {description}
+                    </DialogDescription>
+
+                    <div className="flex items-center gap-2">
+                      <ScrollArea className="w-[250px] border px-2 pb-1">
+                        {url}
+                        <ScrollBar orientation="horizontal" />
+                      </ScrollArea>
+
+                      <Button
+                        variant="fit"
+                        size={"fit"}
+                        onClick={(event) => handleCopyUrl(event)}
+                        className="pointer-events-auto items-center justify-center rounded p-0.5 hover:bg-white hover:text-black"
+                      >
+                        <ClipboardCopyIcon className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+
+                  <QRCodeSVG value={url} size={128} className="mr-4" />
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       </div>

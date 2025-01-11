@@ -194,8 +194,10 @@ export const AppSidebar = ({
                     }
                   >
                     <AccordionTrigger
-                      className={`w-full flex-grow cursor-default border-y pb-0 text-xs font-bold leading-3 ${
-                        activeAccordion === "finder" ? "rounded-bl-lg" : ""
+                      className={`w-full flex-grow cursor-default pb-0 text-xs font-bold leading-3 ${
+                        activeAccordion === "finder"
+                          ? "rounded-bl-lg border-t"
+                          : "border-y"
                       }`}
                     >
                       <p className="w-full hover:underline">{OUTLINE}</p>

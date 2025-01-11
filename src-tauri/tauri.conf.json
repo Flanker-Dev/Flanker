@@ -49,7 +49,12 @@
       },
       "protocol": {
         "asset": true,
-        "assetScope": ["$HOME/.config/flk/images", "$HOME/.config/flk/images/*"]
+        "assetScope": [
+          "$HOME/.config/flk/images",
+          "$HOME/.config/flk/images/*",
+          "$HOME/.config/flk/fonts",
+          "$HOME/.config/flk/fonts/*"
+        ]
       },
       "globalShortcut": {
         "all": true

@@ -16,7 +16,6 @@ import {
 } from "@dnd-kit/sortable";
 import { useState, useEffect } from "react";
 
-import Favicon from "../Favicon/Favicon";
 import { SortableBookmark } from "../SortableBookmark/SortableBookmark";
 import { OutlineContentComponentProps } from "@/types/types";
 
@@ -33,6 +32,7 @@ export const SmallCard = ({
           unknown: 0,
           timeout: 0,
           forbidden: 0,
+          onion: 0,
         },
       })
     ) || []
@@ -49,6 +49,7 @@ export const SmallCard = ({
             unknown: 0,
             timeout: 0,
             forbidden: 0,
+            onion: 0,
           },
         })
       ) || []
@@ -81,6 +82,7 @@ export const SmallCard = ({
     unknown: 0,
     timeout: 0,
     forbidden: 0,
+    onion: 0,
   });
 
   useEffect(() => {
@@ -92,9 +94,10 @@ export const SmallCard = ({
         acc.unknown += bookmark.statusCount.unknown;
         acc.timeout += bookmark.statusCount.timeout;
         acc.forbidden += bookmark.statusCount.forbidden;
+        acc.onion += bookmark.statusCount.onion;
         return acc;
       },
-      { alive: 0, dead: 0, unknown: 0, timeout: 0, forbidden: 0 }
+      { alive: 0, dead: 0, unknown: 0, timeout: 0, forbidden: 0, onion: 0 }
     );
     setStatusCount(initialStatusCount);
   }, [bookmarks]);
@@ -107,6 +110,7 @@ export const SmallCard = ({
       unknown: number;
       timeout: number;
       forbidden: number;
+      onion: number;
     }
   ) => {
     setBookmarks((prevBookmarks) =>
@@ -142,6 +146,9 @@ export const SmallCard = ({
           <div className="text-xs text-gray-500">
             Forbidden: {statusCount.forbidden}
           </div>
+          <div className="text-xs text-gray-500">
+            Onion: {statusCount.onion}
+          </div>
         </div>
         <ul className="grid gap-1 sm:grid-cols-1 lg:grid-cols-3">
           {bookmarks.map((bookmark) => (
@@ -151,9 +158,6 @@ export const SmallCard = ({
                 title={bookmark.title}
                 url={bookmark.url}
                 description={bookmark.description}
-                FaviconComponent={
-                  <Favicon url={bookmark.url} title={bookmark.title} />
-                }
                 onStatusCountChange={(newStatusCount) =>
                   handleStatusCountChange(bookmark.id, newStatusCount)
                 }

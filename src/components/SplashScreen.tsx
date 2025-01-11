@@ -32,13 +32,20 @@ export const SplashScreen = ({ fadeOut, progress }: SplashScreenProps) => {
 
   return (
     <div
-      className={`fixed inset-0 left-0 z-50 m-[1px] flex flex-col items-center justify-center rounded-[7px] border bg-black transition-all duration-1000 ${
+      className={`fixed inset-0 left-0 z-0 m-[1px] flex flex-col items-center justify-center rounded-[8px] border bg-black transition-all duration-1000 ${
         fadeOut ? "opacity-0" : "opacity-100"
       }`}
     >
-      <div className="relative flex flex-col items-center gap-2 p-2">
-        <FlankerFullLogo className="svg-elem irregular-blink-animation w-24 cursor-default" />
-        <div className="irregular-blink-animation relative -left-0 flex h-1 w-24 justify-start overflow-hidden">
+      {/* 画面いっぱい */}
+      <img
+        src="/splash.jpg"
+        alt="favicon"
+        className="absolute z-10 h-full w-full rounded-[8px] bg-red-100 object-cover"
+      />
+      <div className="absolute z-20 flex h-full w-full flex-col items-center justify-center rounded-[8px] shadow-[inset_0_0_200px_100px_black]"></div>
+      <FlankerFullLogo className="svg-elem irregular-blink-animation absolute bottom-4 right-2 z-50 w-24 min-w-24 cursor-default" />
+      <div className="absolute bottom-2 right-2 z-50 w-24 min-w-24 cursor-default">
+        <div className="irregular-blink-animation flex h-1 justify-start overflow-hidden">
           <div
             className="absolute h-1 transition-all duration-300"
             style={{
