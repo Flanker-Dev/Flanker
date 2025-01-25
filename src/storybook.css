@@ -1,0 +1,11 @@
+body,
+html {
+  overflow: auto !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  box-sizing: border-box !important;
+  border: 0 !important;
+  background: transparent !important;
+}
