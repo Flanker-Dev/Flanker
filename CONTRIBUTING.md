@@ -2,14 +2,31 @@
 
 ## Issues
 
-- [All](https://github.com/Flanker-Dev/Flanker/issues)
-- [Bugs](https://github.com/Flanker-Dev/Flanker/labels/bug)
+![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/Flanker-Dev/Flanker?label=Issues)
 
-## Commands
+## Development
+
+### Getting Started
 
 ```sh
 # Install Rust
 curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
+
+# Install Tauri CLI
+cargo install tauri-cli
+
+# Install Repo
+git clone git@github.com:Flanker-Dev/Flanker.git
+cd Flanker
+
+# Install flk (Config and storage area for Flanker)
+cd $HOME/.config
+git clone git@github.com:Flanker-Dev/flk.git
+
+# node version (2025-01-26)
+cd Flanker
+node -v
+# v20.11.1
 
 npm install
 npm run tauri dev
@@ -17,19 +34,33 @@ npm run format
 npm run lint
 npm run tauri build
 
-# Generate icon
+# Generate icon (Only when necessary)
 npm run tauri icon src-tauri/icons/icon.png
 ```
 
-## Branches (WIP)
+### Branches (WIP)
 
 ```plaintext
 main (production)
   ⎿ develop (current default branch)
     ⎿ feature/<issue_number> (feature branch)
-    ⎿ refactor/<issue_number> (refactor branch)
     ⎿ document/<issue_number> (document branch)
     ⎿ ignore-issues (ignore issues)
+```
+
+### Commit Messages
+
+```plaintext
+There are no rules for now.
+Please write a commit message that is easy to understand.
+
+ex: feat: Add new feature
+    fix: Fix bug
+    docs: Update document
+    style: Update style
+    refactor: Refactor code
+    test: Add test
+    chore: Update chore
 ```
 
 ## Directory Structure
