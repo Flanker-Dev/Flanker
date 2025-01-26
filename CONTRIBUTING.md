@@ -16,6 +16,8 @@
   - [src/ (React: Colocation Patterns)](#src-react-colocation-patterns)
   - [src-tauri/ (Rust: Moduler Monolith)](#src-tauri-rust-moduler-monolith)
 - [Types (WIP)](#types-wip)
+- [Design System](#design-system)
+  - [Figma](#figma)
 - [Fonts](#fonts)
 - [Contributions](#contributions)
 
@@ -171,6 +173,12 @@ export type FileConfig = {
   ];
 };
 ```
+
+## Design System
+
+### Figma
+
+[Flanker | Design System](https://www.figma.com/design/BrFR62UWlk8nYXbvU9efGA/Flanker-dev?node-id=0-1&t=UlncTJYCQtidJaBH-1)
 
 ## Fonts
 
