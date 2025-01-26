@@ -5,6 +5,20 @@
 ![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/Flanker-Dev/Flanker?label=Issues)
 ![GitHub Issues or Pull Requests by label](https://img.shields.io/github/issues/Flanker-Dev/Flanker/help%20wanted?label=Help%20Wanted)
 
+## ToC
+
+- [Development](#development)
+  - [Getting Started](#getting-started)
+  - [Branches (WIP)](#branches-wip)
+  - [Commit Messages](#commit-messages)
+  - [Pull Requests](#pull-requests)
+- [Directory Structure](#directory-structure)
+  - [src/ (React: Colocation Patterns)](#src-react-colocation-patterns)
+  - [src-tauri/ (Rust: Moduler Monolith)](#src-tauri-rust-moduler-monolith)
+- [Types (WIP)](#types-wip)
+- [Fonts (Recommended)](#fonts-recommended)
+- [Contributions](#contributions)
+
 ## Development
 
 ### Getting Started
@@ -157,6 +171,11 @@ export type FileConfig = {
   ];
 };
 ```
+
+## Fonts (Recommended)
+
+- https://fonts.google.com/specimen/JetBrains+Mono (Free)
+- https://usgraphics.com/products/berkeley-mono (ja: 有料 en:
 
 ## Contributions
 

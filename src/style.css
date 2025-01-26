@@ -65,7 +65,7 @@ html {
   margin: 1px;
   height: calc(100% - 2px);
   background: transparent;
-  border-radius: 15px;
+  border-radius: 7px;
   font-family: "Geist", sans-serif;
   user-select: none;
   border: 1px solid #fff;
@@ -73,7 +73,6 @@ html {
 body {
   color: #ffffff;
   background: #000000;
-  /* border-radius: 7px; */
   position: fixed;
   width: calc(100% - 2px);
 }
