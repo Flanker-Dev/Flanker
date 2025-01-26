@@ -3,6 +3,7 @@
 ## Issues
 
 ![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/Flanker-Dev/Flanker?label=Issues)
+![GitHub Issues or Pull Requests by label](https://img.shields.io/github/issues/Flanker-Dev/Flanker/help%20wanted?label=Help%20Wanted)
 
 ## Development
 
