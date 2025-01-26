@@ -175,7 +175,7 @@ export type FileConfig = {
 ## Fonts (Recommended)
 
 - https://fonts.google.com/specimen/JetBrains+Mono (Free)
-- https://usgraphics.com/products/berkeley-mono (ja: 有料 en:
+- https://usgraphics.com/products/berkeley-mono (Paid)
 
 ## Contributions
 
