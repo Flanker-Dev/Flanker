@@ -63,6 +63,11 @@ ex: feat: Add new feature
     chore: Update chore
 ```
 
+### Pull Requests
+
+Please use the copilot feature to generate the First Convesation comment.
+![Pull Request Template](src/assets/pr_copilot.png)
+
 ## Directory Structure
 
 ### src/ (React: Colocation Patterns)
