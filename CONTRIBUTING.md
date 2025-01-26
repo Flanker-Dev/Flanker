@@ -8,6 +8,10 @@
 ## Commands
 
 ```sh
+# Install Rust
+curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
+
+npm install
 npm run tauri dev
 npm run format
 npm run lint
