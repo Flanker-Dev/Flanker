@@ -16,7 +16,7 @@
   - [src/ (React: Colocation Patterns)](#src-react-colocation-patterns)
   - [src-tauri/ (Rust: Moduler Monolith)](#src-tauri-rust-moduler-monolith)
 - [Types (WIP)](#types-wip)
-- [Fonts (Recommended)](#fonts-recommended)
+- [Fonts](#fonts)
 - [Contributions](#contributions)
 
 ## Development
@@ -172,10 +172,14 @@ export type FileConfig = {
 };
 ```
 
-## Fonts (Recommended)
+## Fonts
 
-- https://fonts.google.com/specimen/JetBrains+Mono (Free)
-- https://usgraphics.com/products/berkeley-mono (Paid)
+If you want to apply your own font, place the font in `$HOME/.config/flk/fonts`.
+The recommended extension is `.woff` or `.woff2`.
+
+- [Geist](https://vercel.com/font) (Default, Free)
+- [JetBrains Mono](https://fonts.google.com/specimen/JetBrains+Mono) (Free)
+- [Berkeley Mono](https://usgraphics.com/products/berkeley-mono) (Used in development environment, Paid: $75.00)
 
 ## Contributions
 
