@@ -63,8 +63,8 @@ function App() {
   const [alwaysOnTopView, setAlwaysOnTopView] = useState(false); // 常に最前面表示の状態
   const [tabKey, setTabKey] = useState("isSmallCard"); // タブキー
   const [isFooterVisible, setIsFooterVisible] = useState(false); // footerの表示状態
-  const [height] = useState(window.innerHeight); // windowの高さ
-  const [width] = useState(window.innerWidth); // windowの幅
+  const [height, setHeight] = useState(window.innerHeight); // windowの高さ
+  const [width, setWidth] = useState(window.innerWidth); // windowの幅
   const [keyup, setKeyup] = useState(""); // 最新5件のキーを取得
   const [isLoading, setIsLoading] = useState(false); // スケルトン表示状態の管理
 
@@ -296,6 +296,16 @@ function App() {
     }
   }
 
+  useEffect(() => {
+    const handleResize = () => {
+      setHeight(window.innerHeight);
+      setWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <div className="relative">
       {imageUrl ? (
@@ -392,9 +402,23 @@ function App() {
                   data-tauri-drag-region
                 >
                   <div className="flex items-center space-x-1">
-                    <p className="active-rotate h-fit cursor-default pt-[2px] leading-none duration-1000">
-                      {"◒"}
-                    </p>
+                    <div className="active-rotate cursor-default leading-none duration-1000">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                      >
+                        <circle
+                          cx="8"
+                          cy="8"
+                          r="6"
+                          fill="#fff"
+                          stroke="#fff"
+                          stroke-width="2"
+                        />
+                        <path d="M2,8 A6,6 0 0,0 14,8" />
+                      </svg>
+                    </div>
                     <div className="flex h-4 cursor-default items-center justify-between rounded border">
                       <p className="w-10 text-nowrap text-center text-xs font-bold leading-3">
                         {height}
