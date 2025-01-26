@@ -180,6 +180,8 @@ export type FileConfig = {
 
 [Flanker | Design System](https://www.figma.com/design/BrFR62UWlk8nYXbvU9efGA/Flanker-dev?node-id=0-1&t=UlncTJYCQtidJaBH-1)
 
+<img src="src/assets/figma.png" />
+
 ## Fonts
 
 If you want to apply your own font, place the font in `$HOME/.config/flk/fonts`.
