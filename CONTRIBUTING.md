@@ -96,6 +96,8 @@ src/
   ⎿ assets/ (Images, Docs Images, Logo, etc.)
   ⎿ components/
     ⎿ <component_name>/
+      ⎿ Buttons/ (If there are buttons that are only used in this component, create a directory.)
+        ⎿ <button_name>.tsx
       ⎿ <component_name>.tsx
       ⎿ <function_name>.ts (This file contains functions used only in components.)
     ⎿ ui/ (shadcn components)

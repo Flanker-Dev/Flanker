@@ -32,7 +32,7 @@ export const SplashScreen = ({ fadeOut, progress }: SplashScreenProps) => {
 
   return (
     <div
-      className={`fixed inset-0 left-0 z-0 m-[1px] flex flex-col items-center justify-center rounded-[8px] border bg-black transition-all duration-1000 ${
+      className={`fixed inset-0 left-0 z-0 m-[1px] flex flex-col items-center justify-center rounded-[8px] border border-white bg-background transition-all duration-1000 dark:bg-background ${
         fadeOut ? "opacity-0" : "opacity-100"
       }`}
     >
@@ -40,8 +40,9 @@ export const SplashScreen = ({ fadeOut, progress }: SplashScreenProps) => {
       <img
         src="/splash.jpg"
         alt="favicon"
-        className="absolute z-10 h-full w-full rounded-[8px] bg-red-100 object-cover"
+        className="absolute z-10 h-full w-full rounded-[8px] border border-white bg-background object-cover dark:bg-background"
       />
+      {/* <div className="absolute z-10 h-full w-full rounded-[8px] border bg-background object-cover dark:border dark:bg-background"></div> */}
       <div className="absolute z-20 flex h-full w-full flex-col items-center justify-center rounded-[8px] shadow-[inset_0_0_200px_100px_black]"></div>
       <FlankerFullLogo className="svg-elem irregular-blink-animation absolute bottom-4 right-2 z-50 w-24 min-w-24 cursor-default" />
       <div className="absolute bottom-2 right-2 z-50 w-24 min-w-24 cursor-default">
@@ -50,9 +51,6 @@ export const SplashScreen = ({ fadeOut, progress }: SplashScreenProps) => {
             className="absolute h-1 transition-all duration-300"
             style={{
               width: `${progress}%`,
-              // backgroundImage:
-              //   "repeating-linear-gradient(45deg, black 0%, black 12.5%, white 12.5%, white 25%)",
-              // backgroundSize: "20px 20px",
               background: "white",
               animation: "move-stripes 3s linear infinite",
             }}

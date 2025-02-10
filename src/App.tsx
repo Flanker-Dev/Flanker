@@ -3,52 +3,26 @@ import { readDir } from "@tauri-apps/api/fs";
 import { homeDir } from "@tauri-apps/api/path";
 import { convertFileSrc, InvokeArgs } from "@tauri-apps/api/tauri";
 import { appWindow } from "@tauri-apps/api/window";
-import {
-  FoldVertical,
-  Grid3x3,
-  List,
-  Maximize,
-  Minimize,
-  PanelLeft,
-  Pin,
-  PinOff,
-  Table,
-  UnfoldVertical,
-  SquareArrowUpLeft,
-  SquareArrowUpRight,
-  SquareArrowDownLeft,
-  SquareArrowDownRight,
-  Keyboard,
-  PanelBottomClose,
-  FolderHeart,
-} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { AppSidebar } from "./components/AppSidebar/AppSidebar";
 import { BigCard } from "./components/BigCard/BigCard";
 // import { GitHubContributions } from "./components/GitHubContributions/GitHubContributions";
+import { Footer } from "./components/Footer/Footer";
+import { Header } from "./components/Header/Header";
 import { NoFile } from "./components/NoFile/NoFile";
-import { SidebarFavs } from "./components/SidebarFavs/SidebarFavs";
+import { SideMenu } from "./components/SideMenu/SideMenu";
 import { SmallCard } from "./components/SmallCard/SmallCard";
 import { SplashScreen } from "./components/SplashScreen";
 import { TableWrapper } from "./components/TableWrapper/TableWrapper";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "./components/ui/accordion";
-import { Button } from "./components/ui/button";
 import { SidebarProvider } from "./components/ui/sidebar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
+import { Tabs, TabsContent } from "./components/ui/tabs";
 import { FileContent } from "./types/types";
 import alwaysOnTop from "./utils/alwaysOnTop";
 import { handleSplashScreen } from "./utils/handleSplashScreen";
 import { isBookmarkInfoNotEmpty } from "./utils/isBookmarkInfoNotEmpty";
-import { cn } from "./utils/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Toaster } from "@/components/ui/toaster";
-import { getFavicon } from "@/constants/Favicon";
 
 function App() {
   const [imageUrl, setImageUrl] = useState(""); // 画像URL用の状態
@@ -65,7 +39,7 @@ function App() {
   const [isFooterVisible, setIsFooterVisible] = useState(false); // footerの表示状態
   const [height, setHeight] = useState(window.innerHeight); // windowの高さ
   const [width, setWidth] = useState(window.innerWidth); // windowの幅
-  const [keyup, setKeyup] = useState(""); // 最新5件のキーを取得
+  // const [keyup, setKeyup] = useState(""); // 最新5件のキーを取得
   const [isLoading, setIsLoading] = useState(false); // スケルトン表示状態の管理
 
   // 背景画像の読み込み
@@ -148,6 +122,8 @@ function App() {
   const moveWindowBottomRight = () =>
     invokeTauriCommand("move_window_bottom_right");
 
+  const [keys, setKeys] = useState<string[]>([]);
+
   useEffect(() => {
     let keydownTimeout: NodeJS.Timeout | null = null;
 
@@ -176,18 +152,16 @@ function App() {
     window.addEventListener("keydown", handleKeydown);
 
     // 最新5件のキーを取得する
-    const keys: string[] = [];
     const getHandleKeydown = (event: KeyboardEvent) => {
-      keys.push(event.key);
-      if (keys.length > 5) keys.shift();
-      setKeyup(keys.join(" "));
+      setKeys((prevKeys) => {
+        const newKeys = [...prevKeys, event.key]; // イベントのキーを追加
+        if (newKeys.length > 5) newKeys.shift(); // 最大5件まで保持
+        return newKeys;
+      });
     };
-    window && window.addEventListener("keydown", getHandleKeydown);
 
-    return () => {
-      window.removeEventListener("keydown", handleKeydown);
-      if (keydownTimeout) clearTimeout(keydownTimeout);
-    };
+    window.addEventListener("keydown", getHandleKeydown);
+    return () => window.removeEventListener("keydown", getHandleKeydown);
   }, [alwaysOnTopView]);
 
   // アプリ画面縦と横のサイズを取得
@@ -205,11 +179,6 @@ function App() {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
-  // footerの表示
-  const footerVisible = () => {
-    setIsFooterVisible(!isFooterVisible);
-  };
 
   // スケルトン表示を制御する関数
   const handleAccordionTriggerClick = () => {
@@ -306,18 +275,53 @@ function App() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    // 初期状態をローカルストレージから取得
+    return localStorage.getItem("theme") === "dark";
+  });
+
+  const toggleTheme = () => {
+    setIsDarkMode((prev) => !prev);
+  };
+
+  useEffect(() => {
+    const rootElement = document.documentElement;
+
+    if (isDarkMode) {
+      rootElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+      // htmlタグのborder色を変更する
+      rootElement.style.borderColor = "#fff";
+      // bodyタグの背景色を変更する
+      rootElement.style.backgroundColor = "#000";
+    } else {
+      rootElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+      // htmlタグのborderを変更する
+      rootElement.style.borderColor = "#000";
+
+      // bodyタグの背景色を変更する
+      rootElement.style.backgroundColor = "#fff";
+    }
+  }, [isDarkMode]);
+
   return (
     <div className="relative">
       {imageUrl ? (
-        <img
-          src={imageUrl}
-          alt="UploadedImage"
-          className="fixed h-[calc(100vh-4px)] w-[calc(100%-6px)] rounded-md object-cover"
-        />
-      ) : null}
+        // <img
+        //   src={imageUrl}
+        //   alt="UploadedImage"
+        //   className="fixed h-[calc(100vh-3px)] w-[calc(100%-3px)] rounded-[8px] bg-background object-cover dark:bg-background"
+        // />
+        // <div className="fixed h-[calc(100vh-3px)] w-[calc(100%-3px)] rounded-[8px] bg-background object-cover dark:w-[calc(100%-4px)] dark:bg-background"></div>
+        <div
+          className={`fixed h-[calc(100vh-3px)] w-[calc(100%-3px)] rounded-[8px] object-cover dark:w-[calc(100%-4px)] ${isDarkMode ? "dot" : "dark-dot"}`}
+        ></div>
+      ) : // <div className="fixed h-[calc(100vh-3px)] w-[calc(100%-3px)] rounded-[8px] bg-background object-cover dark:w-[calc(100%-4px)] dark:bg-background"></div>
+      null}
       <div
         data-tauri-drag-region
-        className="relative z-30 h-[calc(100vh-4px)] w-full rounded-lg"
+        className="relative z-30 h-[calc(100vh-2px)] rounded-[8px] border dark:border"
       >
         <SidebarProvider open={open} onOpenChange={setOpen}>
           <div
@@ -335,55 +339,12 @@ function App() {
           </div>
           <div className="flex">
             {/* sidemenu */}
-            <div
-              data-tauri-drag-region
-              className="flex h-[calc(100vh-4px)] w-[64px] flex-col items-center justify-start rounded-l-md border-white backdrop-blur-[3px]"
-            >
-              {/* Sidebar trigger */}
-              <div
-                className={`${open ? "pt-2" : "pt-6"} ${window.innerHeight > 82 ? "" : "pt-6"} flex w-16 justify-center pb-2 duration-500 focus:outline-none`}
-              >
-                <Button
-                  data-sidebar="trigger"
-                  variant={window.innerHeight > 120 ? "ghost" : "disabled"}
-                  size="icon"
-                  className={cn("h-10 w-10 cursor-default")}
-                  onClick={(event) => {
-                    event.preventDefault();
-                    // windowが82より小さい場合発火しない
-                    if (window.innerHeight <= 120) return;
-                    setOpen(!open);
-                  }}
-                >
-                  <PanelLeft />
-                </Button>
-              </div>
-              {/* Sidebar trigger end */}
-
-              {/* お気に入りアイコン群 */}
-              {window.innerHeight > 220 && (
-                <Accordion type="single" collapsible>
-                  <AccordionItem value="item-1">
-                    <AccordionTrigger
-                      icon={<FolderHeart />}
-                      iconOnly
-                      className="mx-auto mb-2 flex h-10 w-10 cursor-default justify-center rounded p-0 hover:bg-accent hover:text-accent-foreground"
-                      onClick={handleAccordionTriggerClick}
-                    ></AccordionTrigger>
-                    <AccordionContent isVisible={false}>
-                      {isLoading ? (
-                        <div
-                          className={`skeleton flex ${open ? "h-[calc(100vh-112px)]" : "h-[calc(100vh-128px)]"} w-[52px] animate-pulse flex-col items-center rounded`}
-                        ></div>
-                      ) : (
-                        <SidebarFavs getFavicon={getFavicon} open={open} />
-                      )}
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
-              )}
-              {/* お気に入りアイコン群 end */}
-            </div>
+            <SideMenu
+              open={open}
+              setOpen={setOpen}
+              isLoading={isLoading}
+              handleAccordionTriggerClick={handleAccordionTriggerClick}
+            />
             {/* sidemenu end */}
 
             <div
@@ -396,196 +357,29 @@ function App() {
                 className="p-0"
                 key={tabKey}
               >
-                {/* header TODO: コンポーネント化 ----------------------------------- */}
-                <div
-                  className="flex h-7 w-[calc(100%+8px)] items-center justify-between border-b p-1"
-                  data-tauri-drag-region
-                >
-                  <div className="flex items-center space-x-1">
-                    <div className="active-rotate cursor-default leading-none duration-1000">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                      >
-                        <circle
-                          cx="8"
-                          cy="8"
-                          r="6"
-                          fill="#fff"
-                          stroke="#fff"
-                          stroke-width="2"
-                        />
-                        <path d="M2,8 A6,6 0 0,0 14,8" />
-                      </svg>
-                    </div>
-                    <div className="flex h-4 cursor-default items-center justify-between rounded border">
-                      <p className="w-10 text-nowrap text-center text-xs font-bold leading-3">
-                        {height}
-                      </p>
-                      <p className="pb-0.5 text-xl">{"×"}</p>
-                      <p className="w-10 text-nowrap text-center text-xs font-bold leading-3">
-                        {width}
-                      </p>
-                    </div>
-                    <Button
-                      variant={"fit"}
-                      size={"fit"}
-                      onClick={fullScreen}
-                      className="flex cursor-default items-center justify-center rounded p-0.5 hover:bg-white hover:text-black"
-                    >
-                      <Maximize className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant={
-                        window.innerWidth === 768 && window.innerHeight === 76
-                          ? "disabled"
-                          : "fit"
-                      }
-                      size={"fit"}
-                      onClick={
-                        window.innerWidth === 768 && window.innerHeight === 76
-                          ? undefined
-                          : tightScreen
-                      }
-                      className={`flex cursor-default items-center justify-center rounded p-0.5 ${window.innerWidth > 768 || window.innerHeight > 76 ? "hover:bg-white hover:text-black" : ""}`}
-                    >
-                      <Minimize className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant={window.innerHeight > 76 ? "fit" : "disabled"}
-                      size={"fit"}
-                      onClick={decreaseHeight}
-                      className={`flex cursor-default items-center justify-center rounded p-0.5 ${window.innerHeight > 82 ? "hover:bg-white hover:text-black" : ""}`}
-                    >
-                      <FoldVertical className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant={"fit"}
-                      size={"fit"}
-                      onClick={increaseHeight}
-                      className="flex cursor-default items-center justify-center rounded p-0.5 hover:bg-white hover:text-black"
-                    >
-                      <UnfoldVertical className="h-4 w-4 rotate-180" />
-                    </Button>
-                    <Button
-                      variant={window.innerWidth > 768 ? "fit" : "disabled"}
-                      size={"fit"}
-                      onClick={decreaseWidth}
-                      className={`flex cursor-default items-center justify-center rounded p-0.5  ${window.innerWidth > 768 ? "hover:bg-white hover:text-black" : ""}`}
-                    >
-                      <FoldVertical className="h-4 w-4 rotate-90" />
-                    </Button>
-                    <Button
-                      variant={"fit"}
-                      size={"fit"}
-                      onClick={increaseWidth}
-                      className="flex cursor-default items-center justify-center rounded p-0.5 hover:bg-white hover:text-black"
-                    >
-                      <UnfoldVertical className="h-4 w-4 -rotate-90" />
-                    </Button>
-                    <Button
-                      variant={"fit"}
-                      size={"fit"}
-                      onClick={moveWindowTopLeft}
-                      className="flex cursor-default items-center justify-center rounded p-0.5 hover:bg-white hover:text-black"
-                    >
-                      <SquareArrowUpLeft
-                        strokeWidth={1.6}
-                        className="h-4 w-4"
-                      />
-                    </Button>
-                    <Button
-                      variant={"fit"}
-                      size={"fit"}
-                      onClick={moveWindowTopRight}
-                      className="flex cursor-default items-center justify-center rounded p-0.5 hover:bg-white hover:text-black"
-                    >
-                      <SquareArrowUpRight
-                        strokeWidth={1.6}
-                        className="h-4 w-4"
-                      />
-                    </Button>
-                    <Button
-                      variant={"fit"}
-                      size={"fit"}
-                      onClick={moveWindowBottomLeft}
-                      className="flex cursor-default items-center justify-center rounded p-0.5 hover:bg-white hover:text-black"
-                    >
-                      <SquareArrowDownLeft
-                        strokeWidth={1.6}
-                        className="h-4 w-4"
-                      />
-                    </Button>
-                    <Button
-                      variant={"fit"}
-                      size={"fit"}
-                      onClick={moveWindowBottomRight}
-                      className="flex cursor-default items-center justify-center rounded p-0.5 hover:bg-white hover:text-black"
-                    >
-                      <SquareArrowDownRight
-                        strokeWidth={1.6}
-                        className="h-4 w-4"
-                      />
-                    </Button>
-                    {/* <GitHubContributions /> */}
-                    <Button
-                      variant={"fit"}
-                      size={"fit"}
-                      onClick={() =>
-                        alwaysOnTop(alwaysOnTopView, setAlwaysOnTopView)
-                      }
-                      className={
-                        `flex cursor-default items-center justify-center rounded p-0.5 hover:bg-white hover:text-black` +
-                        (alwaysOnTopView ? " bg-white text-black" : "")
-                      }
-                    >
-                      {alwaysOnTopView ? (
-                        <Pin className="h-4 w-4" />
-                      ) : (
-                        <PinOff className="h-4 w-4" />
-                      )}
-                    </Button>
-                    <Button
-                      variant={window.innerHeight > 76 ? "fit" : "disabled"}
-                      size={"fit"}
-                      onClick={
-                        window.innerHeight > 76 ? footerVisible : undefined
-                      }
-                      className={`flex cursor-default items-center justify-center rounded p-0.5 ${window.innerHeight > 76 ? "hover:bg-white hover:text-black" : ""}`}
-                    >
-                      <PanelBottomClose className="h-4 w-4" />
-                    </Button>
-                  </div>
-
-                  {/* tab trigger */}
-                  <TabsList data-tauri-drag-region>
-                    <TabsTrigger
-                      value="isBigCard"
-                      className="cursor-default p-0.5 hover:bg-white hover:text-black"
-                    >
-                      <Grid3x3 className="h-4 w-4" />
-                    </TabsTrigger>
-                    <TabsTrigger
-                      value="isSmallCard"
-                      className="cursor-default p-0.5 hover:bg-white hover:text-black"
-                    >
-                      <List className="h-4 w-4" />
-                    </TabsTrigger>
-                    <TabsTrigger
-                      value="isTable"
-                      className="cursor-default p-0.5 hover:bg-white hover:text-black"
-                    >
-                      <Table className="h-4 w-4" />
-                    </TabsTrigger>
-                  </TabsList>
-                  {/* tab trigger end */}
-                </div>
-                {/* header end TODO: コンポーネント化 ----------------------------------- */}
-
+                <Header
+                  isDarkMode={isDarkMode}
+                  toggleTheme={toggleTheme}
+                  fullScreen={fullScreen}
+                  tightScreen={tightScreen}
+                  increaseHeight={increaseHeight}
+                  decreaseHeight={decreaseHeight}
+                  increaseWidth={increaseWidth}
+                  decreaseWidth={decreaseWidth}
+                  moveWindowTopLeft={moveWindowTopLeft}
+                  moveWindowTopRight={moveWindowTopRight}
+                  moveWindowBottomLeft={moveWindowBottomLeft}
+                  moveWindowBottomRight={moveWindowBottomRight}
+                  height={height}
+                  width={width}
+                  alwaysOnTop={alwaysOnTop}
+                  alwaysOnTopView={alwaysOnTopView}
+                  setAlwaysOnTopView={setAlwaysOnTopView}
+                  setIsFooterVisible={setIsFooterVisible}
+                />
                 {/* main content ----------------------------------- */}
                 <div
-                  className={`${open ? "w-[calc(100vw-332px)]" : "w-[calc(100vw-76px)]"}`}
+                  className={`${open ? "min-w-[calc(100vw-325px)]" : "w-[calc(100vw-69px)] dark:w-[calc(100vw-69px)]"}`}
                 >
                   {/* big card component */}
                   <TabsContent
@@ -594,7 +388,7 @@ function App() {
                     data-tauri-drag-region
                   >
                     <ScrollArea
-                      className={`${open ? "w-[calc(100vw-328px)]" : "w-[calc(100vw-72px)]"} h-[calc(100vh-32px)] px-1`}
+                      className={`${open ? "min-w-[calc(100vw-325px)]" : "w-[calc(100vw-69px)] dark:w-[calc(100vw-69px)]"} h-[calc(100vh-32px)] px-1`}
                     >
                       {isBookmarkInfoNotEmpty(selectedFileContent) &&
                       selectedFileContent ? (
@@ -648,44 +442,13 @@ function App() {
                     </ScrollArea>
                   </TabsContent>
                   {/* table component end */}
-                  {/* footer */}
-
-                  {isFooterVisible && window.innerHeight > 76 && (
-                    <div
-                      className="flex h-7 w-[calc(100%+8px)] items-center justify-end border-t p-1"
-                      data-tauri-drag-region
-                    >
-                      <div className="flex items-center space-x-1">
-                        {keyup
-                          .split(" ")
-                          // .reverse()
-                          .map((key, index) => {
-                            let displayKey = key;
-                            if (key === "Meta") displayKey = "⌘";
-                            else if (key === "ArrowUp") displayKey = "↑";
-                            else if (key === "ArrowDown") displayKey = "↓";
-                            else if (key === "ArrowLeft") displayKey = "←";
-                            else if (key === "ArrowRight") displayKey = "→";
-                            else if (key === "Escape") displayKey = "⎋";
-                            else if (key === "Control") displayKey = "^";
-                            else if (key === "Tab") displayKey = "⇥";
-
-                            return (
-                              <p
-                                key={index}
-                                className="h-fit min-w-4 cursor-default rounded bg-neutral-600 px-1 text-center text-xs capitalize text-white"
-                              >
-                                {displayKey}
-                              </p>
-                            );
-                          })}
-                        <Keyboard className="h-4 w-4" />
-                      </div>
-                    </div>
-                  )}
-                  {/* footer end */}
                 </div>
                 {/* main content end */}
+                {/* footer */}
+                {isFooterVisible && window.innerHeight > 76 && (
+                  <Footer keyboardKeys={keys} />
+                )}
+                {/* footer end */}
               </Tabs>
               {/* </ScrollArea> */}
             </div>
