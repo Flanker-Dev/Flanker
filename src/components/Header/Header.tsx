@@ -20,7 +20,6 @@ import { Button } from "../ui/button";
 import { FoldVerticalButton } from "./Buttons/FoldVerticalButton";
 import { MaximizeButton } from "./Buttons/MaximizeButton";
 import { MinimizeButton } from "./Buttons/MinimizeButton";
-import { UnfoldVerticalButton } from "./Buttons/UnFoldVertical";
 
 export const Header = ({
   fullScreen,
@@ -102,7 +101,14 @@ export const Header = ({
         <MaximizeButton fullScreen={fullScreen} />
         <MinimizeButton tightScreen={tightScreen} />
         <FoldVerticalButton decreaseHeight={decreaseHeight} />
-        <UnfoldVerticalButton increaseHeight={increaseHeight} />
+        <Button
+          variant={"fit"}
+          size={"fit"}
+          onClick={increaseHeight}
+          className={`flex cursor-default items-center justify-center border bg-background p-[1px] text-foreground hover:bg-black hover:text-white dark:border dark:text-foreground hover:dark:bg-white hover:dark:text-black`}
+        >
+          <UnfoldVertical className="h-4 w-4 rotate-180" />
+        </Button>
         <Button
           variant={window.innerWidth > 768 ? "fit" : "disabled"}
           size={"fit"}
